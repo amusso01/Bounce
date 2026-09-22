@@ -1,0 +1,29 @@
+// Horizon tokens — these CSS custom properties are printed on :root by
+// snippets/theme-styles-variables.liquid and snippets/color-palette.liquid,
+// so they follow the Theme Editor settings. Prefer these over hard-coded values.
+$fontSansSerif: var(--font-body--family);
+$fontHeading: var(--font-heading--family);
+$fontSubheading: var(--font-subheading--family);
+$fontAccent: var(--font-accent--family);
+
+$colorBackground: var(--color-background);
+$colorForeground: var(--color-foreground);
+
+// Layout
+$maxWidth: 1800px;
+$maxWidthNarrow: 1024px;
+$gutter: 60px;
+$gutterMobile: 20px;
+
+// Buttons (used in components/_btn.scss)
+$btnFontSize: 0.875rem; // 14px
+$btnLetterSpacing: -0.03em; // -3%
+$btnLineHeight: 1;
+$btnPaddingY: 11.5px;
+$btnPaddingX: 25px;
+
+// Neutral greys (no palette setting exists for these)
+$colorMuted: #6e6e6e;
+$colorCardMedia: #eeeeee; // tile behind transparent product cut-outs
+$colorComparisonCell: #f6f6f6;
+$colorComparisonLine: #d2d2d2;

@@ -1,0 +1,12 @@
+@use '../base/variable' as *;
+
+.btn {
+	font-family: $fontSansSerif;
+	font-weight: 700;
+	font-size: $btnFontSize;
+	line-height: $btnLineHeight;
+	--top-bottom-padding: #{$btnPaddingY};
+	--left-right-padding: #{$btnPaddingX};
+	min-width: 0;
+	width: auto;
+}

@@ -1,0 +1,12 @@
+/**
+ * Pseudo-element
+ *
+ * @param $display
+ * @param $pos
+ * @param $content
+ */
+@mixin pseudo($display: block, $pos: absolute, $content: '') {
+	content: $content;
+	display: $display;
+	position: $pos;
+}
