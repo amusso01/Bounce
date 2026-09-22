@@ -1,9 +1,10 @@
 // Breakpoints for include-media (single source of truth for the media() mixin).
 $breakpoints: (
-	'mobile': 480px,
-	'small': 768px,
-	'large': 1024px,
-	'widescreen': 1440px,
+	// 'mobile' is Horizon's mobile/desktop switch
+	'mobile': 750px,
+	'tablet': 990px,
+	'desktop': 1200px,
+	'wide': 1400px,
 ) !default;
 
 @forward '~include-media/dist/include-media' with (
@@ -14,7 +15,7 @@ $breakpoints: (
 // This is how to include media in each scss file we want to expose it
 
 // Screen size
-$onlyMobile: 480px;
-$onlySmall: 768px;
-$onlyLarge: 1024px;
-$onlyWidescreen: 1440px;
+$onlyMobile: 750px;
+$onlyTablet: 990px;
+$onlyDesktop: 1200px;
+$onlyWide: 1400px;

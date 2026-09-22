@@ -11,7 +11,8 @@ It is listed in `.shopifyignore`, so it never gets uploaded to Shopify.
 - Horizon **already prints every theme setting as a CSS custom property** on `:root` (`snippets/theme-styles-variables.liquid`, `snippets/color-palette.liquid`). You don't need the Dawn habit of writing your own `:root` block in `theme.liquid`. Map Horizon's variables into SCSS instead (`$fontSansSerif: var(--font-body--family);`).
 - Our code lives in `src/`, and Parcel compiles it to `assets/bounce.css` and `assets/bounce.js`. Both are loaded **after `{{ content_for_header }}`** in `layout/theme.liquid` and `layout/password.liquid`, so they come last in `<head>` and win ties against Horizon.
 - Override in this order: **Theme Editor setting → CSS variable → CSS rule in bounce.css → new `bounce-*` section/block → edit a Horizon file** (last resort, and log it in [Core edits log](#core-edits-log)).
-- Horizon's JS is native ES modules plus an import map (`@theme/component`, `@theme/events`, …). Parcel **can't** bundle those imports. Components that extend Horizon's `Component` class are written as plain ES modules straight in `assets/`.
+- Our JS works like it did in Dawn: site code and npm packages (`arrive`, `swiper`, `accordion-js`) go through Parcel into `assets/bounce.js`, and it talks to Horizon through the DOM. Horizon's own modules (`@theme/*`) can't be imported from the bundle. That only matters if you want to extend Horizon's classes (§7).
+- Before writing JS, read [Things that differ from Dawn](#things-that-differ-from-dawn): Horizon patches sections in place instead of replacing them, and on desktop the page scrolls inside `.page-wrapper`, not the window.
 
 ---
 
@@ -119,11 +120,12 @@ When a section or block has a custom background color, `snippets/contrast-overri
 | Per-instance CSS | `{% style %}` or `style=""` | Liquid allowed. Used for editor values (sizes, colors per block) |
 | **Ours** | `src/bounce.scss` → `assets/bounce.css` | Loaded last (see §2) |
 
-**Breakpoints.** Horizon uses `750px` almost everywhere (`min-width: 750px` / `max-width: 749px`, about 330 uses), then `990px`, `1200px`, `1400px`. Our include-media map in `src/scss/base/_media.scss` currently uses 480/768/1024/1440, so it's worth aligning (see [Bundler review](#9-bundler--src-review)):
+**Breakpoints.** Horizon uses `750px` almost everywhere (`min-width: 750px` / `max-width: 749px`, about 330 uses), then `990px`, `1200px`, `1400px`. Our include-media map in `src/scss/base/_media.scss` matches them:
 
 ```scss
 $breakpoints: (
-	'mobile': 750px,  // Horizon's mobile/desktop switch
+	// 'mobile' is Horizon's mobile/desktop switch
+	'mobile': 750px,
 	'tablet': 990px,
 	'desktop': 1200px,
 	'wide': 1400px,
@@ -140,10 +142,24 @@ Horizon writes modern CSS (native nesting, `:has()`, `@media` inside rules), so 
 - **`Component` base class** (`assets/component.js`). Every Horizon widget is a custom element extending it:
   - `ref="name"` / `ref="items[]"` on children → `this.refs.name` / `this.refs.items` (kept up to date by a MutationObserver). `requiredRefs = ['name']` throws if one is missing.
   - Declarative events: `on:click="/method"` calls `method(event)` on the closest `*-component` ancestor. `on:click="some-selector/method"` targets `closest(selector)`, `on:click="#id/method"` targets an element by id, and a trailing `/data` or `?data` segment is passed as the first argument. Supported events: click, change, select, focus, blur, submit, input, keydown, keyup, toggle, pointerdown, pointerenter, pointerleave.
-- **Section re-rendering**: `@theme/section-renderer` + `@theme/morph` swap section HTML in place (cart, filters, variants). Custom elements re-run `connectedCallback` on new DOM, **so you don't need MutationObserver helpers like `arrive`**.
+- **Section re-rendering**: `@theme/section-renderer` + `@theme/morph` update the cart, filters, variants and more by **patching the existing DOM** rather than replacing it (see below).
 - **Globals**: `window.Theme` (`routes`, `translations`, `template.name`) is defined inline in `snippets/scripts.liquid`.
 - **Events**: theme events live in `assets/events.js` (`ThemeEvents.quantitySelectorUpdate`, `ThemeEvents.cartSectionRestored`, `SlideshowSelectEvent`, …). Cart actions go through Shopify's standard actions/events (`window.Shopify.actions`, `@shopify/events`). Horizon's hooks are in `assets/standard-actions-override.js`, and the typed payloads are in `assets/standard-events.d.ts`.
 - `{% javascript %}` is used only once (`sections/main-collection.liquid`). Horizon prefers module files in `assets/`.
+
+### Things that differ from Dawn
+
+Our bundle (`assets/bounce.js`) is a normal deferred script that runs after Horizon's modules, the same setup as in Dawn. Four Horizon behaviours can still catch you out. Code examples are in [§7](#js-our-parcel-bundle).
+
+1. **Horizon patches sections in place.** When Horizon updates an area, it copies the server's fresh HTML onto the existing elements (`assets/morph.js`) instead of swapping them out. That covers the cart (`component-cart-items.js`), collection grid and filters (`facets.js`, `paginated-list.js`), search (`predictive-search.js`), product info on variant change (`variant-picker.js`, `product-form.js`, `sticky-add-to-cart.js`), quick add (`quick-add.js`), product cards (`product-card.js`) and recommendations (`product-recommendations.js`).
+   - Classes and attributes your JS adds inside those areas are reset to the server's version, e.g. Swiper's classes or an `is-open` flag. Only a short list of Horizon's own attributes survives (`morph.js:13-26`).
+   - `arrive` doesn't fire for patched elements, because they aren't new. It still fires for genuinely new ones, like a new cart line.
+   - Horizon's opt-out, `data-skip-node-update` on an element, only protects that element's own attributes. Its children are still patched (`morph.js:258`).
+   - **So:** mount Swiper, accordions and similar widgets in our own `bounce-*` sections. Inside Horizon's areas, re-initialise after they update, or keep the state in server-rendered markup.
+   - As in Dawn, the Theme Editor re-renders a section when its settings change. Destroy widget instances on `shopify:section:unload`.
+2. **On desktop, the window doesn't scroll.** At 990px and wider, `html` and `body` get `overflow: hidden` and `.page-wrapper` becomes the scroll container (`base.css:28-57`). `window.scrollY` stays `0` and `window` scroll events never fire; on mobile the window scrolls as usual. Listen on both, or use `IntersectionObserver`, which works in either case.
+3. **Horizon's components may not be ready when our script runs.** Its modules load with `fetchpriority="low"`. Before calling a method on one of its elements, `await customElements.whenDefined('<tag-name>')`.
+4. **Source maps stay in `assets/`.** `pnpm dev` writes `bounce.js.map` / `bounce.css.map` there on purpose, for debugging on the dev theme. `pnpm build` deletes them before building, and `.gitignore` excludes `assets/*.map`, so they never go into git or reach the store through the GitHub integration. `shopify theme dev` still uploads them to your dev theme. Always run `pnpm build` before committing, or the store gets the unminified dev files.
 
 ---
 
@@ -230,16 +246,14 @@ Use `{% style %}` (Liquid allowed, live-updates in the editor), not `{% styleshe
 
 ### Restyle Horizon buttons
 
-Horizon buttons are `.button` / `.button-secondary` (not `.btn`), sized by `--button-padding-block` / `--button-padding-inline`:
+Horizon buttons are `.button` / `.button-secondary` (not `.btn`), sized by `--button-padding-block` / `--button-padding-inline`. Colors, radius, border width, font and text case already come from Theme settings → Buttons. `src/scss/components/_btn.scss` has the empty rule ready. Example values:
 
 ```scss
 .button,
 .button-secondary {
-	--button-padding-block: #{$btnPaddingY};
-	--button-padding-inline: #{$btnPaddingX};
-	font-size: $btnFontSize;
-	line-height: $btnLineHeight;
-	letter-spacing: $btnLetterSpacing;
+	--button-padding-block: 12px;
+	--button-padding-inline: 24px;
+	letter-spacing: -0.03em;
 }
 ```
 
@@ -273,9 +287,68 @@ Sections get a `.shopify-section` wrapper (`#shopify-section-{{ section.id }}`) 
 {% endschema %}
 ```
 
-### A JS component that plugs into Horizon
+### JS: our Parcel bundle
 
-Write it as a native module in `assets/` (**not** in `src/`, because Parcel can't resolve `@theme/*`):
+Everything goes through `src/bounce.js` → `assets/bounce.js`: site code, `arrive`, `swiper`, `accordion-js`. Put entry-level imports in `src/bounce.js` and features in `src/js/`.
+
+**Mount widgets with `arrive`, and clean up in the Theme Editor:**
+
+```js
+// src/js/sliders.js
+import 'arrive';
+import Swiper from 'swiper';
+import { Navigation } from 'swiper/modules'; // import only the modules you use
+
+function mount(el) {
+	if (el.swiper) return; // Swiper stores its instance on the element
+	new Swiper(el, {
+		modules: [Navigation],
+		navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+	});
+}
+
+export function initSliders() {
+	// existing: true also runs for sliders already on the page
+	document.arrive('.bounce-slider', { existing: true }, mount);
+
+	document.addEventListener('shopify:section:unload', (event) => {
+		event.target.querySelectorAll('.bounce-slider').forEach((el) => el.swiper?.destroy());
+	});
+}
+```
+
+Swiper's CSS can come in through SCSS (`@use 'swiper/css';` plus the module CSS you need, e.g. `swiper/css/navigation`).
+
+**Call Horizon components**: wait until they're defined:
+
+```js
+async function openCartDrawer() {
+	await customElements.whenDefined('theme-drawer');
+	document.querySelector('theme-drawer#cart-drawer')?.open();
+}
+```
+
+**Scroll listeners**: cover both scroll containers:
+
+```js
+const pageWrapper = document.querySelector('.page-wrapper');
+const scrollTop = () => window.scrollY || pageWrapper?.scrollTop || 0;
+
+function onScroll() {
+	document.body.classList.toggle('is-scrolled', scrollTop() > 50);
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+pageWrapper?.addEventListener('scroll', onScroll, { passive: true });
+```
+
+Other hooks: `window.Theme` (routes, translations), theme events by their string names (see `assets/events.js`), and Shopify's standard cart actions (`window.Shopify.actions`).
+
+**Keep entries directly in `src/`.** If you ever split a heavy library into its own file (a second entry loaded only by one section), put that entry file in `src/`, not a subfolder. Parcel copies entry subfolders into the output (`src/js/x.js` → `assets/js/x.js`), and Shopify's `assets/` can't hold subfolders. Files imported by an entry can live anywhere.
+
+### Optional: extending Horizon's own components
+
+Only needed if you want to subclass Horizon's `Component` class (for `ref=""` and `on:click="/method"`) or import its helpers. Parcel can't resolve `@theme/*`, so write these as plain ES modules directly in `assets/` (not in `src/`), prefixed `bounce-`:
 
 ```js
 // assets/bounce-countdown.js
@@ -283,11 +356,6 @@ import { Component } from '@theme/component';
 
 class BounceCountdownComponent extends Component {
 	requiredRefs = ['label'];
-
-	connectedCallback() {
-		super.connectedCallback();
-		this.refs.label.textContent = 'Ready';
-	}
 
 	reset() {
 		this.refs.label.textContent = 'Reset!';
@@ -308,24 +376,7 @@ if (!customElements.get('bounce-countdown-component')) {
 <script src="{{ 'bounce-countdown.js' | asset_url }}" type="module"></script>
 ```
 
-End the tag name in `-component` so `on:*` attributes find it. Add it to the import map in `snippets/scripts.liquid` only if other modules need to `import` it by name.
-
-### Global JS and npm packages (Parcel lane)
-
-`src/bounce.js` → `assets/bounce.js` is for site-wide code and npm libraries that don't need Horizon's modules. Talk to Horizon through the DOM and events (`document.addEventListener(ThemeEvents.…)` by string name, `window.Theme`), not through imports.
-
-For a heavy library used by only one section (Swiper, for example), add a **separate Parcel entry** and load it only in that section:
-
-```jsonc
-// package.json: add the entry to dev and build
-"build": "parcel build src/bounce.js src/bounce.scss src/bounce-slider.js --dist-dir assets …"
-```
-
-```liquid
-<script src="{{ 'bounce-slider.js' | asset_url }}" defer></script>
-```
-
-Keep entries **directly in `src/`**. Parcel mirrors entry subfolders into the output (`src/js/x.js` → `assets/js/x.js`), and Shopify's `assets/` can't hold subfolders.
+End the tag name in `-component` so `on:*` attributes find it.
 
 ---
 
@@ -334,15 +385,21 @@ Keep entries **directly in `src/`**. Parcel mirrors entry subfolders into the ou
 ```
 src/bounce.scss ──┐                              ┌─ assets/bounce.css ─┐
                   ├─ Parcel (sass, lightningcss, ┤                     ├─ layout/theme.liquid (after content_for_header)
-src/bounce.js ────┘   SWC/Babel, minify)         └─ assets/bounce.js ──┘  layout/password.liquid
+src/bounce.js ────┘   SWC, minify)              └─ assets/bounce.js ──┘  layout/password.liquid
 ```
 
 | Command | What it does |
 |---|---|
-| `pnpm dev` | `parcel watch` → rewrites `assets/bounce.*` on save |
+| `pnpm dev` | `parcel watch` → rewrites `assets/bounce.*` and their `.map` files on save |
 | `shopify theme dev --store <store>` (second terminal) | Syncs `assets/` to a dev theme with hot reload, so it picks up Parcel's output |
-| `pnpm build` | Production build (minified, no source maps). **Run before committing or pushing.** Compiled `assets/bounce.*` must be committed if you deploy through Shopify's GitHub integration |
+| `pnpm build` | Production build (minified, no source maps). **Run before every commit.** The GitHub integration has no build step, so the committed `assets/bounce.*` is exactly what goes live |
 | `pnpm clean` | Removes `.parcel-cache` |
+
+### Deploying through the GitHub integration
+
+- **What syncs:** only the standard theme folders (`assets`, `blocks`, `config`, `layout`, `locales`, `sections`, `snippets`, `templates`). Shopify's docs: "Folders in the repository that don't match the default theme structure are ignored." So `src/`, `package.json`, `pnpm-lock.yaml`, `README.md`, this file and the dotfiles can be committed safely; they never reach the store.
+- **`.gitignore` vs `.shopifyignore`:** `.gitignore` decides what goes into git, which is what the integration syncs. `.shopifyignore` only applies to the Shopify CLI.
+- **Shopify commits back:** Theme Editor and admin changes (`config/settings_data.json`, `templates/*.json`, section groups) are committed to the connected branch automatically, and this can't be turned off. Pull before you start working to avoid merge conflicts on those files.
 
 Notes:
 
@@ -361,44 +418,23 @@ The Parcel setup was copied from another project (package name `crashbaggage`, r
 | 1 | `assets/bounce.css` / `bounce.js` were never loaded by any layout | Nothing we wrote reached the storefront | **Fixed.** Linked after `{{ content_for_header }}` in `layout/theme.liquid` and `layout/password.liquid` |
 | 2 | `$fontSansSerif` used in `_base.scss` and `_btn.scss` but never defined | Sass build failed | **Fixed.** `_variable.scss` now maps Horizon's font/color variables |
 | 3 | ⚠️ `_reset.scss` sets `* { margin: 0; padding: 0 }`. The rest of the file duplicates `assets/base.css` (box-sizing, `img/svg` display, `font: inherit`) | **Now live, since #1.** It removes the browser's default `p`/heading margins and list indentation. Horizon keeps those defaults and only trims the first/last child (`base.css:147-156`), so paragraphs in text blocks lose their spacing | Open. Delete `_reset.scss` and its `@use`; Horizon's base.css already resets what it needs |
-| 4 | ⚠️ `_base.scss` hard-codes `h1–h4` sizes (70/50/40/30px) and forces the **body** font plus weight 700 on all headings | **Now live, since #1.** Overrides the Typography settings: editor changes to heading font/size do nothing (current data: H1 = 56px, heading font Inter 700) | Open. Remove those rules. Set sizes and fonts in the editor, or lock them via tokens (`:root { --font-h1--size: … }`) |
-| 5 | `_btn.scss` targets `.btn` and sets `--top-bottom-padding` / `--left-right-padding` (Dawn names) | No effect: Horizon markup has no `.btn`, and its buttons read `--button-padding-block/inline` | Open. Rewrite as in [Restyle Horizon buttons](#restyle-horizon-buttons) |
-| 6 | include-media breakpoints 480/768/1024/1440 vs Horizon's 750/990/1200/1400 | Our layout switches at different widths than Horizon's (e.g. 750–767px) | Open. Use the map in §4 |
-| 7 | No `browserslist` | lightningcss outputs the newest syntax: the build emits `@media (width<=767px)` range queries (Safari 16.4+) | Open. Add `"browserslist": "defaults and supports es6-module"` to `package.json` |
-| 8 | `.babelrc` with only `@babel/preset-env` | Parcel warns on every build: it forces Babel (slower) and ignores Parcel's targets | Open. Delete `.babelrc` and the `@babel/*` packages. Parcel's built-in SWC transpiles using `browserslist` |
-| 9 | `minify-js` runs `terser` after `parcel build` | Parcel already minifies, so this is a redundant second pass | Open. Drop the script and `terser` |
-| 10 | No `--public-url ./` | Parcel defaults to `/`, so any `url()` asset or code-split chunk would point at the store root, not the CDN `assets/` path. Parcel also never cleans `assets/`, so hashed files would pile up | Open. Add `--public-url ./`. Prefer referencing images and fonts from Liquid (`asset_url`) over `url()` in SCSS |
-| 11 | `parcel watch` writes `.map` files into `assets/` | `shopify theme dev` uploads them to the dev theme; stale ones can linger | Open. Add `--no-source-maps` to `dev`, or `assets/*.map` to `.shopifyignore` |
-| 12 | Dawn-era dependencies: `arrive`, `accordion-js`, `swiper`, `buffer`, `process` | `arrive` makes up most of today's 5.7 kB `bounce.js`, but custom elements already cover it; Horizon has `accordion-custom` and its own slideshow; `buffer`/`process` are unused Parcel polyfills | Open. Remove them; add `swiper` back only for a section that needs it, as its own entry (§7) |
-| 13 | `parcel` and `@babel/preset-env` sit in `dependencies`; name/repo/author are from the old project | Cosmetic | Open. Move to `devDependencies`, rename to `bounce` |
-| 14 | `.gitignore` ignores `pnpm-lock.yaml`, `.babelrc`, `.parcelrc`, `README.md` | Teammates get unpinned installs and a different build | Open. Commit the lockfile and build config |
-| 15 | Project isn't a git repo yet | Nothing to diff when Horizon ships an update | Open. `git init` and commit untouched Horizon 4.2.0 **first**, then our changes |
-| 16 | `src/bounce.js` imports `test.js` (logs "Hello World") | Console noise on the storefront | Open. Remove it |
+| 4 | `_base.scss` hard-coded `h1–h4` sizes (70/50/40/30px) and forced the **body** font plus weight 700 on all headings | Overrode the Typography settings: editor changes to heading font/size did nothing | **Fixed.** Rules emptied in `_base.scss`. Set sizes and fonts in the editor, or lock them via tokens (`:root { --font-h1--size: … }`) |
+| 5 | `_btn.scss` targets `.btn` and sets `--top-bottom-padding` / `--left-right-padding` (Dawn names) | No effect: Horizon markup has no `.btn`, and its buttons read `--button-padding-block/inline` | **Fixed.** `_btn.scss` now targets `.button, .button-secondary` (values still to set, see [Restyle Horizon buttons](#restyle-horizon-buttons)) |
+| 6 | include-media breakpoints 480/768/1024/1440 vs Horizon's 750/990/1200/1400 | Our layout switched at different widths than Horizon's (e.g. 750–767px) | **Fixed.** `_media.scss` uses 750/990/1200/1400 (§4) |
+| 7 | No `browserslist` | Parcel had no explicit browser targets for transpiling JS and lowering CSS | **Fixed.** `"browserslist": "defaults and supports es6-module, ios_saf >= 16.4, safari >= 16.4"` (88% global coverage). 16.4 is the floor because Horizon needs import maps. The build still outputs range media queries (`@media (width<=749px)`), which every target supports |
+| 8 | `.babelrc` with only `@babel/preset-env` | Parcel warned on every build: it forced Babel (slower) and ignored Parcel's targets | **Fixed.** `.babelrc` and `@babel/*` removed. Parcel's built-in SWC transpiles using `browserslist` |
+| 9 | `minify-js` runs `terser` after `parcel build` | Parcel already minifies, so this was a redundant second pass | **Fixed.** Script and `terser` removed |
+| 10 | No `--public-url ./` | Parcel defaults to `/`, so any `url()` asset or code-split chunk would point at the store root, not the CDN `assets/` path. Parcel also never cleans `assets/`, so hashed files would pile up | **Fixed.** `--public-url ./` on `dev` and `build`. Still prefer referencing images and fonts from Liquid (`asset_url`) over `url()` in SCSS, so no hashed copies land in `assets/` |
+| 11 | `parcel watch` writes `.map` files into `assets/` | Wanted for debugging, but they'd be committed and synced to the store | **Fixed.** Kept for dev; `assets/*.map` is in `.gitignore`, and `pnpm build` deletes them first |
+| 12 | Dependencies from the old project: `arrive`, `accordion-js`, `swiper`, `buffer`, `process` | Fine with Horizon. `buffer`/`process` are only bundled if code uses `Buffer`/`process`. Swiper is the heavy one and loads on every page | Kept by choice. Import only the Swiper modules you use, and read [Things that differ from Dawn](#things-that-differ-from-dawn) before mounting widgets inside Horizon's sections |
+| 13 | `parcel` sat in `dependencies`; name/repo were from the old project | Cosmetic | **Fixed.** Renamed to `bounce`, `"private": true`, `parcel` moved to `devDependencies`, old `repository` removed (add the new one once the GitHub repo exists) |
+| 14 | `.gitignore` ignores `pnpm-lock.yaml`, `.babelrc`, `.parcelrc`, `README.md` | Teammates get unpinned installs and a different build | **Fixed.** `README.md`, `.parcelrc`, `.babelrc` removed from `.gitignore` (none of them would sync to the store anyway). `pnpm-lock.yaml` is no longer ignored; commit it |
+| 15 | Project isn't a git repo yet | Nothing to diff when Horizon ships an update | Partly fixed. Repo created, but the first commit already contains our edits (layout includes, this file). For a clean baseline, keep the untouched Horizon 4.2.0 download on its own branch |
+| 16 | `src/bounce.js` imports `test.js` (logs "Hello World") | Console noise on the storefront | **Fixed.** `test.js` removed |
 
 Checked and fine: the `~include-media/…` path resolves in Parcel, and forwarding include-media `with ($breakpoints: …)` while `_media.scss` also declares `$breakpoints` compiles without conflict.
 
-### Suggested `package.json` (not applied yet)
-
-```json
-{
-	"name": "bounce",
-	"private": true,
-	"browserslist": "defaults and supports es6-module",
-	"scripts": {
-		"dev": "parcel watch src/bounce.js src/bounce.scss --dist-dir assets --public-url ./ --no-source-maps",
-		"build": "parcel build src/bounce.js src/bounce.scss --dist-dir assets --public-url ./ --no-source-maps",
-		"clean": "rm -rf .parcel-cache"
-	},
-	"devDependencies": {
-		"@parcel/transformer-sass": "2.16.4",
-		"include-media": "^2.0.0",
-		"parcel": "^2.16.4",
-		"sass": "^1.102.0"
-	}
-}
-```
-
-After changing it: `rm .babelrc && pnpm install && rm -rf .parcel-cache && pnpm build`.
+All `package.json` changes from this review are applied (see `package.json`).
 
 ---
 

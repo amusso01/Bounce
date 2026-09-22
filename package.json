@@ -1,34 +1,31 @@
 {
-	"name": "crashbaggage",
+	"name": "bounce",
 	"version": "1.0.0",
-	"repository": "https://github.com/amusso01/Ground-Control",
+	"private": true,
 	"author": "Andrea Musso <andrea.m@fdry.com>",
 	"license": "MIT",
+	"browserslist": "defaults and supports es6-module, ios_saf >= 16.4, safari >= 16.4",
 	"scripts": {
-		"dev": "parcel watch src/bounce.js src/bounce.scss --dist-dir assets",
+		"dev": "parcel watch src/bounce.js src/bounce.scss --dist-dir assets --public-url ./",
 		"dev:clean": "rm -rf .parcel-cache && pnpm dev",
-		"build": "parcel build src/bounce.js src/bounce.scss --dist-dir assets --no-source-maps && pnpm run minify-js",
+		"build": "rm -f assets/*.map && parcel build src/bounce.js src/bounce.scss --dist-dir assets --public-url ./ --no-source-maps",
 		"build:clean": "rm -rf .parcel-cache && pnpm build",
-		"clean": "rm -rf .parcel-cache",
-		"minify-js": "terser assets/bounce.js -o assets/bounce.js --compress --mangle"
+		"clean": "rm -rf .parcel-cache"
 	},
 	"dependencies": {
-		"@babel/preset-env": "^7.29.7",
 		"accordion-js": "^3.4.1",
 		"arrive": "^2.5.3",
 		"include-media": "^2.0.0",
-		"parcel": "^2.16.4",
 		"swiper": "^14.1.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.29.7",
 		"@parcel/config-default": "2.16.4",
 		"@parcel/transformer-css": "2.16.4",
 		"@parcel/transformer-js": "2.16.4",
 		"@parcel/transformer-sass": "2.16.4",
 		"buffer": "^5.5.0||^6.0.0",
+		"parcel": "^2.16.4",
 		"process": "^0.11.10",
-		"sass": "^1.102.0",
-		"terser": "^5.50.0"
+		"sass": "^1.102.0"
 	}
 }

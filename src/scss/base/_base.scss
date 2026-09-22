@@ -5,15 +5,13 @@ html {
 }
 
 ::selection {
-	background: #ffc629;
+	background: #000;
 }
 
 ::-moz-selection {
-	background: #ffc629;
+	background: #000;
 }
 body {
-	font-weight: 400;
-	font-family: $fontSansSerif;
 }
 
 // @media screen and (min-width: 750px) {
@@ -34,46 +32,23 @@ h5,
 h5 a,
 h6,
 h6 a {
-	font-family: $fontSansSerif;
-	font-weight: 700;
-	letter-spacing: -0.03rem;
 }
 
 h1,
 .h1,
 .display-text {
-	font-size: 4.375rem; // 70px
-
-	@include media('<small') {
-		font-size: 2.5rem; // 40px
-	}
 }
 
 h2,
 .h2 {
-	font-size: 3.125rem; // 50px
-
-	@include media('<small') {
-		font-size: 2rem; // 32px
-	}
 }
 
 h3,
 .h3 {
-	font-size: 2.5rem; // 40px
-
-	@include media('<small') {
-		font-size: 1.875rem; // 30px
-	}
 }
 
 h4,
 .h4 {
-	font-size: 1.875rem; // 30px
-
-	@include media('<small') {
-		font-size: 1.5rem; // 24px
-	}
 }
 
 %cover {

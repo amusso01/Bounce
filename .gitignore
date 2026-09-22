@@ -20,13 +20,12 @@ config.yml
 .vscode
 .cache
 .parcel-cache
-README.md
 .env
 .cursorrules
 .prettierignore
-.parcelrc
-.babelrc
-pnpm-lock.yaml
 .pnpm-store/
+
+# Parcel dev source maps — kept local, never synced to the store via GitHub
+assets/*.map
 .cursor/
 .claude/
