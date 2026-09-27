@@ -39,7 +39,8 @@
 }
 
 .bounce-marquee__separator {
-	opacity: 1;
+	font-weight: 300;
+	padding-inline: 1ch;
 }
 
 @keyframes bounce-marquee-scroll {
