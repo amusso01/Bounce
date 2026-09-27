@@ -5,11 +5,11 @@ html {
 }
 
 ::selection {
-	background: #000;
+	background: var(--selection-background, #{$color3});
 }
 
 ::-moz-selection {
-	background: #000;
+	background: var(--selection-background, #{$color3});
 }
 body {
 }

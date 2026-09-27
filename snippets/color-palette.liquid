@@ -162,6 +162,31 @@
   endif
 %}
 
+{% capture selection_bg_page_text %}
+  {% render 'util-selection-background', color: settings.page_text_color %}
+{% endcapture %}
+{% capture selection_bg_primary_button_text %}
+  {% render 'util-selection-background', color: settings.palette_primary_button_text %}
+{% endcapture %}
+{% capture selection_bg_primary_button_hover_text %}
+  {% render 'util-selection-background', color: effective_primary_button_hover_text %}
+{% endcapture %}
+{% capture selection_bg_secondary_button_text %}
+  {% render 'util-selection-background', color: settings.palette_secondary_button_text %}
+{% endcapture %}
+{% capture selection_bg_secondary_button_hover_text %}
+  {% render 'util-selection-background', color: effective_secondary_button_hover_text %}
+{% endcapture %}
+{% capture selection_bg_input_text %}
+  {% render 'util-selection-background', color: settings.palette_input_text %}
+{% endcapture %}
+{% capture selection_bg_selected_variant_text %}
+  {% render 'util-selection-background', color: settings.palette_selected_variant_text %}
+{% endcapture %}
+{% capture selection_bg_selected_variant_hover_text %}
+  {% render 'util-selection-background', color: effective_selected_variant_hover_text %}
+{% endcapture %}
+
 {% style %}
   /* Palette colors */
   :root {
@@ -169,6 +194,7 @@
     --color-background-rgb: {{ settings.page_background_color.rgb }};
     --color-foreground: {{ settings.page_text_color }};
     --color-foreground-rgb: {{ settings.page_text_color.rgb }};
+    --selection-background: {{ selection_bg_page_text | strip }};
     --color-border: {{ settings.page_text_color }};
     --color-border-rgb: {{ settings.page_text_color.rgb }};
     --palette-lightest: {{ palette_lightest }};
@@ -234,5 +260,38 @@
   body {
     color: var(--color-foreground);
     background-color: var(--color-background);
+  }
+
+  .button,
+  .button-custom,
+  button.shopify-payment-button__button--unbranded {
+    --selection-background: {{ selection_bg_primary_button_text | strip }};
+  }
+
+  .button:hover,
+  button.shopify-payment-button__button--unbranded:hover:not([disabled]) {
+    --selection-background: {{ selection_bg_primary_button_hover_text | strip }};
+  }
+
+  .button-secondary {
+    --selection-background: {{ selection_bg_secondary_button_text | strip }};
+  }
+
+  .button-secondary:hover {
+    --selection-background: {{ selection_bg_secondary_button_hover_text | strip }};
+  }
+
+  input,
+  textarea,
+  select {
+    --selection-background: {{ selection_bg_input_text | strip }};
+  }
+
+  .variant-option__button-label:has(:checked) {
+    --selection-background: {{ selection_bg_selected_variant_text | strip }};
+  }
+
+  .variant-option__button-label:has(:checked):hover {
+    --selection-background: {{ selection_bg_selected_variant_hover_text | strip }};
   }
 {% endstyle %}

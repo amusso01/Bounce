@@ -46,6 +46,7 @@ layout/theme.liquid
  │   4. snippets/scripts                → import map (@theme/*), module scripts, window.Theme
  │   5. snippets/theme-styles-variables → inline <style> :root { fonts, spacing, radii, … }
  │   6. snippets/color-palette          → inline <style> :root { colors, buttons, inputs, … }
+ │      snippets/bounce-colors          ← OURS: --bounce-color-1..4 from the palette
  │   7. {{ content_for_header }}        → Shopify + apps + the bundled {% stylesheet %} CSS
  │   8. assets/bounce.css + bounce.js   ← OURS, last on purpose
  ├─ <body>
@@ -91,7 +92,7 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 | Motion | `--animation-speed`, `--ease-out-cubic`, `--spring-d300-b0-easing`, … | No |
 | Icons | `--icon-size-*`, `--icon-stroke-width` | `icon_stroke` |
 
-### `snippets/color-palette.liquid` (`:root` at line 167)
+### `snippets/color-palette.liquid` (`:root` at line 192)
 
 | Group | Examples |
 |---|---|
@@ -100,6 +101,7 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 | Buttons | `--color-primary-button-{text,background,border,hover-*}`, same for `secondary` |
 | Inputs / variants | `--color-input-*`, `--color-variant-*`, `--color-selected-variant-*` |
 | Derived | `--color-foreground-muted`, `--color-foreground-subdued`, `--opacity-*` |
+| Selection | `--selection-background` on `:root`, and again on buttons, inputs and selected variant labels (see [Text selection](#text-selection)) |
 
 Horizon 4.2 uses a **color palette** (`settings.color_palette`) plus per-section background colors. It doesn't use Dawn-style color schemes.
 
