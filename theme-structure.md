@@ -131,11 +131,12 @@ background: var(--selection-background, #{$color3});
 | Inputs | same file: `input`, `textarea`, `select` | input text |
 | Selected variant | same file: `.variant-option__button-label:has(:checked)`, including `:hover` | selected variant text / hover text |
 | Custom section or block color | `snippets/contrast-override.liquid` on `.color-custom-{id}`, next to `--color-foreground` | the effective text color. An explicit text color uses its brightness. The dark-background fallback (`var(--palette-lightest)`) is treated as white, so that highlight stays black |
-| Hardcoded white text | `.bounce-marquee` in `src/scss/sections/_marquee.scss`; on-media controls in `snippets/slideshow-controls.liquid` | forced `#000`, because these colors don't go through the tokens above |
+| Marquee | `.bounce-marquee` in `src/scss/sections/_marquee.scss` | white text, but the bar is already `#000`, so the highlight is `$color3`. A black highlight would match the bar and disappear |
+| On-media slideshow controls | `snippets/slideshow-controls.liquid` | forced `#000`. The text is hardcoded white and sits on a photo, not a black fill |
 
 A button, input or selected variant sets its own variable, so it wins over a section's. Button text is independent of the section foreground.
 
-When you add white text that doesn't go through those tokens, set `--selection-background: #000` on that element. Otherwise the pink fallback sits on white type.
+When you add white text that doesn't go through those tokens, set `--selection-background: #000` on that element. If that element's own background is already black, use `$color3` instead, or the highlight matches the surface and disappears. Otherwise the pink fallback sits on white type.
 
 > **Sass + CSS variables gotcha.** Sass color functions (`darken()`, `rgba($var, .5)`, `color.adjust`) can't read `var()` at build time. Use the `-rgb` twins or `color-mix()` instead:
 > `rgb(var(--color-foreground-rgb) / 0.5)` or `color-mix(in srgb, var(--color-foreground) 50%, transparent)`.
