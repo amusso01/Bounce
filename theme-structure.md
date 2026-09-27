@@ -41,7 +41,8 @@ layout/theme.liquid
  ├─ <head>
  │   1. snippets/stylesheets            → assets/base.css (preloaded)
  │   2. snippets/card-hover-effect-styles
- │   3. snippets/fonts                  → font preloads
+ │   3. snippets/fonts                  → font preloads (skipped for system fonts)
+ │      snippets/bounce-fonts           ← OURS: Simplon Mono @font-face + preload
  │   4. snippets/scripts                → import map (@theme/*), module scripts, window.Theme
  │   5. snippets/theme-styles-variables → inline <style> :root { fonts, spacing, radii, … }
  │   6. snippets/color-palette          → inline <style> :root { colors, buttons, inputs, … }
@@ -54,7 +55,7 @@ layout/theme.liquid
  │   cart drawer, theme drawer, search modal, quick-add modal (snippets)
 ```
 
-(`layout/theme.liquid:18-39`)
+(`layout/theme.liquid:18-40`)
 
 **What this means for the cascade.** Shopify bundles every section/block/snippet `{% stylesheet %}` into one CSS file and injects it **through `content_for_header`**, trimmed per page to the files actually rendered ([Shopify docs](https://shopify.dev/docs/storefronts/themes/best-practices/javascript-and-stylesheet-tags)). If `bounce.css` were linked any earlier, component CSS would beat it at equal specificity. Because it loads last:
 
@@ -79,7 +80,7 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 
 | Group | Examples | Driven by setting? |
 |---|---|---|
-| Font families | `--font-body--family`, `--font-heading--family`, `--font-subheading--family`, `--font-accent--family` (+ `--style`, `--weight`) | Yes: Typography |
+| Font families | `--font-body--family`, `--font-heading--family`, `--font-subheading--family`, `--font-accent--family` (+ `--style`, `--weight`) | **Overridden by us**: all four are Simplon Mono with fixed weights (see [Custom font](#custom-font-simplon-mono)) |
 | Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px) |
 | Fixed type scale | `--font-size--3xs` … `--font-size--6xl` | No |
 | Page widths | `--narrow-page-width` (90rem), `--normal-page-width` (120rem), `--wide-page-width` (150rem) | Chosen by `page_width` → `body.page-width-*` |
@@ -243,6 +244,26 @@ Use `{% style %}` (Liquid allowed, live-updates in the editor), not `{% styleshe
 	--font-paragraph--size: 0.875rem;
 }
 ```
+
+### Custom font (Simplon Mono)
+
+Every font role (body, subheading, heading, accent) uses **Simplon Mono**, whatever Theme settings → Typography says:
+
+| Piece | Where |
+|---|---|
+| Font files | `assets/SimplonMono-{Light,LightItalic,Regular,RegularItalic,Medium,MediumItalic,Bold,BoldItalic}.{woff2,woff}`. Added straight to `assets/`; Parcel isn't involved |
+| `@font-face` rules + preload | `snippets/bounce-fonts.liquid`, rendered right after `snippets/fonts` in both layouts. Liquid is needed here for `asset_url`, which also adds `?v=` so updated files bust the cache. Only `Regular.woff2` is preloaded, since weight 400 covers body, heading and accent |
+| Override of Horizon's font variables | `src/scss/base/_fonts.scss` (in `bounce.css`) sets `--font-{body,subheading,heading,accent}--family` to `$fontSimplonMono`. It also locks the weights: body 400, subheading 300, heading 400, accent 400 |
+| Fallback stack | `$fontSimplonMono` in `_variable.scss`: `'Simplon Mono', ui-monospace, Menlo, Consolas, monospace` |
+
+Everything else follows automatically: the `h1–h6` presets (`--font-h1--family: var(--font-heading--family)`), buttons, cart, badges and the text block's font setting. The italic and bold faces are picked by the browser for `<em>` / `<strong>`.
+
+Two things outside the variables:
+
+- **Theme Editor:** set all four font pickers to the system **Mono** font. `snippets/fonts.liquid` skips preloading system fonts, so Horizon stops downloading the web fonts it would otherwise fetch (Inter today) for nothing.
+- **Account label:** `snippets/header-actions.liquid` writes the picker's font inline on `<shopify-account>`. `_fonts.scss` overrides it with `!important`.
+
+To change weights later, edit the `--font-*--weight` values in `_fonts.scss`. Weights 300/400/500/700 exist; anything in between snaps to the nearest face.
 
 ### Restyle Horizon buttons
 
@@ -453,3 +474,4 @@ Every Horizon file we've changed, and why:
 |---|---|---|
 | `layout/theme.liquid` | Added `bounce.css` / `bounce.js` after `{{ content_for_header }}` | Load our build last so it wins the cascade |
 | `layout/password.liquid` | Same as above | Same, for the password page |
+| `layout/theme.liquid`, `layout/password.liquid` | Added `{%- render 'bounce-fonts' -%}` after `{%- render 'fonts' -%}` | Load Simplon Mono early in `<head>` (see [Custom font](#custom-font-simplon-mono)) |

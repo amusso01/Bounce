@@ -6,6 +6,9 @@ $fontHeading: var(--font-heading--family);
 $fontSubheading: var(--font-subheading--family);
 $fontAccent: var(--font-accent--family);
 
+// Simplon Mono: faces declared in snippets/bounce-fonts.liquid, applied to every role in _fonts.scss
+$fontSimplonMono: 'Simplon Mono', ui-monospace, Menlo, Consolas, monospace;
+
 $colorBackground: var(--color-background);
 $colorForeground: var(--color-foreground);
 

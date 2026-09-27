@@ -1,0 +1,87 @@
+{% doc %}
+  Loads Simplon Mono, the single typeface used for every font role (body, subheading, heading, accent).
+
+  Font files live in assets/ as SimplonMono-<Face>.woff2 and .woff. The Horizon font variables that
+  apply it are overridden in src/scss/base/_fonts.scss (compiled into bounce.css).
+  Only Regular is preloaded: body, heading and accent all use weight 400.
+{% enddoc %}
+
+{{
+  'SimplonMono-Regular.woff2'
+  | asset_url
+  | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous'
+}}
+
+{% style %}
+  @font-face {
+    font-family: 'Simplon Mono';
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+    src: url('{{ 'SimplonMono-Light.woff2' | asset_url }}') format('woff2'),
+      url('{{ 'SimplonMono-Light.woff' | asset_url }}') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Simplon Mono';
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+    src: url('{{ 'SimplonMono-LightItalic.woff2' | asset_url }}') format('woff2'),
+      url('{{ 'SimplonMono-LightItalic.woff' | asset_url }}') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Simplon Mono';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('{{ 'SimplonMono-Regular.woff2' | asset_url }}') format('woff2'),
+      url('{{ 'SimplonMono-Regular.woff' | asset_url }}') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Simplon Mono';
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+    src: url('{{ 'SimplonMono-RegularItalic.woff2' | asset_url }}') format('woff2'),
+      url('{{ 'SimplonMono-RegularItalic.woff' | asset_url }}') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Simplon Mono';
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url('{{ 'SimplonMono-Medium.woff2' | asset_url }}') format('woff2'),
+      url('{{ 'SimplonMono-Medium.woff' | asset_url }}') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Simplon Mono';
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+    src: url('{{ 'SimplonMono-MediumItalic.woff2' | asset_url }}') format('woff2'),
+      url('{{ 'SimplonMono-MediumItalic.woff' | asset_url }}') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Simplon Mono';
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url('{{ 'SimplonMono-Bold.woff2' | asset_url }}') format('woff2'),
+      url('{{ 'SimplonMono-Bold.woff' | asset_url }}') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Simplon Mono';
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+    src: url('{{ 'SimplonMono-BoldItalic.woff2' | asset_url }}') format('woff2'),
+      url('{{ 'SimplonMono-BoldItalic.woff' | asset_url }}') format('woff');
+  }
+{% endstyle %}

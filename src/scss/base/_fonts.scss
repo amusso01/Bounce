@@ -1,0 +1,30 @@
+@use 'sass:meta';
+@use './variable' as *;
+
+// One typeface for every Horizon font role, whatever Theme settings → Typography picks.
+// Horizon prints these on :root in snippets/theme-styles-variables.liquid; bounce.css loads
+// after it, so these win. Everything else (h1–h6 presets, buttons, cart, text blocks) chains off them.
+:root {
+	--font-body--family: #{meta.inspect($fontSimplonMono)};
+	--font-body--weight: 400;
+	--font-body--style: normal;
+
+	--font-subheading--family: #{meta.inspect($fontSimplonMono)};
+	--font-subheading--weight: 300;
+	--font-subheading--style: normal;
+
+	--font-heading--family: #{meta.inspect($fontSimplonMono)};
+	--font-heading--weight: 400;
+	--font-heading--style: normal;
+
+	--font-accent--family: #{meta.inspect($fontSimplonMono)};
+	--font-accent--weight: 400;
+	--font-accent--style: normal;
+}
+
+// snippets/header-actions.liquid writes the picker's font inline on <shopify-account>
+// (account label in text mode). !important on the stylesheet beats the inline value.
+shopify-account {
+	--header-actions-font-family: var(--font-body--family) !important;
+	--header-actions-font-weight: var(--font-body--weight) !important;
+}
