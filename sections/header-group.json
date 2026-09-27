@@ -17,63 +17,49 @@
         "item_sugar": {
           "type": "item",
           "settings": {
-            "text": "No sugar"
+            "text": "Senza zuccheri"
           },
           "blocks": {}
         },
         "item_sweeteners": {
           "type": "item",
           "settings": {
-            "text": "No sweeteners"
+            "text": "Senza dolcificanti"
           },
           "blocks": {}
         },
         "item_preservatives": {
           "type": "item",
           "settings": {
-            "text": "No preservatives"
+            "text": "Senza conservanti"
           },
           "blocks": {}
         },
         "item_gluten": {
           "type": "item",
           "settings": {
-            "text": "No gluten"
+            "text": "Senza glutine"
           },
           "blocks": {}
         },
         "item_allergens": {
           "type": "item",
           "settings": {
-            "text": "No allergens"
+            "text": "Senza allergeni"
           },
           "blocks": {}
         },
         "item_additives": {
           "type": "item",
           "settings": {
-            "text": "No additives"
+            "text": "Senza additivi"
           },
           "blocks": {}
         },
         "item_flavours": {
           "type": "item",
           "settings": {
-            "text": "No artificial flavours"
-          },
-          "blocks": {}
-        },
-        "item_carbs": {
-          "type": "item",
-          "settings": {
-            "text": "No carbs"
-          },
-          "blocks": {}
-        },
-        "item_cal": {
-          "type": "item",
-          "settings": {
-            "text": "No cal"
+            "text": "Senza aromi artificiali"
           },
           "blocks": {}
         }
@@ -85,9 +71,7 @@
         "item_gluten",
         "item_allergens",
         "item_additives",
-        "item_flavours",
-        "item_carbs",
-        "item_cal"
+        "item_flavours"
       ],
       "name": "t:names.marquee",
       "settings": {
