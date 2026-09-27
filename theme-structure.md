@@ -107,7 +107,35 @@ Horizon 4.2 uses a **color palette** (`settings.color_palette`) plus per-section
 
 ### Per-section color scope
 
-When a section or block has a custom background color, `snippets/contrast-override.liquid` prints a scoped rule, `.color-custom-{section_id} { --color-background: …; --color-foreground: …; }`, and works out a readable text color automatically. So **always use `var(--color-foreground)` / `var(--color-background)` rather than hard-coded colors**, and your component recolors correctly inside any section.
+When a section or block has a custom background color, `snippets/contrast-override.liquid` prints a scoped rule, `.color-custom-{section_id} { --color-background: …; --color-foreground: …; }`, and works out a readable text color automatically. The same rule sets `--selection-background` from that text color. So **always use `var(--color-foreground)` / `var(--color-background)` rather than hard-coded colors**, and your component recolors correctly inside any section.
+
+### Text selection
+
+`::selection` cannot read an element's text color, so the highlight is a custom property set beside the text color. Do not hard-code `::selection { background: #000 }` again: black text on a black highlight disappears.
+
+`src/scss/base/_base.scss` keeps `::selection` and `::-moz-selection` as separate rules (grouping them drops the rule in browsers that don't know one of the pseudos). Both are:
+
+```scss
+background: var(--selection-background, #{$color3});
+```
+
+`$color3` is palette **color1** (pink), printed as `--bounce-color-3` by `snippets/bounce-colors.liquid`. The selected text color is left alone; only the highlight background changes.
+
+`snippets/util-selection-background.liquid` picks that background from a text color. Shopify `color_brightness` of **200 or higher** (white is 255) returns `#000000`. Anything else returns `settings.color_palette.color1`.
+
+| Surface | Where `--selection-background` is set | Text color it follows |
+|---|---|---|
+| Page | `snippets/color-palette.liquid` on `:root` | `settings.page_text_color` (black today, so the highlight is pink) |
+| Primary buttons | same file: `.button`, `.button-custom`, unbranded payment button, including `:hover` | primary button text / hover text |
+| Secondary buttons | same file: `.button-secondary`, including `:hover` | secondary button text / hover text |
+| Inputs | same file: `input`, `textarea`, `select` | input text |
+| Selected variant | same file: `.variant-option__button-label:has(:checked)`, including `:hover` | selected variant text / hover text |
+| Custom section or block color | `snippets/contrast-override.liquid` on `.color-custom-{id}`, next to `--color-foreground` | the effective text color. An explicit text color uses its brightness. The dark-background fallback (`var(--palette-lightest)`) is treated as white, so that highlight stays black |
+| Hardcoded white text | `.bounce-marquee` in `src/scss/sections/_marquee.scss`; on-media controls in `snippets/slideshow-controls.liquid` | forced `#000`, because these colors don't go through the tokens above |
+
+A button, input or selected variant sets its own variable, so it wins over a section's. Button text is independent of the section foreground.
+
+When you add white text that doesn't go through those tokens, set `--selection-background: #000` on that element. Otherwise the pink fallback sits on white type.
 
 > **Sass + CSS variables gotcha.** Sass color functions (`darken()`, `rgba($var, .5)`, `color.adjust`) can't read `var()` at build time. Use the `-rgb` twins or `color-mix()` instead:
 > `rgb(var(--color-foreground-rgb) / 0.5)` or `color-mix(in srgb, var(--color-foreground) 50%, transparent)`.
@@ -208,7 +236,6 @@ Example: a merchant-editable accent color.
 ```scss
 // src/scss/base/_variable.scss
 $colorAccent: var(--bounce-accent);
-// ::selection { background: $colorAccent; }
 ```
 
 Use `{% style %}` (Liquid allowed, live-updates in the editor), not `{% stylesheet %}` (no Liquid).
@@ -507,3 +534,6 @@ Every Horizon file we've changed, and why:
 | `layout/theme.liquid` | Added `bounce.css` / `bounce.js` after `{{ content_for_header }}` | Load our build last so it wins the cascade |
 | `layout/password.liquid` | Same as above | Same, for the password page |
 | `layout/theme.liquid`, `layout/password.liquid` | Added `{%- render 'bounce-fonts' -%}` after `{%- render 'fonts' -%}` | Load Simplon Mono early in `<head>` (see [Custom font](#custom-font-simplon-mono)) |
+| `snippets/color-palette.liquid` | Prints `--selection-background` on `:root`, buttons (including hover), inputs and selected variant labels | Black highlight on white text, pink (`color_palette.color1`) otherwise (see [Text selection](#text-selection)) |
+| `snippets/contrast-override.liquid` | Prints `--selection-background` next to `--color-foreground` on `.color-custom-{id}` | Same rule inside a section or block with its own text color |
+| `snippets/slideshow-controls.liquid` | `--selection-background: #000` beside the existing `--color-foreground: #fff` on controls drawn on media | Those controls are hardcoded white and don't go through the tokens above |
