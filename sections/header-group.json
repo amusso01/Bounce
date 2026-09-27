@@ -11,6 +11,89 @@
   "type": "header",
   "name": "t:names.header",
   "sections": {
+    "bounce_marquee_header": {
+      "type": "bounce-marquee",
+      "blocks": {
+        "item_sugar": {
+          "type": "item",
+          "settings": {
+            "text": "No sugar"
+          },
+          "blocks": {}
+        },
+        "item_sweeteners": {
+          "type": "item",
+          "settings": {
+            "text": "No sweeteners"
+          },
+          "blocks": {}
+        },
+        "item_preservatives": {
+          "type": "item",
+          "settings": {
+            "text": "No preservatives"
+          },
+          "blocks": {}
+        },
+        "item_gluten": {
+          "type": "item",
+          "settings": {
+            "text": "No gluten"
+          },
+          "blocks": {}
+        },
+        "item_allergens": {
+          "type": "item",
+          "settings": {
+            "text": "No allergens"
+          },
+          "blocks": {}
+        },
+        "item_additives": {
+          "type": "item",
+          "settings": {
+            "text": "No additives"
+          },
+          "blocks": {}
+        },
+        "item_flavours": {
+          "type": "item",
+          "settings": {
+            "text": "No artificial flavours"
+          },
+          "blocks": {}
+        },
+        "item_carbs": {
+          "type": "item",
+          "settings": {
+            "text": "No carbs"
+          },
+          "blocks": {}
+        },
+        "item_cal": {
+          "type": "item",
+          "settings": {
+            "text": "No cal"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "item_sugar",
+        "item_sweeteners",
+        "item_preservatives",
+        "item_gluten",
+        "item_allergens",
+        "item_additives",
+        "item_flavours",
+        "item_carbs",
+        "item_cal"
+      ],
+      "name": "t:names.marquee",
+      "settings": {
+        "speed": 120
+      }
+    },
     "header_announcements_9jGBFp": {
       "type": "header-announcements",
       "blocks": {
@@ -102,6 +185,7 @@
     }
   },
   "order": [
+    "bounce_marquee_header",
     "header_announcements_9jGBFp",
     "header_section"
   ]

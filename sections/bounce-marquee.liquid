@@ -1,0 +1,101 @@
+{%- liquid
+  assign repeat_in_group = 4
+-%}
+
+{%- capture marquee_group -%}
+  {%- for repeat in (1..repeat_in_group) -%}
+    {%- for block in section.blocks -%}
+      {%- if block.settings.text != blank -%}
+        <span
+          class="bounce-marquee__item"
+          {%- if repeat == 1 -%}
+            {{ block.shopify_attributes }}
+          {%- endif -%}
+        >
+          {{- block.settings.text | strip | escape -}}
+          <span class="bounce-marquee__separator" aria-hidden="true"> | </span>
+        </span>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<div
+  class="bounce-marquee"
+  style="--bounce-marquee-duration: {{ section.settings.speed }}s"
+>
+  <div class="bounce-marquee__viewport">
+    <div class="bounce-marquee__track">
+      <div class="bounce-marquee__group">
+        {{- marquee_group -}}
+      </div>
+      <div class="bounce-marquee__group" aria-hidden="true">
+        {{- marquee_group -}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.marquee",
+  "class": "bounce-marquee-section",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:names.text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:settings.text",
+          "default": "No sugar"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll duration",
+      "info": "Higher values scroll more slowly.",
+      "min": 30,
+      "max": 300,
+      "step": 10,
+      "default": 120,
+      "unit": "sec"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.marquee",
+      "blocks": {
+        "item_1": { "type": "item", "settings": { "text": "No sugar" } },
+        "item_2": { "type": "item", "settings": { "text": "No sweeteners" } },
+        "item_3": { "type": "item", "settings": { "text": "No preservatives" } },
+        "item_4": { "type": "item", "settings": { "text": "No gluten" } },
+        "item_5": { "type": "item", "settings": { "text": "No allergens" } },
+        "item_6": { "type": "item", "settings": { "text": "No additives" } },
+        "item_7": { "type": "item", "settings": { "text": "No artificial flavours" } },
+        "item_8": { "type": "item", "settings": { "text": "No carbs" } },
+        "item_9": { "type": "item", "settings": { "text": "No cal" } }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4",
+        "item_5",
+        "item_6",
+        "item_7",
+        "item_8",
+        "item_9"
+      ]
+    }
+  ]
+}
+{% endschema %}
