@@ -83,7 +83,7 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 | Font families | `--font-body--family`, `--font-heading--family`, `--font-subheading--family`, `--font-accent--family` (+ `--style`, `--weight`) | **Overridden by us**: all four are Simplon Mono with fixed weights (see [Custom font](#custom-font-simplon-mono)) |
 | Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px) |
 | Fixed type scale | `--font-size--3xs` … `--font-size--6xl` | No |
-| Page widths | `--narrow-page-width` (90rem), `--normal-page-width` (120rem), `--wide-page-width` (150rem) | Chosen by `page_width` → `body.page-width-*` |
+| Page widths | `--narrow-page-width`, `--normal-page-width`, `--wide-page-width` (Horizon: 1440 / 1920 / 2400px) | **Overridden by us** to 1024 / 1120 / 1440px (see [Content widths](#content-widths)). `page_width` setting picks one → `body.page-width-*` |
 | Spacing | `--padding-3xs…6xl`, `--margin-3xs…6xl`, `--gap-3xs…3xl` | No |
 | Radii / borders | `--style-border-radius-buttons-primary`, `--style-border-radius-inputs`, `--style-border-width-primary`, … | Yes: Buttons / Inputs |
 | Buttons | `--button-padding-block`, `--button-padding-inline`, `--button-font-family-primary`, `--button-text-case-primary` | Partly |
@@ -244,6 +244,36 @@ Use `{% style %}` (Liquid allowed, live-updates in the editor), not `{% styleshe
 	--font-paragraph--size: 0.875rem;
 }
 ```
+
+### Content widths
+
+The XD design caps content at **1120px**, with a narrow and a wide variant. These are content widths; the gutters sit outside them, as in Horizon.
+
+| Measure | SCSS variable (`_variable.scss`) | Horizon token it sets | Class |
+|---|---|---|---|
+| Normal, 1120px | `$contentMax` | `--normal-page-width` | `.content-max` |
+| Narrow, 1024px | `$contentMaxNarrow` | `--narrow-page-width` | `.content-max--narrow` |
+| Wide, 1440px | `$contentMaxWide` | `--wide-page-width` | `.content-max--wide` |
+
+Gutters: `.content-block` adds Horizon's `--page-margin` on the sides only (16px, 40px from 750px up, wider on notched phones). It has no top or bottom padding.
+
+**How it plugs into Horizon.** `src/scss/base/_layout.scss` overrides the three `--*-page-width` tokens. Theme settings → Page width (keep it on **Normal**) and every Horizon section, including the header and footer, therefore use our measures. Sections are a 3-column grid (`margin | content | margin`, `base.css:303-340`), so backgrounds stay full-bleed while content stops at 1120px.
+
+**Which one to use:**
+
+- **Our own markup outside Horizon's section grid**, or inside a full-width section:
+  ```html
+  <div class="content-block">
+    <div class="content-max">…</div>   <!-- or content-max--narrow / content-max--wide -->
+  </div>
+  ```
+- **A whole section narrow or wide.** Inside a normal Horizon section the content column is already capped at 1120px, so `.content-max--wide` can't grow past it. Put Horizon's own class on the section wrapper instead, e.g. in a `bounce-*` section schema: `"class": "page-width-wide"`. It re-points `--page-width` for everything inside and keeps the full-bleed background. `page-width-narrow` works the same way.
+
+**Known trade-off.** A few Horizon files are hard-coded for its stock widths:
+- `sections/main-blog.liquid` pins the blog grid to the narrow token, so it's now 1024px.
+- Image `sizes` in `snippets/util-product-media-sizes-attr.liquid`, `snippets/util-mega-menu-img-sizes-attr.liquid`, `snippets/background-media.liquid` and `sections/main-blog.liquid` still assume 1440/1920/2400px. They overestimate, so on wide screens browsers may download larger images than needed.
+
+Nothing breaks. Aligning them would be a core edit, so it's left for later.
 
 ### Custom font (Simplon Mono)
 

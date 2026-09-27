@@ -12,8 +12,8 @@ $fontSimplonMono: 'Simplon Mono', ui-monospace, Menlo, Consolas, monospace;
 $colorBackground: var(--color-background);
 $colorForeground: var(--color-foreground);
 
-// Layout
-$maxWidth: 1800px;
-$maxWidthNarrow: 1024px;
-$gutter: 60px;
-$gutterMobile: 20px;
+// Layout: content widths (gutters sit outside, see Horizon's --page-margin).
+// Applied to Horizon's page width tokens in _layout.scss.
+$contentMax: 1120px;
+$contentMaxNarrow: 1024px;
+$contentMaxWide: 1440px;

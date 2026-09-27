@@ -1,0 +1,33 @@
+@use './variable' as *;
+
+// Point Horizon's page width tokens at our measures. Theme settings → Page width
+// (narrow / normal / wide) and every Horizon section now use these.
+// Horizon prints the originals on :root in snippets/theme-styles-variables.liquid;
+// bounce.css loads after it, so these win.
+:root {
+	--narrow-page-width: #{$contentMaxNarrow};
+	--normal-page-width: #{$contentMax};
+	--wide-page-width: #{$contentMaxWide};
+}
+
+// Centred container for our own markup.
+// Inside a Horizon page-width section the content column is already capped, so for a
+// whole narrow/wide section use Horizon's .page-width-narrow / .page-width-wide instead.
+.content-max {
+	width: 100%;
+	max-width: var(--normal-page-width);
+	margin-inline: auto;
+}
+
+.content-max--narrow {
+	max-width: var(--narrow-page-width);
+}
+
+.content-max--wide {
+	max-width: var(--wide-page-width);
+}
+
+// Side gutters only: Horizon's --page-margin (16px, 40px from 750px, clears the notch).
+.content-block {
+	padding-inline: var(--page-margin);
+}
