@@ -1,0 +1,14 @@
+{% doc %}
+  Prints the theme's Color palette (Theme settings → Colors) as --bounce-color-1..4 on :root.
+  They are consumed by $color1..$color4 in src/scss/base/_variable.scss (compiled into bounce.css).
+  Order follows the palette: background, foreground, color1, color2.
+{% enddoc %}
+
+{% style %}
+  :root {
+    --bounce-color-1: {{ settings.color_palette.background }};
+    --bounce-color-2: {{ settings.color_palette.foreground }};
+    --bounce-color-3: {{ settings.color_palette.color1 }};
+    --bounce-color-4: {{ settings.color_palette.color2 }};
+  }
+{% endstyle %}

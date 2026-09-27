@@ -9,8 +9,11 @@ $fontAccent: var(--font-accent--family);
 // Simplon Mono: faces declared in snippets/bounce-fonts.liquid, applied to every role in _fonts.scss
 $fontSimplonMono: 'Simplon Mono', ui-monospace, Menlo, Consolas, monospace;
 
-$colorBackground: var(--color-background);
-$colorForeground: var(--color-foreground);
+// Colour palette (Theme settings → Colors), printed on :root by snippets/bounce-colors.liquid.
+$color1: var(--bounce-color-1); // background #fff
+$color2: var(--bounce-color-2); // foreground #000
+$color3: var(--bounce-color-3); // color1 (pink)
+$color4: var(--bounce-color-4); // color2 (light grey)
 
 // Layout: content widths (gutters sit outside, see Horizon's --page-margin).
 // Applied to Horizon's page width tokens in _layout.scss.
