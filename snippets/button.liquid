@@ -23,6 +23,8 @@
     {{ block_settings.style_class }}
     {{ block_settings.style_class }}--{{ block.id }}
   "
+  {% comment %} Not on a button without a link: base.css dims it with opacity, and the fade leaves opacity: 1 {% endcomment %}
+  {% if link != blank %}{% render 'bounce-fade-attributes', settings: block_settings %}{% endif %}
   style="{% render 'size-style', settings: block_settings %}"
   {%- if block_settings.open_in_new_tab -%}
     target="_blank"

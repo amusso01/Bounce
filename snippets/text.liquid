@@ -77,7 +77,7 @@
       --text-padding: max(var(--padding-2xs), calc((var(--text-corner-radius) + var(--padding-xs)) * (1 - cos(45deg))));
     {% endif %}
   "
-
+  {% render 'bounce-fade-attributes', settings: block_settings %}
   {{ block.shopify_attributes }}
 {% endcapture %}
 

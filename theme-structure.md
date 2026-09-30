@@ -384,6 +384,7 @@ The *Utilities* section (copyright, policies, social links) is still in the foot
 
 | Section setting | Default |
 |---|---|
+| *Animation*: *Fade up on scroll* + *Fade up duration* (0–1s). Fades the whole carousel (`.bounce-carousel__viewport`) in as one; never the `.swiper-wrapper` (see [Fade up / fade down](#fade-up--fade-down)) | Off, 0s |
 | *Width*: page (1120px) or narrow (1024px), through `.content-block` + `.content-max` / `.content-max--narrow` | Page |
 | *Horizontal gap* (5–50px) → Swiper `spaceBetween` | 30px |
 | *Auto-rotate slides* + *Speed* (3–10s) | Off, 5s |
@@ -405,6 +406,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 
 | Section setting | Default |
 |---|---|
+| *Animation*: *Fade up on scroll* + *Fade up duration* (0–1s). Each Question (`.ac`) fades in on its own as it reaches the viewport (see [Fade up / fade down](#fade-up--fade-down)) | Off, 0s |
 | *Width*: narrow (1024px), page (1120px) or full (whole screen, page gutters kept) | Page |
 | *Subtext* (rich text) | Hidden when empty |
 | *Label* + *Link* | The button shows only when both are set |
@@ -458,11 +460,57 @@ Consecutive items with `-duration` `.2`, `.4`, `.6`… start together and land o
 - **Hiding before JS.** `_motion.scss` sets `opacity: 0` on these elements and on group children, but only under `html.bounce-fade`. `snippets/bounce-motion-gate.liquid` adds that class from an inline script in `<head>` (both layouts), so nothing flashes. `fade.js` adds `bounce-fade-ready` once it is set up. If that hasn't happened by the window `load` event (bundle failed or blocked), the class comes off and the content shows without the fade. With `prefers-reduced-motion` the class is never set.
 - **Theme Editor.** Fades are mounted with `arrive`, so a section the editor re-renders fades in again rather than staying hidden. `shopify:section:unload` kills its tweens.
 - **Why not ScrollTrigger.** ScrollTrigger works from positions it stores, which can go stale, and an element left at its start state is invisible. `IntersectionObserver` checks each element's real box on every scroll and reflow, in either scroll container.
-- **Not inside Horizon's patched areas.** Don't fade elements inside the cart, collection grid and filters, product info or anything else Horizon morphs (see [Things that differ from Dawn](#things-that-differ-from-dawn) #1). Morph resets the inline `opacity: 1` the tween leaves, `arrive` doesn't fire for patched elements, and the element would stay hidden. Fade the container around such an area, in our own `bounce-*` sections.
 - **Header.** Each `.header__row` in `sections/header.liquid` has `data-fade-down`, as FDRY puts it on `.site-header__inner`. The row is in view on load, so the observer's first callback plays it straight away. Nothing waits for scrolling or the `load` event. After a reload lower down, the row counts as above the viewport and plays too. The header background is a separate underlay, so the bar shows at once and its content drops in.
   - Don't move the attribute to `#header-component`: the sticky header fades it with `opacity` (`.header[data-sticky-state='idle']`), which the tween's inline `opacity: 1` would override.
   - Don't move it to `.header-section` either: it is the sticky element.
-- **Transforms.** GSAP animates the inline `transform` and clears it when the tween ends, leaving `opacity: 1`. Never fade a `.swiper-wrapper`: Swiper moves it with an inline `transform`, which the tween clears. Fade the `.swiper` container or the section heading instead. Don't fade an element whose own `opacity` a state class changes either: the inline `opacity: 1` beats the class.
+
+**From the Theme Editor.** An **Animation** group sits at the top of the settings of:
+
+- Horizon's **Text** block (which includes the Heading preset) and **Button** block;
+- our **Bounce carousel** section, which fades the whole carousel;
+- our **Bounce accordion** section, which fades each question on its own.
+
+All four use the same two settings:
+
+| Setting | Attribute it prints | Default |
+|---|---|---|
+| *Fade up on scroll* (`fade_up`) | `data-fade-up` | Off |
+| *Fade up duration* (`fade_up_duration`), 0–1s in 0.1s steps, shown only when the fade is on | `data-fade-up-duration`, added to the 2s base, so 0.3 is 2.3s. Not printed at 0 | 0s |
+
+- **The snippet.** `snippets/bounce-fade-attributes.liquid` turns those settings into attributes. `snippets/text.liquid` and `snippets/button.liquid` render it on the text element and the button's `<a>`. The two sections pass it `section.settings` instead of `block.settings`. Other blocks share those two snippets but have no Animation settings, so they print nothing.
+- **Adding it to another block or section.** Copy the Animation header and its two settings, and render the snippet on the element to fade, passing `block.settings` or `section.settings` (and `section.settings` in `visible_if`). Render it between two attributes with quoted values (see the whitespace note below).
+- **The headers.** Our group sits first, so the original fields get a header of their own: *Text* / *Button* in the blocks, *Carousel* / *Accordion* in the sections. Otherwise they would appear under *Animation*. All the headers reuse Horizon's translation keys, so they show in Italian in an Italian admin. The setting labels themselves are plain English.
+- **A button without a link** never fades. Horizon renders it with `aria-disabled` and dims it with `opacity: 0.5`, which the fade's inline `opacity: 1` would override.
+- **Where not to turn it on.** In the two blocks, the checkbox's help text warns against product info, the cart and collection filters, for the reason in the table below.
+
+**Where to put the attributes.** The attributes work in any section the server renders once. That covers our `bounce-*` sections and Horizon's static sections alike. The only places they break are the areas Horizon patches after the page has loaded.
+
+| Where | Use fades? | Why |
+|---|---|---|
+| Our `bounce-*` sections, blocks and snippets | Yes | Our files, so no core edit |
+| Horizon's static sections: Hero, Custom section, Rich text, Media with content, Marquee… | Yes, as a core edit | They render once, and the Theme Editor re-renders them as new elements, which `fade.js` fades again. But the files are Horizon's: log every edit in the [Core edits log](#core-edits-log) and re-apply it when Horizon updates |
+| Areas Horizon patches after load: the cart, collection grid and filters, product info on variant change, search results, quick add, recommendations, product cards | No | Horizon copies fresh server HTML onto the existing elements (see [Things that differ from Dawn](#things-that-differ-from-dawn) #1). That removes the inline `opacity: 1` the tween left, `arrive` doesn't fire for a patched element, and the element goes back to hidden for good. Fade something outside the patched area instead, e.g. the heading above a collection grid |
+
+In a Horizon section, put `data-fade-up` on the wrapper around the blocks. Hero's is `.hero__content-wrapper` in `sections/hero.liquid`, and its text, buttons and other blocks then fade in as one:
+
+```liquid
+<div
+  class="hero__content-wrapper …"
+  data-fade-up
+  style="…"
+>
+  {% content_for 'blocks' %}
+</div>
+```
+
+`data-fade-up-group` doesn't work there. It only fades direct `p`, `h1`–`h6`, `ul`, `ol`, `img`, `figure`, `blockquote` and `hr` children, and Horizon's blocks render as `<div>` or `<rte-formatter>`. `snippets/section.liquid` is the wrapper shared by most Horizon sections, so an attribute there fades every one of them. Watch the whitespace too. `{%- if … -%}` strips the space before it, so a bare attribute written right before one gets glued to the next attribute (`data-fade-upstyle="…"`). Put it before an attribute that has a quoted value, as `sections/header.liquid` does.
+
+**What not to fade, anywhere.**
+
+- **The hero image, or whatever is the largest thing above the fold.** It counts for Largest Contentful Paint, and holding it at `opacity: 0` until the tween delays that score. Fade the hero's text, not its media. FDRY keeps its hero image unfaded for the same reason.
+- **Elements Horizon already animates.** Don't fade the Jumbo text block when its Blur or Reveal effect is on, or individual slideshow slides, which have their own scroll-driven animation (`blocks/_slide.liquid`). Fade the section around them.
+- **A `.swiper-wrapper`.** GSAP animates the inline `transform` and clears it when the tween ends, but Swiper moves the wrapper with an inline `transform` too. Fade the `.swiper` container or the section heading instead. Any other element with its own CSS transform only conflicts while the tween runs.
+- **An element whose own `opacity` a state class changes**, such as `#header-component`. The tween leaves an inline `opacity: 1`, which beats the class.
 
 ### Style a single section type
 
@@ -669,4 +717,6 @@ Every Horizon file we've changed, and why:
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |
 | `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`) | Default button label per language |
+| `blocks/text.liquid`, `blocks/button.liquid` | Schema: an *Animation* group (`fade_up`, `fade_up_duration`) at the top of the settings, then a *Text* / *Button* header over the original fields | Fade-up option in the editor (see [Fade up / fade down](#fade-up--fade-down)) |
+| `snippets/text.liquid`, `snippets/button.liquid` | Render `bounce-fade-attributes` on the text element and on the button's `<a>` (the button only when it has a link) | Same |
 | `sections/section.liquid` | *Padding* top / bottom: max 100 → **200px**, step 1 → **2** | The design needs taller spacing in Custom section (and its Rich text preset, the same file). Shopify caps a range at 101 steps, so 0–200 needs a 2px step; every saved value was already even |

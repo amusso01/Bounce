@@ -8,6 +8,33 @@
   "tag": null,
   "settings": [
     {
+      "type": "header",
+      "content": "t:settings.animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "fade_up",
+      "label": "Fade up on scroll",
+      "info": "Leave off inside product info, the cart and collection filters: Horizon updates those in place, and the element would stay hidden.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "fade_up_duration",
+      "label": "Fade up duration",
+      "info": "Added to the 2s fade, so 0.3 makes it 2.3s.",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0,
+      "visible_if": "{{ block.settings.fade_up }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.text"
+    },
+    {
       "type": "richtext",
       "id": "text",
       "label": "t:settings.text"

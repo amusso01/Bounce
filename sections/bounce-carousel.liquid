@@ -22,6 +22,7 @@
     <div class="{{ container_class }}">
       <div
         class="bounce-carousel__viewport"
+        {% render 'bounce-fade-attributes', settings: section.settings %}
         data-bounce-carousel
         data-gap="{{ section.settings.gap }}"
         {% if section.settings.autoplay %}
@@ -146,6 +147,33 @@
     }
   ],
   "settings": [
+    {
+      "type": "header",
+      "content": "t:settings.animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "fade_up",
+      "label": "Fade up on scroll",
+      "info": "Fades the whole carousel in as it scrolls into view.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "fade_up_duration",
+      "label": "Fade up duration",
+      "info": "Added to the 2s fade, so 0.3 makes it 2.3s.",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0,
+      "visible_if": "{{ section.settings.fade_up }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.carousel"
+    },
     {
       "type": "select",
       "id": "width",
