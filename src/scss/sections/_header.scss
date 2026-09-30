@@ -16,9 +16,19 @@
 		--bounce-header-gap: 4.5rem;
 	}
 
-	// Horizon's menu token works out to ~1.67 (snippets/theme-styles-variables.liquid)
+	// Horizon's menu token works out to ~1.67 (snippets/theme-styles-variables.liquid).
+	// Color: always full strength (#000 from the palette). Horizon dims the other links to
+	// 80% while one is hovered or when one is the current page (blocks/_header-menu.liquid).
 	.menu-list__link {
 		line-height: var(--bounce-header-line-height);
+		color: var(--menu-top-level-font-color);
+	}
+
+	// Hover: underline instead of dimming. Same thickness and offset as Horizon's text links.
+	.menu-list__link:is(:hover, :focus-visible) .menu-list__link-title {
+		text-decoration: underline;
+		text-decoration-thickness: 0.075em;
+		text-underline-offset: 0.125em;
 	}
 
 	.header__column--right {
