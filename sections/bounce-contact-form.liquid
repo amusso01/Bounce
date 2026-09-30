@@ -1,0 +1,295 @@
+{%- comment -%}
+  Bounce contact form: a title and subtext, then Shopify's contact form in a 545px column.
+  No blocks: the fields, labels and placeholders are fixed by the design, and their text comes
+  from the storefront translations (bounce.contact_form.* in locales/*.json).
+  Styles in src/scss/sections/_contact-form.scss.
+{%- endcomment -%}
+
+{%- liquid
+  assign form_id = section.id | prepend: 'ContactForm-'
+-%}
+
+<div
+  class="bounce-contact-form spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="content-block">
+    <div class="bounce-contact-form__container">
+      {%- if section.settings.title != blank or section.settings.subtext != blank -%}
+        <div class="bounce-contact-form__intro">
+          {%- if section.settings.title != blank -%}
+            <p
+              class="bounce-contact-form__title"
+              {% render 'bounce-fade-attributes', settings: section.settings %}
+            >
+              {{- section.settings.title | escape -}}
+            </p>
+          {%- endif -%}
+          {%- if section.settings.subtext != blank -%}
+            <p
+              class="bounce-contact-form__subtext"
+              {% render 'bounce-fade-attributes', settings: section.settings %}
+            >
+              {{- section.settings.subtext -}}
+            </p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- form 'contact', id: form_id, class: 'bounce-contact-form__form' -%}
+        <input
+          type="hidden"
+          name="contact[id]"
+          value="{{ form_id }}"
+        >
+
+        {%- liquid
+          # Another contact form on the page posts to the same endpoint: only react to our own
+          assign form_matches = false
+          if form.id == form_id or form.id == blank
+            assign form_matches = true
+          endif
+        -%}
+
+        {%- if form.errors and form_matches -%}
+          <div
+            class="bounce-contact-form__message"
+            tabindex="-1"
+            autofocus
+          >
+            {{- 'icon-error.svg' | inline_asset_content -}}
+            <span>
+              {{- form.errors.translated_fields.email | capitalize }}
+              {{ form.errors.messages.email -}}
+            </span>
+          </div>
+        {%- endif -%}
+
+        {%- if form.posted_successfully? and form_matches -%}
+          <div
+            class="bounce-contact-form__message"
+            tabindex="-1"
+            autofocus
+          >
+            {{- 'icon-checkmark.svg' | inline_asset_content -}}
+            <span>{{ 'blocks.contact_form.post_success' | t }}</span>
+          </div>
+        {%- endif -%}
+
+        <div class="bounce-contact-form__fields">
+          <div
+            class="bounce-contact-form__field"
+            {% render 'bounce-fade-attributes', settings: section.settings %}
+          >
+            <label
+              class="bounce-contact-form__label"
+              for="{{ form_id }}-name"
+            >
+              {{- 'bounce.contact_form.name' | t -}}
+              <span aria-hidden="true">*</span>
+            </label>
+            <input
+              type="text"
+              id="{{ form_id }}-name"
+              class="bounce-contact-form__input"
+              name="contact[name]"
+              autocomplete="name"
+              required
+              value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+              placeholder="{{ 'bounce.contact_form.name_placeholder' | t }}"
+            >
+          </div>
+
+          <div
+            class="bounce-contact-form__field"
+            {% render 'bounce-fade-attributes', settings: section.settings %}
+          >
+            <label
+              class="bounce-contact-form__label"
+              for="{{ form_id }}-email"
+            >
+              {{- 'bounce.contact_form.email' | t -}}
+              <span aria-hidden="true">*</span>
+            </label>
+            <input
+              type="email"
+              id="{{ form_id }}-email"
+              class="bounce-contact-form__input"
+              name="contact[email]"
+              autocomplete="email"
+              spellcheck="false"
+              autocapitalize="off"
+              required
+              value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+              placeholder="{{ 'bounce.contact_form.email_placeholder' | t }}"
+              {% if form.errors contains 'email' and form_matches %}
+                aria-invalid="true"
+              {% endif %}
+            >
+          </div>
+
+          <div
+            class="bounce-contact-form__field"
+            {% render 'bounce-fade-attributes', settings: section.settings %}
+          >
+            <label
+              class="bounce-contact-form__label"
+              for="{{ form_id }}-phone"
+            >
+              {{- 'bounce.contact_form.phone' | t -}}
+            </label>
+            <input
+              type="tel"
+              id="{{ form_id }}-phone"
+              class="bounce-contact-form__input"
+              name="contact[phone]"
+              autocomplete="tel"
+              value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+              placeholder="{{ 'bounce.contact_form.phone_placeholder' | t }}"
+            >
+          </div>
+
+          <div
+            class="bounce-contact-form__field"
+            {% render 'bounce-fade-attributes', settings: section.settings %}
+          >
+            <label
+              class="bounce-contact-form__label"
+              for="{{ form_id }}-country"
+            >
+              {{- 'bounce.contact_form.country' | t -}}
+            </label>
+            <input
+              type="text"
+              id="{{ form_id }}-country"
+              class="bounce-contact-form__input"
+              name="contact[country]"
+              autocomplete="country-name"
+              placeholder="{{ 'bounce.contact_form.country_placeholder' | t }}"
+            >
+          </div>
+
+          <div
+            class="bounce-contact-form__field bounce-contact-form__field--full"
+            {% render 'bounce-fade-attributes', settings: section.settings %}
+          >
+            <label
+              class="bounce-contact-form__label"
+              for="{{ form_id }}-body"
+            >
+              {{- 'bounce.contact_form.message' | t -}}
+              <span aria-hidden="true">*</span>
+            </label>
+            <textarea
+              id="{{ form_id }}-body"
+              class="bounce-contact-form__input bounce-contact-form__input--textarea"
+              name="contact[body]"
+              rows="6"
+              required
+              placeholder="{{ 'bounce.contact_form.message_placeholder' | t }}"
+            >
+              {{- form.body -}}
+            </textarea>
+          </div>
+        </div>
+
+        <div
+          class="bounce-contact-form__actions"
+          {% render 'bounce-fade-attributes', settings: section.settings %}
+        >
+          <button
+            type="submit"
+            class="button bounce-contact-form__submit"
+          >
+            {{- 'bounce.contact_form.submit' | t -}}
+          </button>
+          <p class="bounce-contact-form__note">* {{ 'bounce.contact_form.required' | t }}</p>
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bounce contact form",
+  "class": "bounce-contact-form-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:settings.animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "fade_up",
+      "label": "Fade up on scroll",
+      "info": "The title, the subtext, each field, then the button fade in on their own as they scroll into view.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "fade_up_delay",
+      "label": "Fade up delay",
+      "info": "Seconds to wait before fading in. Give later items a higher delay (e.g. heading 0, button 0.2) so they arrive one after another.",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0,
+      "visible_if": "{{ section.settings.fade_up }}"
+    },
+    {
+      "type": "header",
+      "content": "t:names.contact_form"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:settings.heading",
+      "default": "Scrivici."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "Domande? Questo è il posto giusto."
+    },
+    {
+      "type": "paragraph",
+      "content": "Field labels, placeholders and the button come from the storefront translations: Online Store → Themes → Edit default theme content → Bounce."
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 170
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 170
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bounce contact form"
+    }
+  ]
+}
+{% endschema %}

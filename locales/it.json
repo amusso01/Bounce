@@ -361,6 +361,20 @@
     }
   },
   "bounce": {
-    "buy_button": "Acquista"
+    "buy_button": "Acquista",
+    "contact_form": {
+      "name": "Nome",
+      "name_placeholder": "Tuo nome",
+      "email": "E-Mail",
+      "email_placeholder": "name@email.com",
+      "phone": "Numero di telefono",
+      "phone_placeholder": "3290136427",
+      "country": "Nazione",
+      "country_placeholder": "Italia",
+      "message": "Messaggio",
+      "message_placeholder": "Scrivi qui il tuo messaggio.",
+      "submit": "Invia",
+      "required": "Campo obbligatorio"
+    }
   }
 }

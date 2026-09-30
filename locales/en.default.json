@@ -373,6 +373,20 @@
     }
   },
   "bounce": {
-    "buy_button": "Buy now"
+    "buy_button": "Buy now",
+    "contact_form": {
+      "name": "Name",
+      "name_placeholder": "Your name",
+      "email": "E-Mail",
+      "email_placeholder": "name@email.com",
+      "phone": "Phone number",
+      "phone_placeholder": "3290136427",
+      "country": "Country",
+      "country_placeholder": "Italy",
+      "message": "Message",
+      "message_placeholder": "Write your message here.",
+      "submit": "Send",
+      "required": "Required field"
+    }
   }
 }

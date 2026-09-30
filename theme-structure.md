@@ -418,6 +418,24 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 - **AccordionJS CSS:** not imported. It's mostly demo styling (Arial, borders, a "+" icon), so the few rules its JS needs (panel `overflow`, `height`, `visibility`) live in `_accordion.scss`. Panels start collapsed in CSS, so answers don't flash open before the deferred script runs.
 - **Theme Editor:** re-rendered sections re-mount through `arrive`; `shopify:section:unload` destroys the instance; selecting a Question block opens it.
 
+### Contact form
+
+`sections/bounce-contact-form.liquid`: a centred title and subtext, then Shopify's contact form, all in a 545px column. It replaces Horizon's *Main page* and *Contact form* sections in `templates/page.contact.json`; Horizon's files are untouched, just unused there. Like the footer it has **no blocks**, so the form can't drift from the design. No JS; styles in `src/scss/sections/_contact-form.scss`, with the design values as variables at the top.
+
+| Section setting | Default |
+|---|---|
+| *Animation*: *Fade up on scroll* + *Fade up delay* (0–1s). The title, the subtext, each field, then the button and note fade in on their own as they reach the viewport (see [Fade up / fade down](#fade-up--fade-down)). The sent / error message never fades | **On**, 0s |
+| *Heading* (text), printed as a `<p>` in the H1 preset | `Scrivici.` |
+| *Subtext* (inline rich text) | `Domande? Questo è il posto giusto.` |
+| *Padding* top / bottom, 0–200px in 2px steps | 170px / 170px |
+
+- **Fields:** Nome\*, E-Mail\*, Numero di telefono, Nazione, Messaggio\*. Two columns from 750px (the message spans both), one below. Required fields carry `required`; the asterisk is `aria-hidden`. They post as `contact[name]`, `[email]`, `[phone]`, `[country]` and `[body]`, which is how they are labelled in the notification email.
+- **Text:** labels, placeholders, the button and the `* Campo obbligatorio` note come from the storefront translations `bounce.contact_form.*` (`locales/it.json`, `locales/en.default.json`), so the EN version needs no editor work. Change them in Online Store → Themes → Edit default theme content. The sent message reuses Horizon's `blocks.contact_form.post_success`.
+- **Type:** title uses the H1 tokens (56px, fluid below 1000px, so 44px on phones) on a 60/56 line. Subtext 24/40, labels 16/25, all weight 400. Field text 12/25: Regular when typed, Light for the placeholder, both full-strength text colour (base.css mutes placeholders to 60%).
+- **Fields:** 40px tall, 10px side padding, square, no border, palette *color 2* (`$color4`, #F0F0F0). The message box is 170px (six lines plus 10px padding). base.css paints inputs from `input:not([type='checkbox'], [type='radio'])`, which outranks a single class, so the grey goes in through `--color-input-background` on the field.
+- **Spacing:** 20px title → subtext, 170px subtext → form (80px below 750px), 32px between fields across and down, 4px label → field, 40px message → button, 10px button → note.
+- **Button:** the standard `.button` (see [Button component](#button-component)), stretched to the column width.
+
 ### Smooth scroll (Lenis)
 
 `src/js/smooth-scroll.js` runs [Lenis](https://github.com/darkroomengineering/lenis) for wheel and trackpad scrolling, ported from the FDRY theme. Lenis keeps native scrolling and only eases the input, so `position: sticky`, Horizon's sticky header and `IntersectionObserver` keep working.
@@ -468,9 +486,10 @@ Consecutive items with `-duration` `.2`, `.4`, `.6`… start together and land o
 
 - Horizon's **Text** block (which includes the Heading preset) and **Button** block;
 - our **Bounce carousel** section, which fades the whole carousel;
-- our **Bounce accordion** section, which fades each question and then the subtext and button row, each on its own.
+- our **Bounce accordion** section, which fades each question and then the subtext and button row, each on its own;
+- our **Bounce contact form** section, which fades the title, the subtext, each field, then the button and note, each on its own. It is the only one switched on by default.
 
-All four use the same two settings:
+All five use the same two settings:
 
 | Setting | Attribute it prints | Default |
 |---|---|---|
@@ -718,7 +737,7 @@ Every Horizon file we've changed, and why:
 | `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and renders `bounce-buy-button` after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style`. `data-fade-down` on each `.header__row` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)). The rows drop in on load (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |
-| `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`) | Default button label per language |
+| `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`) and `bounce.contact_form.*` | Default button label per language; the contact form's labels, placeholders, button and note (see [Contact form](#contact-form)) |
 | `blocks/text.liquid`, `blocks/button.liquid` | Schema: an *Animation* group (`fade_up`, `fade_up_delay`) at the top of the settings, then a *Text* / *Button* header over the original fields | Fade-up option in the editor (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/text.liquid`, `snippets/button.liquid` | Render `bounce-fade-attributes` on the text element and on the button's `<a>` (the button only when it has a link) | Same |
 | `sections/section.liquid` | *Padding* top / bottom: max 100 → **200px**, step 1 → **2** | The design needs taller spacing in Custom section (and its Rich text preset, the same file). Shopify caps a range at 101 steps, so 0–200 needs a 2px step; every saved value was already even |

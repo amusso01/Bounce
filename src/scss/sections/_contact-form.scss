@@ -1,0 +1,166 @@
+@use '../base/variable' as *;
+@use '../base/media' as *;
+
+// Bounce contact form (sections/bounce-contact-form.liquid)
+
+// From the design
+$containerWidth: 545px;
+$introGap: 20px; // title → subtext
+$formOffset: 170px; // subtext → first label
+$formOffsetMobile: 80px;
+$fieldGap: 32px; // between fields, across and down
+$labelGap: 4px; // label → field
+$fieldHeight: 40px;
+$fieldPadding: 10px;
+$messageHeight: 170px; // six 25px lines + 10px top and bottom
+$actionsGap: 40px; // message → button
+$noteGap: 10px; // button → note
+
+.bounce-contact-form__container {
+	max-width: $containerWidth;
+	margin-inline: auto;
+}
+
+.bounce-contact-form__intro {
+	display: flex;
+	flex-direction: column;
+	gap: $introGap;
+	margin-bottom: $formOffsetMobile;
+	text-align: center;
+
+	@include media('>=mobile') {
+		margin-bottom: $formOffset;
+	}
+}
+
+.bounce-contact-form__title,
+.bounce-contact-form__subtext {
+	margin: 0;
+	color: var(--color-foreground);
+}
+
+// A <p> in the H1 preset (Theme settings → Typography → H1: 56px, fluid below 1000px),
+// on a 60px line at 56px
+.bounce-contact-form__title {
+	font-family: var(--font-h1--family);
+	font-style: var(--font-h1--style);
+	font-weight: var(--font-h1--weight);
+	font-size: var(--font-h1--size);
+	line-height: calc(60 / 56);
+	letter-spacing: var(--font-h1--letter-spacing);
+	text-transform: var(--font-h1--case);
+}
+
+.bounce-contact-form__subtext {
+	font-family: var(--font-body--family);
+	font-size: 1.5rem;
+	font-weight: 400;
+	line-height: calc(40 / 24);
+}
+
+// Two columns from 750px (the message spans both); one below
+.bounce-contact-form__fields {
+	display: grid;
+	gap: $fieldGap;
+
+	@include media('>=mobile') {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+.bounce-contact-form__field {
+	display: flex;
+	flex-direction: column;
+	gap: $labelGap;
+}
+
+.bounce-contact-form__field--full {
+	grid-column: 1 / -1;
+}
+
+.bounce-contact-form__label {
+	font-family: var(--font-body--family);
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: calc(25 / 16);
+	color: var(--color-foreground);
+}
+
+// Palette color 2 (#F0F0F0), square, no border. Typed text is Regular, the placeholder Light.
+// Inputs get a fixed height and no block padding: the browser centres a single line itself,
+// which is steadier across browsers than line-height on an input.
+.bounce-contact-form__input {
+	// base.css paints fields with this token from a stronger selector
+	// (input:not([type='checkbox'], [type='radio'])), so set the token, not just the property
+	--color-input-background: #{$color4};
+
+	display: block;
+	width: 100%;
+	height: $fieldHeight;
+	margin: 0;
+	padding: 0 $fieldPadding;
+	border: 0;
+	border-radius: 0;
+	background-color: var(--color-input-background);
+	color: var(--color-foreground);
+	font-family: var(--font-body--family);
+	font-size: 0.75rem;
+	font-weight: 400;
+	line-height: calc(25 / 12);
+	appearance: none;
+	-webkit-font-smoothing: antialiased;
+
+	// base.css mutes placeholders to 60%; the design has them full strength, in Light
+	&::placeholder {
+		color: var(--color-foreground);
+		font-weight: 300;
+		opacity: 1;
+	}
+}
+
+.bounce-contact-form__input--textarea {
+	height: auto;
+	min-height: $messageHeight;
+	padding-block: $fieldPadding;
+	resize: vertical;
+}
+
+.bounce-contact-form__actions {
+	display: flex;
+	flex-direction: column;
+	gap: $noteGap;
+	margin-top: $actionsGap;
+}
+
+// base.css sizes buttons to fit their label
+.bounce-contact-form__submit {
+	width: 100%;
+}
+
+.bounce-contact-form__note {
+	margin: 0;
+	font-family: var(--font-body--family);
+	font-size: 0.75rem;
+	font-weight: 300;
+	line-height: calc(25 / 12);
+	color: var(--color-foreground);
+}
+
+// Sent / error message at the top of the form
+.bounce-contact-form__message {
+	display: flex;
+	align-items: center;
+	gap: var(--gap-xs);
+	margin-bottom: $fieldGap;
+	font-family: var(--font-body--family);
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: calc(25 / 16);
+	color: var(--color-foreground);
+
+	svg {
+		flex-shrink: 0;
+		width: 20px;
+		height: 20px;
+	}
+}
