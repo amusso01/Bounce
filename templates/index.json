@@ -16,6 +16,8 @@
           "type": "text",
           "name": "t:names.heading",
           "settings": {
+            "fade_up": true,
+            "fade_up_duration": 0,
             "text": "<p>Solo quello che serve per l’idratazione quotidiana.</p>",
             "width": "fit-content",
             "max_width": "narrow",
@@ -42,6 +44,8 @@
           "type": "button",
           "name": "t:names.button",
           "settings": {
+            "fade_up": true,
+            "fade_up_duration": 0.2,
             "label": "Prova Bounce",
             "link": "shopify://products/bounce",
             "open_in_new_tab": false,
@@ -99,6 +103,8 @@
           "type": "text",
           "name": "t:names.heading",
           "settings": {
+            "fade_up": true,
+            "fade_up_duration": 0,
             "text": "<p>Trasforma l’acqua in idratazione funzionale. Ogni giorno. Ovunque tu sia.</p>",
             "width": "fit-content",
             "max_width": "normal",
@@ -218,6 +224,8 @@
       ],
       "name": "Bounce carousel",
       "settings": {
+        "fade_up": true,
+        "fade_up_duration": 0,
         "width": "page",
         "gap": 30,
         "autoplay": false,
@@ -233,6 +241,8 @@
           "type": "button",
           "name": "t:names.button",
           "settings": {
+            "fade_up": true,
+            "fade_up_duration": 0,
             "label": "Prova Bounce",
             "link": "shopify://products/bounce",
             "open_in_new_tab": false,
@@ -330,6 +340,8 @@
       ],
       "name": "Bounce accordion",
       "settings": {
+        "fade_up": true,
+        "fade_up_duration": 0,
         "width": "page",
         "subtext": "<p>Hai altre domande? Abbiamo altre risposte.</p>",
         "button_label": "Vedi tutte le FAQ",
