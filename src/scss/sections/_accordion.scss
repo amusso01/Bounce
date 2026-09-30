@@ -100,6 +100,25 @@ $footerGap: 72px;
 	p {
 		margin: 0;
 	}
+
+	// Bullets on the same edge as the question text; wrapped lines align with the text.
+	// 2ch = the bullet and a space in Simplon Mono (monospaced).
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	li {
+		position: relative;
+		padding-inline-start: 2ch;
+
+		&::before {
+			content: '•';
+			position: absolute;
+			inset-inline-start: 0;
+		}
+	}
 }
 
 // Subtext on the left, button on the right; stacked on phones
