@@ -11,7 +11,7 @@ It is listed in `.shopifyignore`, so it never gets uploaded to Shopify.
 - Horizon **already prints every theme setting as a CSS custom property** on `:root` (`snippets/theme-styles-variables.liquid`, `snippets/color-palette.liquid`). You don't need the Dawn habit of writing your own `:root` block in `theme.liquid`. Map Horizon's variables into SCSS instead (`$fontSansSerif: var(--font-body--family);`).
 - Our code lives in `src/`, and Parcel compiles it to `assets/bounce.css` and `assets/bounce.js`. Both are loaded **after `{{ content_for_header }}`** in `layout/theme.liquid` and `layout/password.liquid`, so they come last in `<head>` and win ties against Horizon.
 - Override in this order: **Theme Editor setting → CSS variable → CSS rule in bounce.css → new `bounce-*` section/block → edit a Horizon file** (last resort, and log it in [Core edits log](#core-edits-log)).
-- Our JS works like it did in Dawn: site code and npm packages (`arrive`, `swiper`, `accordion-js`) go through Parcel into `assets/bounce.js`, and it talks to Horizon through the DOM. Horizon's own modules (`@theme/*`) can't be imported from the bundle. That only matters if you want to extend Horizon's classes (§7).
+- Our JS works like it did in Dawn: site code and npm packages (`arrive`, `swiper`, `accordion-js`, `gsap`, `lenis`) go through Parcel into `assets/bounce.js`, and it talks to Horizon through the DOM. Horizon's own modules (`@theme/*`) can't be imported from the bundle. That only matters if you want to extend Horizon's classes (§7).
 - Before writing JS, read [Things that differ from Dawn](#things-that-differ-from-dawn): Horizon patches sections in place instead of replacing them, and on desktop the page scrolls inside `.page-wrapper`, not the window.
 
 ---
@@ -416,6 +416,54 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 - **AccordionJS CSS:** not imported. It's mostly demo styling (Arial, borders, a "+" icon), so the few rules its JS needs (panel `overflow`, `height`, `visibility`) live in `_accordion.scss`. Panels start collapsed in CSS, so answers don't flash open before the deferred script runs.
 - **Theme Editor:** re-rendered sections re-mount through `arrive`; `shopify:section:unload` destroys the instance; selecting a Question block opens it.
 
+### Smooth scroll (Lenis)
+
+`src/js/smooth-scroll.js` runs [Lenis](https://github.com/darkroomengineering/lenis) for wheel and trackpad scrolling, ported from the FDRY theme. Lenis keeps native scrolling and only eases the input, so `position: sticky`, Horizon's sticky header and `IntersectionObserver` keep working.
+
+- **Feel.** Each wheel step is a 1.2s easeOutExpo tween (`SCROLL_DURATION`, `easeOutExpo`), the same config as FDRY and [lionandmason.com](https://lionandmason.com/). Raise `SCROLL_DURATION` for a longer glide. While a duration is set Lenis ignores `lerp`, and the same curve applies to anchor links.
+- **Which element scrolls.** From 990px Lenis runs on `.page-wrapper`, with `#MainContent` as the content it watches for size changes. Below 990px it runs on the window (see [Things that differ from Dawn](#things-that-differ-from-dawn) #2). When the viewport crosses 990px it is destroyed and rebuilt on the other container. Lenis puts its `lenis` classes on whichever element it scrolls. The 990 width is copied from `assets/scroll-container.js`; keep them in sync.
+- **Where it doesn't run.** Not in the Theme Editor (`Shopify.designMode`), so the editor's jump to a selected section isn't fought. Not with `prefers-reduced-motion`.
+- **Mobile.** Touch scrolling stays native (`syncTouch` is off), so phones keep their own momentum and the address bar still hides. Below 990px Lenis only affects wheel or trackpad input (a narrow desktop window, or a tablet with a trackpad).
+- **GSAP clock.** Lenis steps on `gsap.ticker` with `lagSmoothing(0)`, as Lenis recommends, so a GSAP scroll effect added later reads the smoothed position in the same frame.
+- **Locking the page.** `overflow: hidden` doesn't stop Lenis, because it scrolls with `scrollTo()`. Horizon's `lockScroll()` (`assets/utilities.js`) sets `html[scroll-lock]` for every dialog and drawer (cart, search, quick add, theme drawer). A `MutationObserver` on that attribute stops and restarts Lenis. A new overlay only needs to go through `lockScroll()` / `unlockScroll()`.
+- **Nested scroll.** `allowNestedScroll: true` lets inner scroll areas (drawers, menus, predictive search) scroll natively. For our own scroll containers you can also add `data-lenis-prevent`.
+- **Anchors.** Same-page `#hash` links glide to the target below the header (offset by `#header-component`'s height when the header is sticky), update the URL and move focus to the target. The skip link (`.skip-to-content-link`), links clicked while Lenis is stopped and links to other pages are left to the browser.
+- **CSS.** `src/scss/base/_motion.scss` pulls in `~lenis/dist/lenis.css` and sets `.lenis { scroll-behavior: auto !important }`. That cancels `base.css`'s `scroll-behavior: smooth` on `html` and `.page-wrapper`, which would otherwise smooth every Lenis frame a second time.
+- **Scroll-driven effects later.** If you add ScrollTrigger (parallax, scrubbed fades), its `scroller` must be `.page-wrapper` from 990px and the window below it. Create the triggers inside `gsap.matchMedia()` so they are rebuilt at the breakpoint. `getLenis()` returns the instance, or `null` where it's off.
+
+### Fade up / fade down
+
+`src/js/fade.js` fades elements in as they reach 90% of the viewport height, ported from the FDRY theme. It's a paused `gsap.fromTo` on `y` and `opacity`, `power3.out` over 2s, which an `IntersectionObserver` plays once. Add the attributes in Liquid; no JS changes are needed per section.
+
+| Attribute | Effect | Default |
+|---|---|---|
+| `data-fade-up` | Rises into place from below | 50px, 2s |
+| `data-fade-down` | Drops into place from above | 50px, 2s |
+| `data-fade-up-delay` / `data-fade-down-delay` | Seconds before it starts | `0` |
+| `data-fade-up-duration` / `data-fade-down-duration` | Seconds **added to** the 2s base, so `".2"` is 2.2s | `0` |
+| `data-fade-up-distance` / `data-fade-down-distance` | Travel in px | `50` |
+| `data-fade-up-group` | Put on a wrapper: its direct `p`, `h1`–`h6`, `ul`, `ol`, `img`, `figure`, `blockquote` and `hr` children each fade up. A value (e.g. `"0.1"`) staggers them | no stagger |
+
+```liquid
+<div class="bounce-usp-bar__intro" data-fade-up-group="0.1">
+  <h2>{{ section.settings.title }}</h2>
+  {{ section.settings.text }}
+</div>
+<div class="bounce-usp-bar__image" data-fade-up data-fade-up-delay="0.3">…</div>
+```
+
+Consecutive items with `-duration` `.2`, `.4`, `.6`… start together and land one after another, which gives a cascade. Use `-delay` to make them start one after another instead. Elements already past 90% on load play straight away, and so do elements above the viewport (e.g. after a reload lower down).
+
+- **Mobile.** Fades run on every device. They don't depend on Lenis: the observer fires whatever does the scrolling. To turn them off on touch devices, add a `(hover: none) and (pointer: coarse)` check to both `snippets/bounce-motion-gate.liquid` and `initFades()`, so the hide class is never set.
+- **Hiding before JS.** `_motion.scss` sets `opacity: 0` on these elements and on group children, but only under `html.bounce-fade`. `snippets/bounce-motion-gate.liquid` adds that class from an inline script in `<head>` (both layouts), so nothing flashes. `fade.js` adds `bounce-fade-ready` once it is set up. If that hasn't happened by the window `load` event (bundle failed or blocked), the class comes off and the content shows without the fade. With `prefers-reduced-motion` the class is never set.
+- **Theme Editor.** Fades are mounted with `arrive`, so a section the editor re-renders fades in again rather than staying hidden. `shopify:section:unload` kills its tweens.
+- **Why not ScrollTrigger.** ScrollTrigger works from positions it stores, which can go stale, and an element left at its start state is invisible. `IntersectionObserver` checks each element's real box on every scroll and reflow, in either scroll container.
+- **Not inside Horizon's patched areas.** Don't fade elements inside the cart, collection grid and filters, product info or anything else Horizon morphs (see [Things that differ from Dawn](#things-that-differ-from-dawn) #1). Morph resets the inline `opacity: 1` the tween leaves, `arrive` doesn't fire for patched elements, and the element would stay hidden. Fade the container around such an area, in our own `bounce-*` sections.
+- **Header.** Each `.header__row` in `sections/header.liquid` has `data-fade-down`, as FDRY puts it on `.site-header__inner`. The row is in view on load, so the observer's first callback plays it straight away. Nothing waits for scrolling or the `load` event. After a reload lower down, the row counts as above the viewport and plays too. The header background is a separate underlay, so the bar shows at once and its content drops in.
+  - Don't move the attribute to `#header-component`: the sticky header fades it with `opacity` (`.header[data-sticky-state='idle']`), which the tween's inline `opacity: 1` would override.
+  - Don't move it to `.header-section` either: it is the sticky element.
+- **Transforms.** GSAP animates the inline `transform` and clears it when the tween ends, leaving `opacity: 1`. Never fade a `.swiper-wrapper`: Swiper moves it with an inline `transform`, which the tween clears. Fade the `.swiper` container or the section heading instead. Don't fade an element whose own `opacity` a state class changes either: the inline `opacity: 1` beats the class.
+
 ### Style a single section type
 
 Sections get a `.shopify-section` wrapper (`#shopify-section-{{ section.id }}`) plus whatever `"class"` their schema declares (for example `sections/section.liquid` → `section-wrapper`). For our own sections, give the schema a class such as `"class": "bounce-usp-bar"` and target that. For small components, put the CSS in the section's `{% stylesheet %}`. For larger ones, use a partial in `src/scss/sections/`.
@@ -448,7 +496,7 @@ Sections get a `.shopify-section` wrapper (`#shopify-section-{{ section.id }}`) 
 
 ### JS: our Parcel bundle
 
-Everything goes through `src/bounce.js` → `assets/bounce.js`: site code, `arrive`, `swiper`, `accordion-js`. Put entry-level imports in `src/bounce.js` and features in `src/js/`.
+Everything goes through `src/bounce.js` → `assets/bounce.js`: site code, `arrive`, `swiper`, `accordion-js`, `gsap`, `lenis`. Put entry-level imports in `src/bounce.js` and features in `src/js/`.
 
 **Mount widgets with `arrive`, and clean up in the Theme Editor:**
 
@@ -613,10 +661,11 @@ Every Horizon file we've changed, and why:
 | `layout/theme.liquid` | Added `bounce.css` / `bounce.js` after `{{ content_for_header }}` | Load our build last so it wins the cascade |
 | `layout/password.liquid` | Same as above | Same, for the password page |
 | `layout/theme.liquid`, `layout/password.liquid` | Added `{%- render 'bounce-fonts' -%}` after `{%- render 'fonts' -%}` | Load Simplon Mono early in `<head>` (see [Custom font](#custom-font-simplon-mono)) |
+| `layout/theme.liquid`, `layout/password.liquid` | Added `{%- render 'bounce-motion-gate' -%}` after `bounce-fonts` | Hide fade elements before first paint, only when `fade.js` will play them (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/color-palette.liquid` | Prints `--selection-background` on `:root`, buttons (including hover), inputs and selected variant labels | Black highlight on white text, pink (`color_palette.color1`) otherwise (see [Text selection](#text-selection)) |
 | `snippets/contrast-override.liquid` | Prints `--selection-background` next to `--color-foreground` on `.color-custom-{id}` | Same rule inside a section or block with its own text color |
 | `snippets/slideshow-controls.liquid` | `--selection-background: #000` beside the existing `--color-foreground: #fff` on controls drawn on media | Those controls are hardcoded white and don't go through the tokens above |
-| `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and renders `bounce-buy-button` after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)) |
+| `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and renders `bounce-buy-button` after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style`. `data-fade-down` on each `.header__row` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)). The rows drop in on load (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |
 | `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`) | Default button label per language |

@@ -1,0 +1,19 @@
+{% doc %}
+  Lets bounce.css hide [data-fade-up] / [data-fade-down] elements only when src/js/fade.js can
+  play them in. Rendered in <head> of both layouts, so the class is set before first paint and
+  nothing flashes.
+
+  fade.js adds bounce-fade-ready once its observer is set up. If that hasn't happened by the window
+  load event (bundle failed, blocked or delayed), the class comes off and the content shows without
+  the fade. It is never set for viewers who ask for reduced motion.
+{% enddoc %}
+
+<script>
+  (function (root) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    root.classList.add('bounce-fade');
+    window.addEventListener('load', function () {
+      if (!root.classList.contains('bounce-fade-ready')) root.classList.remove('bounce-fade');
+    });
+  })(document.documentElement);
+</script>

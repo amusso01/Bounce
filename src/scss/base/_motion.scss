@@ -1,0 +1,22 @@
+// Smooth scroll and fades (src/js/smooth-scroll.js, src/js/fade.js).
+// Lenis puts its classes on the element it scrolls: <html> below 990px,
+// .page-wrapper from 990px. So `html.lenis body { height: auto }` never touches
+// Horizon's 100dvh desktop layout.
+@use '~lenis/dist/lenis.css';
+
+// Lenis animates the scroll itself. base.css sets scroll-behavior: smooth on both
+// html and .page-wrapper, which would smooth every Lenis frame a second time.
+.lenis {
+	scroll-behavior: auto !important;
+}
+
+// Hidden until fade.js plays them in. Group children are only tagged by the JS,
+// so they are matched here too or they would flash first.
+// .bounce-fade comes from snippets/bounce-motion-gate.liquid in <head>. It is never
+// set with reduced motion, and removed on load if fade.js did not run, so without
+// JS, or with a broken or delayed bundle, the content shows.
+.bounce-fade [data-fade-up],
+.bounce-fade [data-fade-down],
+.bounce-fade [data-fade-up-group] > :is(p, h1, h2, h3, h4, h5, h6, ul, ol, img, figure, blockquote, hr) {
+	opacity: 0;
+}
