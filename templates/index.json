@@ -162,10 +162,67 @@
         "padding-block-start": 45,
         "padding-block-end": 45
       }
+    },
+    "section_P4FWrM": {
+      "type": "section",
+      "blocks": {
+        "button_RA6YPp": {
+          "type": "button",
+          "name": "t:names.button",
+          "settings": {
+            "label": "Prova Bounce",
+            "link": "shopify://products/bounce",
+            "open_in_new_tab": false,
+            "style_class": "button",
+            "custom_button_background": "{{ settings.color_palette.foreground }}",
+            "custom_button_text": "{{ settings.color_palette.background }}",
+            "custom_button_border": "{{ settings.color_palette.background }}",
+            "link_text_color": "",
+            "width": "fit-content",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "button_RA6YPp"
+      ],
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 50,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
     "section_NNtT7n",
-    "bounce_carousel_Ag9RGr"
+    "bounce_carousel_Ag9RGr",
+    "section_P4FWrM"
   ]
 }
