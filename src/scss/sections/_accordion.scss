@@ -1,0 +1,132 @@
+@use '../base/variable' as *;
+@use '../base/media' as *;
+
+// Bounce accordion (sections/bounce-accordion.liquid, src/js/accordion.js).
+// AccordionJS's own stylesheet is mostly demo styling (Arial, borders, a "+" icon), so it
+// isn't imported: the few rules its JS relies on are in "Panel" below.
+
+// From the design
+$rowPaddingBlock: 24px;
+$rowPaddingInline: 20px;
+$answerClearance: 80px; // answer text stays clear of the chevron column
+$footerGap: 72px;
+
+// Closed: white with a dashed line underneath (also under the last one)
+.bounce-accordion__item {
+	border-bottom: 1px dashed rgb(var(--color-foreground-rgb) / var(--opacity-40));
+	transition: background-color var(--animation-speed) var(--animation-easing);
+
+	// Open: palette color 2 (#F0F0F0). The line turns into a thin solid seam in the page
+	// colour, so two open answers stay visually separate and no dash crosses the grey.
+	&.is-active {
+		background-color: $color4;
+		border-bottom-style: solid;
+		border-bottom-color: var(--color-background);
+	}
+}
+
+.bounce-accordion__header {
+	margin: 0;
+}
+
+.bounce-accordion__trigger {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	width: 100%;
+	margin: 0;
+	padding: $rowPaddingBlock $rowPaddingInline;
+	border: 0;
+	background: none;
+	font: inherit;
+	color: var(--color-foreground);
+	text-align: start;
+	cursor: pointer;
+}
+
+.bounce-accordion__question,
+.bounce-accordion__subtext {
+	font-family: var(--font-body--family);
+	font-size: 1.5rem;
+	font-weight: 400;
+	line-height: calc(24 / 24);
+	color: var(--color-foreground);
+}
+
+// Chevron: down when closed, up when open
+.bounce-accordion__icon {
+	flex-shrink: 0;
+	width: 14px;
+	height: 14px;
+	transition: rotate var(--animation-speed) var(--animation-easing);
+
+	svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	.is-active & {
+		rotate: 180deg;
+	}
+}
+
+// Panel: AccordionJS animates the height inline. Collapsed in CSS from the start, so
+// answers don't flash open before the (deferred) script runs.
+.bounce-accordion__panel {
+	height: 0;
+	overflow: hidden;
+	visibility: hidden;
+	transition-property: height, visibility;
+	transition-timing-function: ease;
+
+	.is-active & {
+		visibility: visible;
+	}
+}
+
+.bounce-accordion__answer {
+	padding: 0 $rowPaddingInline $rowPaddingBlock;
+	font-family: var(--font-body--family);
+	font-size: 1rem;
+	font-weight: 300;
+	line-height: calc(24 / 16);
+	color: var(--color-foreground);
+
+	@include media('>=mobile') {
+		padding-inline-end: $answerClearance;
+	}
+
+	p {
+		margin: 0;
+	}
+}
+
+// Subtext on the left, button on the right; stacked on phones
+.bounce-accordion__footer {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 24px;
+	margin-top: $footerGap;
+
+	// No questions: nothing above to keep a distance from
+	&:first-child {
+		margin-top: 0;
+	}
+
+	@include media('>=mobile') {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+}
+
+.bounce-accordion__subtext p {
+	margin: 0;
+}
+
+.bounce-accordion__button {
+	flex-shrink: 0;
+	white-space: nowrap;
+}

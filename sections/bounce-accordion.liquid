@@ -1,0 +1,209 @@
+{%- comment -%}
+  Bounce accordion: FAQ list on AccordionJS, with an optional row of subtext and a
+  button underneath. Only Question blocks can be added. JS in src/js/accordion.js,
+  styles in src/scss/sections/_accordion.scss.
+{%- endcomment -%}
+
+{%- liquid
+  case section.settings.width
+    when 'narrow'
+      assign container_class = 'content-max content-max--narrow'
+    when 'full'
+      assign container_class = ''
+    else
+      assign container_class = 'content-max'
+  endcase
+
+  assign show_button = false
+  if section.settings.button_label != blank and section.settings.button_link != blank
+    assign show_button = true
+  endif
+-%}
+
+<div
+  class="bounce-accordion spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="content-block">
+    <div class="{{ container_class }}">
+      {%- if section.blocks.size > 0 -%}
+        <div
+          class="bounce-accordion__list"
+          data-bounce-accordion
+        >
+          {%- for block in section.blocks -%}
+            <div
+              class="ac bounce-accordion__item"
+              {{ block.shopify_attributes }}
+            >
+              <h3 class="ac-header bounce-accordion__header">
+                <button
+                  type="button"
+                  class="ac-trigger bounce-accordion__trigger"
+                >
+                  <span class="bounce-accordion__question">{{ block.settings.title | escape }}</span>
+                  <span class="bounce-accordion__icon svg-wrapper">
+                    {{- 'icon-caret.svg' | inline_asset_content -}}
+                  </span>
+                </button>
+              </h3>
+              <div class="ac-panel bounce-accordion__panel">
+                <div class="bounce-accordion__answer">{{ block.settings.answer }}</div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.subtext != blank or show_button -%}
+        <div class="bounce-accordion__footer">
+          {%- if section.settings.subtext != blank -%}
+            <div class="bounce-accordion__subtext">{{ section.settings.subtext }}</div>
+          {%- endif -%}
+          {%- if show_button -%}
+            <a
+              href="{{ section.settings.button_link }}"
+              class="button bounce-accordion__button"
+            >
+              {{- section.settings.button_label | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bounce accordion",
+  "class": "bounce-accordion-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "narrow",
+          "label": "t:options.narrow"
+        },
+        {
+          "value": "page",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page"
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "label": "Subtext",
+      "info": "Shown under the questions, next to the button. Hidden when empty."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:settings.label",
+      "info": "The button shows only when both a label and a link are set."
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:settings.link"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 45
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 45
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bounce accordion",
+      "settings": {
+        "subtext": "<p>Hai altre domande? Abbiamo altre risposte.</p>",
+        "button_label": "Vedi tutte le FAQ"
+      },
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "title": "Cosa contiene Bounce?",
+            "answer": "<p>Dentro ogni bustina di Bounce trovi solo cinque sali minerali essenziali: sodio, potassio, magnesio, calcio e cloruro. Niente zuccheri, niente edulcoranti, niente aromi artificiali, niente ingredienti dal nome inquietante.</p><p>Solo quello che serve davvero per l’idratazione quotidiana.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "title": "Perché è insapore?",
+            "answer": "<p>È una scelta intenzionale.</p><p>Per evitare di aggiungere sostanze che con l’idratazione c’entrano poco [zuccheri, dolcificanti, aromi artificiali, coloranti], abbiamo scelto una formula neutra, pensata per l’uso frequente. Volevamo creare un prodotto essenziale, pulito per chi vuole idratarsi con regolarità senza dover aggiungere niente di indesiderato alla propria dieta.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "title": "Perché non contiene zuccheri?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "title": "Serve anche se non faccio sport?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "title": "Quante bustine posso prendere al giorno?"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

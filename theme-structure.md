@@ -399,6 +399,23 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 - **Autoplay:** pauses on hover, and never runs for viewers who ask for reduced motion.
 - **Theme Editor:** re-rendered sections re-mount through `arrive`, and `shopify:section:unload` destroys the instance. Selecting a Slide block scrolls to it and pauses autoplay until it's deselected.
 
+### Accordion
+
+`sections/bounce-accordion.liquid`: an FAQ list on AccordionJS (`accordion-js`), with an optional row underneath: rich-text subtext on the left and a black primary button on the right. It uses classic section blocks: the only block you can add is **Question** (*Question* text + *Answer* rich text; the question is the block's name in the editor). JS is in `src/js/accordion.js`, styles in `src/scss/sections/_accordion.scss`.
+
+| Section setting | Default |
+|---|---|
+| *Width*: narrow (1024px), page (1120px) or full (whole screen, page gutters kept) | Page |
+| *Subtext* (rich text) | Hidden when empty |
+| *Label* + *Link* | The button shows only when both are set |
+| *Padding* top / bottom | 45px / 45px |
+
+- **Type:** questions (and the subtext) 24px / 400 / 24px; answers 16px / 300 / 24px; all in the page text colour.
+- **Rows:** 24px / 20px padding, with a 1px dashed line under every question (the browser's standard dash). An open question turns palette *color 2* (`$color4`, #F0F0F0), and its line becomes a solid seam in the page colour, so two open answers stay separate.
+- **Behaviour:** several answers can be open at once; all start closed; the chevron flips when open. Animation is 300ms, or none for viewers who ask for reduced motion.
+- **AccordionJS CSS:** not imported. It's mostly demo styling (Arial, borders, a "+" icon), so the few rules its JS needs (panel `overflow`, `height`, `visibility`) live in `_accordion.scss`. Panels start collapsed in CSS, so answers don't flash open before the deferred script runs.
+- **Theme Editor:** re-rendered sections re-mount through `arrive`; `shopify:section:unload` destroys the instance; selecting a Question block opens it.
+
 ### Style a single section type
 
 Sections get a `.shopify-section` wrapper (`#shopify-section-{{ section.id }}`) plus whatever `"class"` their schema declares (for example `sections/section.liquid` → `section-wrapper`). For our own sections, give the schema a class such as `"class": "bounce-usp-bar"` and target that. For small components, put the CSS in the section's `{% stylesheet %}`. For larger ones, use a partial in `src/scss/sections/`.
