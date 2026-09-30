@@ -21,8 +21,8 @@
         "button_link": "shopify://products/bounce",
         "background_color": "{{ settings.color_palette.foreground }}",
         "text_color": "{{ settings.color_palette.background }}",
-        "padding-block-start": 80,
-        "padding-block-end": 80
+        "padding-block-start": 69,
+        "padding-block-end": 69
       }
     },
     "footer_utilities_jLGE8U": {
