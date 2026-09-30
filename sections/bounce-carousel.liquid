@@ -1,0 +1,246 @@
+{%- comment -%}
+  Bounce carousel: image cards with a title at the top and text at the bottom,
+  on Swiper. Only Slide blocks can be added. JS in src/js/carousel.js, styles in
+  src/scss/sections/_carousel.scss.
+{%- endcomment -%}
+
+{%- liquid
+  assign container_class = 'content-max'
+  if section.settings.width == 'narrow'
+    assign container_class = 'content-max content-max--narrow'
+  endif
+
+  # Swiper's a11y module fills in {{index}} / {{slidesLength}}
+  assign slide_label = 'accessibility.slide_status' | t: index: '{{index}}', length: '{{slidesLength}}'
+-%}
+
+<div
+  class="bounce-carousel spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="content-block">
+    <div class="{{ container_class }}">
+      <div
+        class="bounce-carousel__viewport"
+        data-bounce-carousel
+        data-gap="{{ section.settings.gap }}"
+        {% if section.settings.autoplay %}
+          data-autoplay="{{ section.settings.autoplay_speed | times: 1000 }}"
+        {% endif %}
+        data-label-prev="{{ 'accessibility.slideshow_previous' | t | escape }}"
+        data-label-next="{{ 'accessibility.slideshow_next' | t | escape }}"
+        data-label-slide="{{ slide_label | escape }}"
+      >
+        <div class="swiper">
+          <div class="swiper-wrapper">
+            {%- for block in section.blocks -%}
+              {%- liquid
+                assign text_color = block.settings.text_color | default: '#ffffff'
+                capture selection_background
+                  render 'util-selection-background', color: text_color
+                endcapture
+              -%}
+              <div
+                class="swiper-slide bounce-carousel__slide"
+                {{ block.shopify_attributes }}
+              >
+                <div
+                  class="bounce-carousel__card"
+                  style="--bounce-carousel-text: {{ text_color }}; --selection-background: {{ selection_background | strip }};"
+                >
+                  {%- if block.settings.image != blank -%}
+                    {{
+                      block.settings.image
+                      | image_url: width: 1080
+                      | image_tag:
+                        widths: '360, 540, 720, 1080',
+                        sizes: '(min-width: 990px) 380px, (min-width: 750px) 50vw, 85vw',
+                        loading: 'lazy',
+                        class: 'bounce-carousel__image'
+                    }}
+                  {%- else -%}
+                    {{ 'hero-apparel-1' | placeholder_svg_tag: 'bounce-carousel__image bounce-carousel__image--placeholder' }}
+                  {%- endif -%}
+
+                  {%- if block.settings.overlay_color != blank and block.settings.overlay_color.alpha > 0 -%}
+                    <div
+                      class="bounce-carousel__overlay"
+                      style="background-color: {{ block.settings.overlay_color }};"
+                    ></div>
+                  {%- endif -%}
+
+                  <div class="bounce-carousel__content">
+                    {%- if block.settings.title != blank -%}
+                      <h3 class="bounce-carousel__title">{{ block.settings.title | escape }}</h3>
+                    {%- endif -%}
+                    {%- if block.settings.text != blank -%}
+                      <div class="bounce-carousel__text">{{ block.settings.text }}</div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="bounce-carousel__arrow bounce-carousel__arrow--prev"
+          aria-label="{{ 'accessibility.slideshow_previous' | t }}"
+        >
+          {{- 'icon-chevron-left.svg' | inline_asset_content -}}
+        </button>
+        <button
+          type="button"
+          class="bounce-carousel__arrow bounce-carousel__arrow--next"
+          aria-label="{{ 'accessibility.slideshow_next' | t }}"
+        >
+          {{- 'icon-chevron-right.svg' | inline_asset_content -}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bounce carousel",
+  "class": "bounce-carousel-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "t:names.slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:settings.image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:settings.title"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:settings.text"
+        },
+        {
+          "type": "color",
+          "id": "overlay_color",
+          "label": "t:settings.overlay_color",
+          "info": "Off by default. Pick a colour and lower its opacity to darken the image.",
+          "alpha": true
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "t:settings.text_color",
+          "default": "#ffffff"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page",
+          "label": "t:options.page"
+        },
+        {
+          "value": "narrow",
+          "label": "t:options.narrow"
+        }
+      ],
+      "default": "page"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.horizontal_gap",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "t:settings.auto_rotate_slides",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "t:settings.speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5,
+      "visible_if": "{{ section.settings.autoplay }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 45
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 45
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bounce carousel",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Nelle giornate infinite.",
+            "text": "<p>Quando ti muovi tanto e non ti fermi mai.</p>"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Quando sei in viaggio.",
+            "text": "<p>Aria secca e ritmi irregolari: si perdono liquidi.</p>"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Quando dormi poco.",
+            "text": "<p>La giornata parte già in salita? Idratarti aiuta.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,131 @@
+@use '../base/variable' as *;
+@use '../base/media' as *;
+// Swiper's core layout only; the arrows are ours, so none of its navigation CSS
+@use '~swiper/swiper.css';
+
+// Bounce carousel (sections/bounce-carousel.liquid, src/js/carousel.js).
+
+// From the design (1920 artboard)
+$cardRatio: 5 / 7;
+$cardRadius: 16px;
+$cardPaddingBlock: 30px;
+$cardPaddingInline: 24px;
+$arrowSize: 40px;
+$arrowInset: 24px;
+
+.bounce-carousel__viewport {
+	position: relative;
+}
+
+.bounce-carousel__card {
+	position: relative;
+	aspect-ratio: $cardRatio;
+	border-radius: $cardRadius;
+	overflow: hidden;
+	color: var(--bounce-carousel-text, #fff);
+	background-color: rgb(var(--color-foreground-rgb) / var(--opacity-10));
+}
+
+.bounce-carousel__image {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+// Off unless the slide has an overlay colour (its opacity comes from the colour's alpha)
+.bounce-carousel__overlay {
+	position: absolute;
+	inset: 0;
+}
+
+// Title at the top, text at the bottom, both left-aligned
+.bounce-carousel__content {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: $cardPaddingBlock;
+	padding: $cardPaddingBlock $cardPaddingInline;
+	text-align: start;
+}
+
+// Design sizes from 1200px up; scaled down below
+.bounce-carousel__title {
+	margin: 0;
+	font-family: var(--font-body--family);
+	font-weight: 400;
+	font-size: 1.5rem;
+	line-height: calc(36 / 24);
+	letter-spacing: normal;
+	text-transform: none;
+	color: inherit;
+
+	@include media('>=desktop') {
+		font-size: 2rem;
+		line-height: calc(48 / 32);
+	}
+}
+
+.bounce-carousel__text {
+	font-weight: 300;
+	font-size: 1.125rem;
+	line-height: calc(24 / 18);
+
+	@include media('>=desktop') {
+		font-size: 1.5rem;
+		line-height: calc(32 / 24);
+	}
+
+	p {
+		margin: 0;
+	}
+}
+
+// Arrows: white circles on the carousel edges, vertically centred. Phones swipe instead.
+.bounce-carousel__arrow {
+	position: absolute;
+	top: 50%;
+	z-index: 2;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: $arrowSize;
+	height: $arrowSize;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background-color: var(--color-background);
+	color: var(--color-foreground);
+	cursor: pointer;
+	translate: 0 -50%;
+	transition: scale var(--animation-speed) var(--animation-easing);
+
+	@include media('>=mobile') {
+		display: flex;
+	}
+
+	&:hover {
+		scale: 1.08;
+	}
+
+	svg {
+		width: 8px;
+		height: 12px;
+	}
+
+	// Every card already fits: Swiper locks navigation (watchOverflow)
+	&.swiper-button-lock {
+		display: none;
+	}
+}
+
+.bounce-carousel__arrow--prev {
+	inset-inline-start: $arrowInset;
+}
+
+.bounce-carousel__arrow--next {
+	inset-inline-end: $arrowInset;
+}

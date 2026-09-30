@@ -378,6 +378,27 @@ Styles are in `src/scss/sections/_footer.scss`:
 
 The *Utilities* section (copyright, policies, social links) is still in the footer group, disabled.
 
+### Carousel
+
+`sections/bounce-carousel.liquid`: image cards with a title at the top and text at the bottom, on Swiper. It uses classic section blocks: the only block you can add is **Slide**, defined inside the section (no theme blocks). JS is in `src/js/carousel.js`, styles in `src/scss/sections/_carousel.scss`.
+
+| Section setting | Default |
+|---|---|
+| *Width*: page (1120px) or narrow (1024px), through `.content-block` + `.content-max` / `.content-max--narrow` | Page |
+| *Horizontal gap* (5–50px) → Swiper `spaceBetween` | 30px |
+| *Auto-rotate slides* + *Speed* (3–10s) | Off, 5s |
+| *Padding* top / bottom (Horizon's `spacing-style`) | 45px / 45px |
+
+Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means no overlay; its opacity comes from the colour's alpha), and a *Text color* (white).
+
+- **Cards per view:** 1.2 on phones (a peek of the next card), 2 from 750px, 3 from 990px. These are Swiper `breakpoints` on Horizon's widths.
+- **Card:** 5:7 ratio, 16px corners, 30px / 24px padding (local variables at the top of `_carousel.scss`).
+- **Type:** title 32/48 at weight 400, text 24/32 at weight 300, from 1200px (`media('>=desktop')`). Below that, 24/36 and 18/24.
+- **Ends:** `rewind`. Next on the last card goes back to the first.
+- **Arrows:** 40px white circles 24px inside the edges, hidden below 750px (swipe) and when every card already fits.
+- **Autoplay:** pauses on hover, and never runs for viewers who ask for reduced motion.
+- **Theme Editor:** re-rendered sections re-mount through `arrive`, and `shopify:section:unload` destroys the instance. Selecting a Slide block scrolls to it and pauses autoplay until it's deselected.
+
 ### Style a single section type
 
 Sections get a `.shopify-section` wrapper (`#shopify-section-{{ section.id }}`) plus whatever `"class"` their schema declares (for example `sections/section.liquid` → `section-wrapper`). For our own sections, give the schema a class such as `"class": "bounce-usp-bar"` and target that. For small components, put the CSS in the section's `{% stylesheet %}`. For larger ones, use a partial in `src/scss/sections/`.
@@ -438,7 +459,7 @@ export function initSliders() {
 }
 ```
 
-Swiper's CSS can come in through SCSS (`@use 'swiper/css';` plus the module CSS you need, e.g. `swiper/css/navigation`).
+Swiper's CSS comes in through SCSS by file path: `@use '~swiper/swiper.css';`, plus any module CSS you need, e.g. `~swiper/modules/navigation.css`. Parcel's Sass importer ignores Swiper's `exports` map, so `'swiper/css'` isn't found, and `'~swiper/swiper'` without the extension resolves to the JS file. `src/js/carousel.js` + `_carousel.scss` is the working example of this whole pattern.
 
 **Call Horizon components**: wait until they're defined:
 
