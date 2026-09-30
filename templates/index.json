@@ -289,7 +289,7 @@
           "type": "question",
           "settings": {
             "title": "Cosa contiene Bounce?",
-            "answer": "<p>Dentro ogni bustina di Bounce trovi solo cinque sali minerali essenziali: sodio, potassio, magnesio, calcio e cloruro. Niente zuccheri, niente edulcoranti, niente aromi artificiali, niente ingredienti dal nome inquietante.</p><p>Solo quello che serve davvero per l’idratazione quotidiana.</p>"
+            "answer": "<p>Dentro ogni bustina di Bounce trovi solo cinque sali minerali essenziali: sodio, <a href=\"/pages/contact\" title=\"Contact\">potassio, magnesio, calcio e cloruro. Niente </a>zuccheri, niente edulcoranti, niente aromi artificiali, niente ingredienti dal nome inquietante.</p><p>Solo quello che serve davvero per l’idratazione quotidiana.</p>"
           }
         },
         "question_D3hdd3": {
