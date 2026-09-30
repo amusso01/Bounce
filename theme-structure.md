@@ -603,3 +603,4 @@ Every Horizon file we've changed, and why:
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |
 | `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`) | Default button label per language |
+| `sections/section.liquid` | *Padding* top / bottom: max 100 → **200px**, step 1 → **2** | The design needs taller spacing in Custom section (and its Rich text preset, the same file). Shopify caps a range at 101 steps, so 0–200 needs a 2px step; every saved value was already even |
