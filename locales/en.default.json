@@ -371,5 +371,8 @@
       "default_title": "Default Title",
       "sticky_add_to_cart": "Quick add to cart bar"
     }
+  },
+  "bounce": {
+    "buy_button": "Buy now"
   }
 }

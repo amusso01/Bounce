@@ -101,8 +101,19 @@
     assign has_navigation_bar = true
   endif
 
+  # Bounce: account/cart toggles, then the button, so the button stays on the right edge.
+  # A blank label falls back to the storefront translation (Acquista / Buy now).
+  assign button_label = 'bounce.buy_button' | t
+  if section.settings.button_label != blank
+    assign button_label = section.settings.button_label
+  endif
+  assign button_label = button_label | escape
+
   capture actions
-    render 'header-actions', customer_account_menu: section.settings.customer_account_menu, display_style: section.settings.actions_display_style, section: section
+    render 'header-actions', customer_account_menu: section.settings.customer_account_menu, display_style: section.settings.actions_display_style, section: section, show_account: section.settings.show_account, show_cart: section.settings.show_cart
+    if section.settings.button_link != blank
+      echo '<a href="[link]" class="button bounce-header-button">[label]</a>' | replace: '[link]', section.settings.button_link | replace: '[label]', button_label
+    endif
   endcapture
 
   if shop.customer_accounts_enabled
@@ -157,11 +168,6 @@
     assign show_language = false
   endif
 
-  assign show_country = section.settings.show_country
-  if localization.available_countries.size <= 1
-    assign show_country = false
-  endif
-
   assign bottom_row_blocks = ''
 
   if section.settings.menu_row == 'bottom'
@@ -174,7 +180,7 @@
     endif
   endif
 
-  if section.settings.show_country or section.settings.show_language
+  if section.settings.show_language
     if section.settings.localization_row == 'bottom'
       assign bottom_row_blocks = bottom_row_blocks | append: 'localization,'
     endif
@@ -231,97 +237,18 @@
 %}
 
 {% capture localization_markup %}
-  {% liquid
-    assign localization_font = '--menu-localization-font: var(--font-[localization_font]--family); ' | replace: '[localization_font]', section.settings.localization_font
-    assign localization_font_size = '--menu-localization-font-size: [localization_font_size]; ' | replace: '[localization_font_size]', section.settings.localization_font_size
-    assign color_shadow = '--color-shadow: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));'
-    assign form_style = localization_font | append: localization_font_size | append: color_shadow
-  %}
-  {% if show_language and show_country == false %}
-    <div class="dropdown-localization mobile:hidden">
-      {% render 'localization-form',
-        show_country: show_country,
-        show_language: show_language,
-        localization_style: 'dropdown',
-        form_style: form_style,
-        form_id: section.id
-      %}
-    </div>
-  {% elsif show_country %}
-    <dropdown-localization-component
+  {% comment %} Bounce: IT | EN switcher in place of Horizon's country/language dropdown {% endcomment %}
+  {% if show_language %}
+    {% liquid
+      assign localization_font = '--menu-localization-font: var(--font-[localization_font]--family); ' | replace: '[localization_font]', section.settings.localization_font
+      assign localization_font_size = '--menu-localization-font-size: [localization_font_size];' | replace: '[localization_font_size]', section.settings.localization_font_size
+    %}
+    <div
       class="dropdown-localization mobile:hidden"
+      style="{{ localization_font }}{{ localization_font_size }}"
     >
-      <button
-        type="button"
-        class="button dropdown-localization__button localization-selector header-actions__action"
-        aria-expanded="false"
-        aria-controls="dropdown-localization-results"
-        ref="button"
-        on:click="/toggleSelector"
-        style="{{ localization_font }} {{ localization_font_size }}"
-      >
-        {% if show_country %}
-          {% if section.settings.country_selector_style == true %}
-            {% assign localization_background_color = 'background_color_[row]' | replace: '[row]', section.settings.localization_row %}
-            {% liquid
-              assign background_brightness = section.settings[localization_background_color] | color_brightness
-              if background_brightness < 64
-                assign shadow_size = 4
-              else
-                assign shadow_size = 2
-              endif
-            %}
-            <span
-              class="icon-flag"
-              style="
-                background-image: url({{- localization.country | image_url: width: 32 }});
-                --size-shadow: {{ shadow_size }}px;
-                --color-shadow: rgb(var(--color-foreground-rgb) / var(--opacity-30-60));
-              "
-            ></span>
-          {% endif %}
-          <span
-            class="currency-code"
-            data-testid="localization-currency-code"
-          >
-            {{- localization.country.currency.iso_code -}}
-          </span>
-        {% endif %}
-        <span
-          class="visually-hidden"
-          data-testid="localization-visually-hidden"
-        >
-          {{- 'accessibility.localization_region_and_language' | t -}}
-        </span>
-
-        {%- if show_country and show_language -%}
-          <span>/</span>
-        {%- endif -%}
-
-        {%- if show_language -%}
-          <span>
-            {{ localization.language.iso_code | upcase }}
-          </span>
-        {%- endif -%}
-        <span class="svg-wrapper icon-caret">
-          {{- 'icon-caret.svg' | inline_asset_content -}}
-        </span>
-      </button>
-
-      <div
-        class="localization-wrapper {{ section.settings.localization_position }}-bound color-custom-popover"
-        hidden
-        ref="panel"
-      >
-        {% render 'localization-form',
-          show_country: show_country,
-          show_language: show_language,
-          localization_style: 'dropdown',
-          form_style: form_style,
-          form_id: section.id
-        %}
-      </div>
-    </dropdown-localization-component>
+      {% render 'bounce-language-switcher', form_id: section.id %}
+    </div>
   {% endif %}
 {% endcapture %}
 
@@ -1322,10 +1249,33 @@
       "content": "t:content.manage_customer_accounts"
     },
     {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Account icon",
+      "default": false
+    },
+    {
       "type": "link_list",
       "id": "customer_account_menu",
       "label": "t:settings.menu",
-      "default": "customer-account-main-menu"
+      "default": "customer-account-main-menu",
+      "visible_if": "{{ section.settings.show_account }}"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:settings.label",
+      "info": "Leave blank to use the default: Acquista (IT), Buy now (EN)."
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:settings.link",
+      "info": "The button is hidden until a link is set."
     },
     {
       "type": "header",
@@ -1377,20 +1327,6 @@
     },
     {
       "type": "checkbox",
-      "id": "show_country",
-      "label": "t:settings.country_region",
-      "info": "t:info.manage_countries_regions",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "country_selector_style",
-      "label": "t:settings.flag",
-      "default": true,
-      "visible_if": "{{ section.settings.show_country }}"
-    },
-    {
-      "type": "checkbox",
       "id": "show_language",
       "label": "t:settings.language_selector",
       "info": "t:info.manage_languages",
@@ -1419,7 +1355,7 @@
         }
       ],
       "default": "heading",
-      "visible_if": "{{ section.settings.show_country or section.settings.show_language }}"
+      "visible_if": "{{ section.settings.show_language }}"
     },
     {
       "type": "select",
@@ -1464,7 +1400,7 @@
         }
       ],
       "default": "right",
-      "visible_if": "{{ section.settings.show_country or section.settings.show_language }}"
+      "visible_if": "{{ section.settings.show_language }}"
     },
     {
       "type": "select",
@@ -1481,7 +1417,7 @@
         }
       ],
       "default": "top",
-      "visible_if": "{{ section.settings.show_country or section.settings.show_language }}"
+      "visible_if": "{{ section.settings.show_language }}"
     },
     {
       "type": "header",
@@ -1709,7 +1645,18 @@
     },
     {
       "type": "header",
-      "content": "t:content.cart_bubble"
+      "content": "Cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart",
+      "label": "Cart icon",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:content.cart_bubble",
+      "visible_if": "{{ section.settings.show_cart }}"
     },
     {
       "type": "select",
@@ -1725,21 +1672,22 @@
           "label": "t:options.custom"
         }
       ],
-      "default": "default"
+      "default": "default",
+      "visible_if": "{{ section.settings.show_cart }}"
     },
     {
       "type": "color",
       "id": "bubble_background_color",
       "label": "t:settings.background",
       "placeholder": "t:settings.default",
-      "visible_if": "{{ section.settings.bubble_style == 'custom' }}"
+      "visible_if": "{{ section.settings.show_cart and section.settings.bubble_style == 'custom' }}"
     },
     {
       "type": "color",
       "id": "bubble_text_color",
       "label": "t:settings.text",
       "placeholder": "t:settings.default",
-      "visible_if": "{{ section.settings.bubble_style == 'custom' }}"
+      "visible_if": "{{ section.settings.show_cart and section.settings.bubble_style == 'custom' }}"
     },
     {
       "type": "header",

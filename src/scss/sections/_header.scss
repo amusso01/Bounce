@@ -1,0 +1,81 @@
+@use '../base/media' as *;
+
+// Header (sections/header.liquid): IT | EN switcher, the Acquista button and the
+// spacing between the right-hand items.
+
+#header-component {
+	// Space between the right-hand items (menu links, IT | EN, button): 72px in
+	// the design. Smaller below 990px so the menu doesn't overflow into the drawer.
+	--bounce-header-gap: var(--gap-2xl);
+
+	@include media('>=tablet') {
+		--bounce-header-gap: 4.5rem;
+	}
+
+	.header__column--right {
+		gap: calc(var(--bounce-header-gap) / 2);
+	}
+
+	// Each link carries half the gap on both sides, so neighbours end up one gap apart.
+	// Not the links moved into the "More" dropdown, which Horizon keeps unpadded.
+	.header__column--right .menu-list__list-item:not([slot='overflow']) .menu-list__link-title {
+		padding-inline: calc(var(--bounce-header-gap) / 2);
+	}
+}
+
+// Account and cart icons both turned off: don't leave an empty flex item (and an
+// extra gap) before the button. The live region inside is visually hidden.
+header-actions:not(:has(.header-actions__action)) {
+	display: contents;
+}
+
+// Language switcher (snippets/bounce-language-switcher.liquid)
+.bounce-language-switcher {
+	display: flex;
+	align-items: center;
+	gap: 0.75em;
+	// Set by the header from its Localization font/size settings; the drawer inherits its own type
+	font-family: var(--menu-localization-font, inherit);
+	font-size: var(--menu-localization-font-size, inherit);
+	line-height: 1;
+	color: var(--color-foreground);
+}
+
+.bounce-language-switcher__option {
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+	// The other language is dimmed; the current one and hover are full strength.
+	// Muted (0.6) rather than lighter keeps the dimmed label readable (AA contrast).
+	opacity: var(--opacity-muted-text);
+	transition: opacity var(--animation-speed) var(--animation-easing);
+
+	&:hover,
+	&[aria-current='true'] {
+		opacity: 1;
+	}
+}
+
+.menu-drawer__localization .bounce-language-switcher {
+	padding-block: var(--padding-sm);
+}
+
+// Acquista button (rendered in the header's actions slot, after the icons)
+.bounce-header-button {
+	// 40px tall, 126px wide for "Acquista" in the design
+	--button-padding-block: 0.8125rem;
+	--button-padding-inline: 1.875rem;
+
+	// Same show/hide rule as Horizon's menu and localization: desktop only, and
+	// hidden when the menu collapses into the drawer
+	display: none;
+	margin-inline-start: calc(var(--bounce-header-gap) / 2);
+	font-size: var(--font-size--sm);
+	white-space: nowrap;
+}
+
+@include media('>=mobile') {
+	#header-component[data-menu-style='menu'] .bounce-header-button {
+		display: grid;
+	}
+}

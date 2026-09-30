@@ -7,6 +7,8 @@
   @param {block} [block] - The block object, used for Shopify editor attributes.
   @param {string} [display_style] - Controls display mode for header actions: 'icon' or 'text'.
   @param {string} [customer_account_menu] - The menu handle passed to the shopify-account component.
+  @param {boolean} [show_account] - Bounce: false hides the account icon. Shown when omitted.
+  @param {boolean} [show_cart] - Bounce: false hides the cart icon. Shown when omitted.
 
   @example
   {% render 'header-actions', section: section %}
@@ -63,7 +65,7 @@
   {% endif %}
   {{- block.shopify_attributes -}}
 >
-  {% if shop.customer_accounts_enabled %}
+  {% if shop.customer_accounts_enabled and show_account != false %}
     {% liquid
       assign account_actions_style = ''
       if display_style == 'text' and section
@@ -113,7 +115,9 @@
     </div>
   {% endif %}
 
-  {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
+  {% if show_cart == false %}
+    {% comment %} Bounce: cart icon turned off in the header settings {% endcomment %}
+  {% elsif settings.cart_type == 'drawer' and template.name != 'cart' %}
     <button
       class="header-actions__action button-unstyled{% if display_style == 'text' %} header-actions__text-style{% endif %}"
       on:click="#cart-drawer/toggle"

@@ -350,5 +350,8 @@
       "default_title": "Titolo predefinito",
       "sticky_add_to_cart": "Barra per l'aggiunta rapida al carrello"
     }
+  },
+  "bounce": {
+    "buy_button": "Acquista"
   }
 }

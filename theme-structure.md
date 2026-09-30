@@ -338,6 +338,21 @@ Horizon buttons are `.button` / `.button-secondary` (not `.btn`), sized by `--bu
 }
 ```
 
+### Header
+
+The design has the logo on the left, then the menu, an `IT | EN` language switcher and an **Acquista** button on the right. Menu position and search are editor settings (Header → Menu → Position: right; Search icon: off). Everything else:
+
+| Piece | Where |
+|---|---|
+| `IT \| EN` switcher | `snippets/bounce-language-switcher.liquid`, rendered by `sections/header.liquid` (desktop) and `snippets/header-drawer.liquid` (mobile drawer). One submit button per published language in a `{% form 'localization' %}`: Shopify reloads the current page in that language, with no JS. The current language has `aria-current="true"`; the other is dimmed |
+| Button | Header → **Button**: *Label* and *Link*. A blank label falls back to the storefront translation `bounce.buy_button` (`Acquista` in `locales/it.json`, `Buy now` in `locales/en.default.json`). Hidden until a link is set, and hidden below 750px and when the menu collapses into the drawer |
+| Account / cart icons | Header → *Customer account* → **Account icon**, and Header → *Cart* → **Cart icon**. Both are off. When on, they sit between the switcher and the button |
+| Styles and spacing | `src/scss/sections/_header.scss`. `--bounce-header-gap` (72px from 990px up, 32px below) spaces the menu links, switcher and button |
+
+The switcher only shows when at least two languages are published (Settings → Languages): Horizon's guard, kept on purpose. Horizon's *Country/region* and *Flag* settings are removed; the unused dropdown CSS stays in `sections/header.liquid` to keep the diff small.
+
+With the cart icon off, add to cart still opens the cart drawer (`auto_open_cart_drawer`), and the fly-to-cart animation just skips, because it has no icon to fly to.
+
 ### Style a single section type
 
 Sections get a `.shopify-section` wrapper (`#shopify-section-{{ section.id }}`) plus whatever `"class"` their schema declares (for example `sections/section.liquid` → `section-wrapper`). For our own sections, give the schema a class such as `"class": "bounce-usp-bar"` and target that. For small components, put the CSS in the section's `{% stylesheet %}`. For larger ones, use a partial in `src/scss/sections/`.
@@ -538,3 +553,7 @@ Every Horizon file we've changed, and why:
 | `snippets/color-palette.liquid` | Prints `--selection-background` on `:root`, buttons (including hover), inputs and selected variant labels | Black highlight on white text, pink (`color_palette.color1`) otherwise (see [Text selection](#text-selection)) |
 | `snippets/contrast-override.liquid` | Prints `--selection-background` next to `--color-foreground` on `.color-custom-{id}` | Same rule inside a section or block with its own text color |
 | `snippets/slideshow-controls.liquid` | `--selection-background: #000` beside the existing `--color-foreground: #fff` on controls drawn on media | Those controls are hardcoded white and don't go through the tokens above |
+| `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and adds the button after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)) |
+| `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
+| `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |
+| `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`) | Default button label per language |

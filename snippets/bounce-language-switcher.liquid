@@ -1,0 +1,38 @@
+{%- doc -%}
+  Renders the header language switcher: one button per published language
+  (IT | EN), separated by a pipe. Each button submits the localization form,
+  so Shopify reloads the current page in that language. No JS needed.
+
+  Styles live in src/scss/sections/_header.scss.
+
+  @param {string} form_id - The section or block ID, keeps the form ID unique
+
+  @example
+  {% render 'bounce-language-switcher', form_id: section.id %}
+{%- enddoc -%}
+
+{%- liquid
+  assign form_dom_id = 'BounceLanguageSwitcher-' | append: form_id
+  assign form_label = 'content.language' | t
+-%}
+
+{%- form 'localization', id: form_dom_id, class: 'bounce-language-switcher', aria-label: form_label -%}
+  {%- for language in localization.available_languages -%}
+    {%- unless forloop.first -%}
+      <span class="bounce-language-switcher__separator" aria-hidden="true">|</span>
+    {%- endunless -%}
+    <button
+      type="submit"
+      name="language_code"
+      value="{{ language.iso_code }}"
+      class="button-unstyled bounce-language-switcher__option"
+      lang="{{ language.iso_code }}"
+      aria-label="{{ language.endonym_name | capitalize | escape }}"
+      {% if language.iso_code == localization.language.iso_code %}
+        aria-current="true"
+      {% endif %}
+    >
+      {{- language.iso_code | upcase -}}
+    </button>
+  {%- endfor -%}
+{%- endform -%}
