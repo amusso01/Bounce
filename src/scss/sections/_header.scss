@@ -1,26 +1,23 @@
+@use '../base/variable' as *;
 @use '../base/media' as *;
 
 // Header (sections/header.liquid): IT | EN switcher, the Acquista button and the
-// spacing between the right-hand items.
+// spacing between the right-hand items. Shared nav values ($nav*) are in _variable.scss.
 
 #header-component {
-	// Space between the right-hand items (menu links, IT | EN, button): 72px in
-	// the design. Smaller below 990px so the menu doesn't overflow into the drawer.
-	--bounce-header-gap: var(--gap-2xl);
-
-	// Menu links and IT | EN: 22px line height on 16px type in the design. Unitless,
-	// so it keeps the ratio if the size settings change.
-	--bounce-header-line-height: calc(22 / 16);
+	// Space between the right-hand items (menu links, IT | EN, button). Compact below
+	// 990px so the menu doesn't overflow into the drawer.
+	--bounce-header-gap: #{$navGapCompact};
 
 	@include media('>=tablet') {
-		--bounce-header-gap: 4.5rem;
+		--bounce-header-gap: #{$navGap};
 	}
 
 	// Horizon's menu token works out to ~1.67 (snippets/theme-styles-variables.liquid).
 	// Color: always full strength (#000 from the palette). Horizon dims the other links to
 	// 80% while one is hovered or when one is the current page (blocks/_header-menu.liquid).
 	.menu-list__link {
-		line-height: var(--bounce-header-line-height);
+		line-height: $navLineHeight;
 		color: var(--menu-top-level-font-color);
 	}
 
@@ -54,11 +51,11 @@ header-actions:not(:has(.header-actions__action)) {
 	align-items: center;
 	gap: 0.75em;
 	// Set by the header from its Localization font/size settings (body, 16px: same as
-	// the menu); the drawer inherits its own type
+	// the menu); the drawer and the footer inherit their own type
 	font-family: var(--menu-localization-font, inherit);
 	font-weight: var(--menu-localization-font-weight, inherit);
 	font-size: var(--menu-localization-font-size, inherit);
-	line-height: var(--bounce-header-line-height, inherit);
+	line-height: $navLineHeight;
 	color: var(--color-foreground);
 }
 

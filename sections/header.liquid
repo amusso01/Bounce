@@ -102,18 +102,9 @@
   endif
 
   # Bounce: account/cart toggles, then the button, so the button stays on the right edge.
-  # A blank label falls back to the storefront translation (Acquista / Buy now).
-  assign button_label = 'bounce.buy_button' | t
-  if section.settings.button_label != blank
-    assign button_label = section.settings.button_label
-  endif
-  assign button_label = button_label | escape
-
   capture actions
     render 'header-actions', customer_account_menu: section.settings.customer_account_menu, display_style: section.settings.actions_display_style, section: section, show_account: section.settings.show_account, show_cart: section.settings.show_cart
-    if section.settings.button_link != blank
-      echo '<a href="[link]" class="button bounce-header-button">[label]</a>' | replace: '[link]', section.settings.button_link | replace: '[label]', button_label
-    endif
+    render 'bounce-buy-button', link: section.settings.button_link, label: section.settings.button_label, class: 'button bounce-header-button'
   endcapture
 
   if shop.customer_accounts_enabled

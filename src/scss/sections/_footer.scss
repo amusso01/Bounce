@@ -1,0 +1,105 @@
+@use '../base/variable' as *;
+@use '../base/media' as *;
+
+// Footer (sections/bounce-footer.liquid): logo on the left; menu, IT | EN and the button
+// on the right. Stacked and left-aligned below 750px. Shared nav values ($nav*) are in
+// _variable.scss; the switcher's own styles are in _header.scss.
+
+.bounce-footer {
+	// The button is the footer's colours swapped (white on the black footer), so it stays
+	// visible whatever colours the section is set to. These are the tokens base.css reads
+	// for .button; the header's transparent mode swaps them the same way.
+	--color-primary-button-background: var(--color-foreground);
+	--color-primary-button-border: var(--color-foreground);
+	--color-primary-button-text: var(--color-background);
+	--color-primary-button-hover-background: rgb(var(--color-foreground-rgb) / var(--opacity-85));
+	--color-primary-button-hover-border: rgb(var(--color-foreground-rgb) / var(--opacity-85));
+	--color-primary-button-hover-text: var(--color-background);
+
+	--bounce-footer-gap: #{$navGapCompact};
+
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--gap-2xl);
+	color: var(--color-foreground);
+
+	@include media('>=mobile') {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	@include media('>=tablet') {
+		--bounce-footer-gap: #{$navGap};
+	}
+
+	// The button text is the footer background colour; the section prints the matching
+	// highlight (util-selection-background) so selected text doesn't disappear.
+	.button,
+	.button:hover {
+		--selection-background: var(--bounce-footer-button-selection);
+	}
+}
+
+// Logo: same heights as the header logo (Theme settings → Logo)
+.bounce-footer__logo {
+	display: flex;
+	color: var(--color-foreground);
+	text-decoration: none;
+}
+
+.bounce-footer__logo-image {
+	width: auto;
+	height: var(--bounce-footer-logo-height-mobile);
+
+	@include media('>=mobile') {
+		height: var(--bounce-footer-logo-height);
+	}
+}
+
+// Menu, IT | EN and button: 16px / 400 / 22px, like the header
+.bounce-footer__nav {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--gap-2xl);
+	font-size: $navFontSize;
+	font-weight: var(--font-body--weight);
+	line-height: $navLineHeight;
+
+	@include media('>=mobile') {
+		flex-direction: row;
+		align-items: center;
+		gap: var(--bounce-footer-gap);
+	}
+}
+
+.bounce-footer__menu {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap-lg);
+
+	@include media('>=mobile') {
+		flex-direction: row;
+		gap: var(--bounce-footer-gap);
+	}
+}
+
+// Always full strength; underline on hover, same thickness and offset as the header
+.bounce-footer__link {
+	color: var(--color-foreground);
+	text-decoration: none;
+
+	&:hover,
+	&:focus-visible {
+		text-decoration: underline;
+		text-decoration-thickness: 0.075em;
+		text-underline-offset: 0.125em;
+	}
+}
+
+// Size, type and padding come from the button component (src/scss/components/_btn.scss)
+.bounce-footer__button {
+	white-space: nowrap;
+}

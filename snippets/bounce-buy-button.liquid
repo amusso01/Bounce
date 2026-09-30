@@ -1,0 +1,27 @@
+{%- doc -%}
+  Renders the Acquista / Buy now button used by the header and the footer.
+  Nothing is output until a link is set. A blank label falls back to the
+  storefront translation bounce.buy_button (Acquista in IT, Buy now in EN).
+
+  @param {string} link - The button URL
+  @param {string} [label] - Custom label; blank uses the translation
+  @param {string} [class] - Classes for the link, e.g. 'button bounce-header-button'
+
+  @example
+  {% render 'bounce-buy-button', link: section.settings.button_link, label: section.settings.button_label, class: 'button' %}
+{%- enddoc -%}
+
+{%- if link != blank -%}
+  {%- liquid
+    assign button_label = 'bounce.buy_button' | t
+    if label != blank
+      assign button_label = label
+    endif
+  -%}
+  <a
+    href="{{ link }}"
+    class="{{ class }}"
+  >
+    {{- button_label | escape -}}
+  </a>
+{%- endif -%}

@@ -11,39 +11,16 @@
   "type": "footer",
   "name": "t:names.footer",
   "sections": {
-    "footer_m9NzUG": {
-      "type": "footer",
-      "blocks": {
-        "logo_cYrmTt": {
-          "type": "logo",
-          "name": "t:names.logo",
-          "settings": {
-            "inverse": true,
-            "font": "heading",
-            "text_color": "",
-            "unit": "pixel",
-            "percent_width": 100,
-            "pixel_height": 16,
-            "custom_mobile_size": false,
-            "unit_mobile": "percent",
-            "percent_width_mobile": 100,
-            "pixel_height_mobile": 120,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "logo_cYrmTt"
-      ],
-      "name": "t:names.footer",
+    "bounce_footer": {
+      "type": "bounce-footer",
       "settings": {
-        "section_width": "page-width",
-        "gap": 20,
+        "inverse_logo": true,
+        "menu": "main-menu",
+        "show_language": true,
+        "button_label": "",
+        "button_link": "shopify://products/bounce",
         "background_color": "{{ settings.color_palette.foreground }}",
+        "text_color": "{{ settings.color_palette.background }}",
         "padding-block-start": 80,
         "padding-block-end": 80
       }
@@ -110,7 +87,7 @@
     }
   },
   "order": [
-    "footer_m9NzUG",
+    "bounce_footer",
     "footer_utilities_jLGE8U"
   ]
 }

@@ -1,0 +1,197 @@
+{%- comment -%}
+  Bounce footer: logo on the left; menu, IT | EN switcher and the Acquista
+  button on the right. No blocks on purpose: everything is set from the
+  section settings. Styles live in src/scss/sections/_footer.scss.
+{%- endcomment -%}
+
+{% liquid
+  render 'contrast-override', background_color: section.settings.background_color, text_color: section.settings.text_color, section_id: section.id
+
+  assign logo = settings.logo
+  if section.settings.inverse_logo and settings.logo_inverse != blank
+    assign logo = settings.logo_inverse
+  endif
+  assign logo_alt = 'accessibility.home_logo_alt' | t: store_name: shop.name
+
+  assign footer_menu = section.settings.menu
+
+  assign show_language = section.settings.show_language
+  if localization.available_languages.size <= 1
+    assign show_language = false
+  endif
+
+  # The button's text uses the footer background colour (see _footer.scss), so pick
+  # the selection highlight for that colour.
+  assign button_text_color = section.settings.background_color | default: settings.page_background_color
+%}
+
+{%- capture button_selection -%}
+  {%- render 'util-selection-background', color: button_text_color -%}
+{%- endcapture -%}
+
+<div class="section-background color-custom-{{ section.id }}"></div>
+<div class="section section--page-width color-custom-{{ section.id }}">
+  <div
+    class="bounce-footer spacing-style"
+    style="
+      {% render 'spacing-style', settings: section.settings %}
+      --bounce-footer-logo-height: {{ settings.logo_height }}px;
+      --bounce-footer-logo-height-mobile: {{ settings.logo_height_mobile }}px;
+      --bounce-footer-button-selection: {{ button_selection | strip }};
+    "
+  >
+    <a
+      href="{{ routes.root_url }}"
+      class="bounce-footer__logo"
+    >
+      {% render 'image',
+        image: logo,
+        class: 'bounce-footer__logo-image',
+        height: settings.logo_height,
+        alt_text_fallback: logo_alt,
+        text_fallback: shop.name
+      %}
+    </a>
+
+    <div class="bounce-footer__nav">
+      {%- if footer_menu.links.size > 0 -%}
+        <nav aria-label="{{ footer_menu.title | escape }}">
+          <ul class="bounce-footer__menu list-unstyled">
+            {%- for link in footer_menu.links -%}
+              <li>
+                <a
+                  href="{{ link.url }}"
+                  class="bounce-footer__link"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- link.title | escape -}}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+
+      {%- if show_language -%}
+        {% render 'bounce-language-switcher', form_id: section.id %}
+      {%- endif -%}
+
+      {% render 'bounce-buy-button',
+        link: section.settings.button_link,
+        label: section.settings.button_label,
+        class: 'button bounce-footer__button'
+      %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bounce footer",
+  "class": "section-wrapper",
+  "limit": 1,
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:content.logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "inverse_logo",
+      "label": "t:settings.use_inverse_logo",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:content.edit_logo_in_theme_settings"
+    },
+    {
+      "type": "header",
+      "content": "t:content.menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:settings.menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "t:content.localization"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language",
+      "label": "t:settings.language_selector",
+      "info": "t:info.manage_languages",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:settings.label",
+      "info": "Leave blank to use the default: Acquista (IT), Buy now (EN)."
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:settings.link",
+      "info": "The button is hidden until a link is set."
+    },
+    {
+      "type": "header",
+      "content": "t:content.colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:settings.background_color",
+      "default": "{{ settings.color_palette.foreground }}"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:settings.text",
+      "default": "{{ settings.color_palette.background }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bounce footer"
+    }
+  ]
+}
+{% endschema %}

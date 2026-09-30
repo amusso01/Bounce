@@ -20,3 +20,11 @@ $color4: var(--bounce-color-4); // color2 (light grey)
 $contentMax: 1120px;
 $contentMaxNarrow: 1024px;
 $contentMaxWide: 1440px;
+
+// Navigation items (header and footer): menu links, IT | EN and the button.
+// 16px type on a 22px line (unitless so it keeps the ratio), items 72px apart;
+// the compact gap is for widths below 990px.
+$navFontSize: 1rem;
+$navLineHeight: calc(22 / 16);
+$navGap: 4.5rem;
+$navGapCompact: var(--gap-2xl);

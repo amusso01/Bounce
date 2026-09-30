@@ -347,13 +347,36 @@ The design has the logo on the left, then the menu, an `IT | EN` language switch
 | Piece | Where |
 |---|---|
 | `IT \| EN` switcher | `snippets/bounce-language-switcher.liquid`, rendered by `sections/header.liquid` (desktop) and `snippets/header-drawer.liquid` (mobile drawer). One submit button per published language in a `{% form 'localization' %}`: Shopify reloads the current page in that language, with no JS. The current language has `aria-current="true"`; the other is dimmed |
-| Button | Header → **Button**: *Label* and *Link*. A blank label falls back to the storefront translation `bounce.buy_button` (`Acquista` in `locales/it.json`, `Buy now` in `locales/en.default.json`). Hidden until a link is set, and hidden below 750px and when the menu collapses into the drawer |
+| Button | Header → **Button**: *Label* and *Link*, rendered by `snippets/bounce-buy-button.liquid` (shared with the footer). A blank label falls back to the storefront translation `bounce.buy_button` (`Acquista` in `locales/it.json`, `Buy now` in `locales/en.default.json`). Hidden until a link is set, and hidden below 750px and when the menu collapses into the drawer. Size and type come from the [Button component](#button-component) |
 | Account / cart icons | Header → *Customer account* → **Account icon**, and Header → *Cart* → **Cart icon**. Both are off. When on, they sit between the switcher and the button |
-| Styles and spacing | `src/scss/sections/_header.scss`. `--bounce-header-gap` (72px from 990px up, 32px below) spaces the menu links, switcher and button |
+| Styles and spacing | `src/scss/sections/_header.scss`. Menu links are always full strength and underline on hover. `--bounce-header-gap` spaces the menu links, switcher and button: `$navGap` (72px) from 990px up, `$navGapCompact` (32px) below. Those and the 16px / 22px nav type (`$navFontSize`, `$navLineHeight`) live in `_variable.scss`, shared with the footer |
 
 The switcher only shows when at least two languages are published (Settings → Languages): Horizon's guard, kept on purpose. Horizon's *Country/region* and *Flag* settings are removed; the unused dropdown CSS stays in `sections/header.liquid` to keep the diff small.
 
 With the cart icon off, add to cart still opens the cart drawer (`auto_open_cart_drawer`), and the fly-to-cart animation just skips, because it has no icon to fly to.
+
+### Footer
+
+`sections/bounce-footer.liquid` replaces Horizon's `sections/footer.liquid` in `sections/footer-group.json`. Horizon's file is untouched, just unused. Same layout as the header: the logo on the left; the menu, `IT | EN` and the Acquista button on the right.
+
+It has **no blocks on purpose**. A section schema without `blocks` shows no "Add block" in the editor (Horizon's header works the same way), so the footer can't drift from the design. Everything is a section setting:
+
+| Setting group | Settings |
+|---|---|
+| Logo | *Use inverse logo* (on). The image and height come from Theme settings → Logo, the same heights as the header logo |
+| Menu | *Menu* (link list, `main-menu`) |
+| Localization | *Language selector* on/off. Same switcher as the header (`bounce-language-switcher`), same guard (needs 2 published languages) |
+| Button | *Label* and *Link*, the same as the header's (`bounce-buy-button`, blank label → Acquista / Buy now) |
+| Colors | *Background* (black) and *Text* (white), applied through Horizon's `contrast-override` |
+| Padding | Top / bottom, 80px |
+
+Styles are in `src/scss/sections/_footer.scss`:
+
+- Links, switcher and button use the header's nav values (16px / 400 / 22px, 72px apart) from `_variable.scss`. Links underline on hover.
+- The button swaps the footer's colours: text colour as background, background colour as text, so white on the black footer. It sets the `--color-primary-button-*` tokens that `base.css` reads, so it stays visible if the footer colours change. The section prints the matching selection highlight (`util-selection-background`).
+- Below 750px everything stacks, left-aligned: logo, links, `IT | EN`, button.
+
+The *Utilities* section (copyright, policies, social links) is still in the footer group, disabled.
 
 ### Style a single section type
 
@@ -555,7 +578,7 @@ Every Horizon file we've changed, and why:
 | `snippets/color-palette.liquid` | Prints `--selection-background` on `:root`, buttons (including hover), inputs and selected variant labels | Black highlight on white text, pink (`color_palette.color1`) otherwise (see [Text selection](#text-selection)) |
 | `snippets/contrast-override.liquid` | Prints `--selection-background` next to `--color-foreground` on `.color-custom-{id}` | Same rule inside a section or block with its own text color |
 | `snippets/slideshow-controls.liquid` | `--selection-background: #000` beside the existing `--color-foreground: #fff` on controls drawn on media | Those controls are hardcoded white and don't go through the tokens above |
-| `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and adds the button after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)) |
+| `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and renders `bounce-buy-button` after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)) |
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |
 | `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`) | Default button label per language |
