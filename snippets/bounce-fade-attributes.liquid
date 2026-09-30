@@ -1,12 +1,12 @@
 {%- doc -%}
-  Prints the attributes src/js/fade.js reads, from a block's Animation settings
-  (fade_up, fade_up_duration). Prints nothing when they're off, or when the block has no
+  Prints the attributes src/js/fade.js reads, from a block's or section's Animation settings
+  (fade_up, fade_up_delay). Prints nothing when they're off, or when the block or section has no
   such settings, so snippets shared with other blocks can render it unconditionally.
 
   Render it between two attributes that have quoted values: `{%- -%}` trimming next to a
   bare attribute glues the two together.
 
-  @param {object} settings - The block's settings
+  @param {object} settings - The block's or section's settings
 
   @example
   {% render 'bounce-fade-attributes', settings: block.settings %}
@@ -14,5 +14,5 @@
 
 {%- if settings.fade_up -%}
   data-fade-up
-  {%- if settings.fade_up_duration > 0 %} data-fade-up-duration="{{ settings.fade_up_duration }}"{% endif -%}
+  {%- if settings.fade_up_delay > 0 %} data-fade-up-delay="{{ settings.fade_up_delay }}"{% endif -%}
 {%- endif -%}

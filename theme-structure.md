@@ -384,7 +384,7 @@ The *Utilities* section (copyright, policies, social links) is still in the foot
 
 | Section setting | Default |
 |---|---|
-| *Animation*: *Fade up on scroll* + *Fade up duration* (0–1s). Fades the whole carousel (`.bounce-carousel__viewport`) in as one; never the `.swiper-wrapper` (see [Fade up / fade down](#fade-up--fade-down)) | Off, 0s |
+| *Animation*: *Fade up on scroll* + *Fade up delay* (0–1s). Fades the whole carousel (`.bounce-carousel__viewport`) in as one; never the `.swiper-wrapper` (see [Fade up / fade down](#fade-up--fade-down)) | Off, 0s |
 | *Width*: page (1120px) or narrow (1024px), through `.content-block` + `.content-max` / `.content-max--narrow` | Page |
 | *Horizontal gap* (5–50px) → Swiper `spaceBetween` | 30px |
 | *Auto-rotate slides* + *Speed* (3–10s) | Off, 5s |
@@ -406,7 +406,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 
 | Section setting | Default |
 |---|---|
-| *Animation*: *Fade up on scroll* + *Fade up duration* (0–1s). Each Question (`.ac`) and the subtext and button row (`.bounce-accordion__footer`) fade in on their own as they reach the viewport (see [Fade up / fade down](#fade-up--fade-down)) | Off, 0s |
+| *Animation*: *Fade up on scroll* + *Fade up delay* (0–1s). Each Question (`.ac`) and the subtext and button row (`.bounce-accordion__footer`) fade in on their own as they reach the viewport (see [Fade up / fade down](#fade-up--fade-down)) | Off, 0s |
 | *Width*: narrow (1024px), page (1120px) or full (whole screen, page gutters kept) | Page |
 | *Subtext* (rich text) | Hidden when empty |
 | *Label* + *Link* | The button shows only when both are set |
@@ -475,7 +475,9 @@ All four use the same two settings:
 | Setting | Attribute it prints | Default |
 |---|---|---|
 | *Fade up on scroll* (`fade_up`) | `data-fade-up` | Off |
-| *Fade up duration* (`fade_up_duration`), 0–1s in 0.1s steps, shown only when the fade is on | `data-fade-up-duration`, added to the 2s base, so 0.3 is 2.3s. Not printed at 0 | 0s |
+| *Fade up delay* (`fade_up_delay`), 0–1s in 0.1s steps, shown only when the fade is on | `data-fade-up-delay`: seconds before it starts. Not printed at 0 | 0s |
+
+**Why delay, not duration.** The editor offers delay because that's what sequences items. With the heading at 0 and the button at 0.2, the button starts after the heading. That's how FDRY staggers its footer and lists. Duration only adds to the fixed 2s fade: 0.2 makes it 2.2s, and it still starts with everything else, so you can hardly see it. `data-fade-up-duration` still works when written by hand in Liquid.
 
 - **The snippet.** `snippets/bounce-fade-attributes.liquid` turns those settings into attributes. `snippets/text.liquid` and `snippets/button.liquid` render it on the text element and the button's `<a>`. The two sections pass it `section.settings` instead of `block.settings`. Other blocks share those two snippets but have no Animation settings, so they print nothing.
 - **Adding it to another block or section.** Copy the Animation header and its two settings, and render the snippet on the element to fade, passing `block.settings` or `section.settings` (and `section.settings` in `visible_if`). Render it between two attributes with quoted values (see the whitespace note below).
@@ -717,6 +719,6 @@ Every Horizon file we've changed, and why:
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |
 | `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`) | Default button label per language |
-| `blocks/text.liquid`, `blocks/button.liquid` | Schema: an *Animation* group (`fade_up`, `fade_up_duration`) at the top of the settings, then a *Text* / *Button* header over the original fields | Fade-up option in the editor (see [Fade up / fade down](#fade-up--fade-down)) |
+| `blocks/text.liquid`, `blocks/button.liquid` | Schema: an *Animation* group (`fade_up`, `fade_up_delay`) at the top of the settings, then a *Text* / *Button* header over the original fields | Fade-up option in the editor (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/text.liquid`, `snippets/button.liquid` | Render `bounce-fade-attributes` on the text element and on the button's `<a>` (the button only when it has a link) | Same |
 | `sections/section.liquid` | *Padding* top / bottom: max 100 → **200px**, step 1 → **2** | The design needs taller spacing in Custom section (and its Rich text preset, the same file). Shopify caps a range at 101 steps, so 0–200 needs a 2px step; every saved value was already even |
