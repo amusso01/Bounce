@@ -57,8 +57,8 @@ $footerGap: 72px;
 // Chevron: down when closed, up when open
 .bounce-accordion__icon {
 	flex-shrink: 0;
-	width: 14px;
-	height: 14px;
+	width: 20px;
+	height: 20px;
 	transition: rotate var(--animation-speed) var(--animation-easing);
 
 	svg {
