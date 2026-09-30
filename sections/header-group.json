@@ -111,10 +111,10 @@
       },
       "settings": {
         "logo_position": "left",
-        "menu_position": "left",
+        "menu_position": "right",
         "menu_row": "top",
         "customer_account_menu": "customer-account-main-menu",
-        "show_search": true,
+        "show_search": false,
         "search_position": "right",
         "search_row": "top",
         "show_country": true,
