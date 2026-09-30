@@ -281,12 +281,69 @@
         "padding-block-start": 50,
         "padding-block-end": 0
       }
+    },
+    "bounce_accordion_efXjJg": {
+      "type": "bounce-accordion",
+      "blocks": {
+        "question_zQwBqf": {
+          "type": "question",
+          "settings": {
+            "title": "Cosa contiene Bounce?",
+            "answer": "<p>Dentro ogni bustina di Bounce trovi solo cinque sali minerali essenziali: sodio, potassio, magnesio, calcio e cloruro. Niente zuccheri, niente edulcoranti, niente aromi artificiali, niente ingredienti dal nome inquietante.</p><p>Solo quello che serve davvero per l’idratazione quotidiana.</p>"
+          }
+        },
+        "question_D3hdd3": {
+          "type": "question",
+          "settings": {
+            "title": "Perché è insapore?",
+            "answer": "<p>È una scelta intenzionale.</p><p>Per evitare di aggiungere sostanze che con l’idratazione c’entrano poco [zuccheri, dolcificanti, aromi artificiali, coloranti], abbiamo scelto una formula neutra, pensata per l’uso frequente. Volevamo creare un prodotto essenziale, pulito per chi vuole idratarsi con regolarità senza dover aggiungere niente di indesiderato alla propria dieta.</p>"
+          }
+        },
+        "question_GTtEkU": {
+          "type": "question",
+          "settings": {
+            "title": "Perché non contiene zuccheri?",
+            "answer": ""
+          }
+        },
+        "question_7wQV3a": {
+          "type": "question",
+          "settings": {
+            "title": "Serve anche se non faccio sport?",
+            "answer": ""
+          }
+        },
+        "question_xWemaY": {
+          "type": "question",
+          "settings": {
+            "title": "Quante bustine posso prendere al giorno?",
+            "answer": ""
+          }
+        }
+      },
+      "block_order": [
+        "question_zQwBqf",
+        "question_D3hdd3",
+        "question_GTtEkU",
+        "question_7wQV3a",
+        "question_xWemaY"
+      ],
+      "name": "Bounce accordion",
+      "settings": {
+        "width": "page",
+        "subtext": "<p>Hai altre domande? Abbiamo altre risposte.</p>",
+        "button_label": "Vedi tutte le FAQ",
+        "button_link": "",
+        "padding-block-start": 45,
+        "padding-block-end": 45
+      }
     }
   },
   "order": [
     "section_NNtT7n",
     "section_KEfcBT",
     "bounce_carousel_Ag9RGr",
-    "section_P4FWrM"
+    "section_P4FWrM",
+    "bounce_accordion_efXjJg"
   ]
 }
