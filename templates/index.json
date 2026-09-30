@@ -333,7 +333,7 @@
         "width": "page",
         "subtext": "<p>Hai altre domande? Abbiamo altre risposte.</p>",
         "button_label": "Vedi tutte le FAQ",
-        "button_link": "",
+        "button_link": "shopify://pages/faqs",
         "padding-block-start": 45,
         "padding-block-end": 45
       }
