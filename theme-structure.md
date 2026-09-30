@@ -406,7 +406,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 
 | Section setting | Default |
 |---|---|
-| *Animation*: *Fade up on scroll* + *Fade up duration* (0–1s). Each Question (`.ac`) fades in on its own as it reaches the viewport (see [Fade up / fade down](#fade-up--fade-down)) | Off, 0s |
+| *Animation*: *Fade up on scroll* + *Fade up duration* (0–1s). Each Question (`.ac`) and the subtext and button row (`.bounce-accordion__footer`) fade in on their own as they reach the viewport (see [Fade up / fade down](#fade-up--fade-down)) | Off, 0s |
 | *Width*: narrow (1024px), page (1120px) or full (whole screen, page gutters kept) | Page |
 | *Subtext* (rich text) | Hidden when empty |
 | *Label* + *Link* | The button shows only when both are set |
@@ -468,7 +468,7 @@ Consecutive items with `-duration` `.2`, `.4`, `.6`… start together and land o
 
 - Horizon's **Text** block (which includes the Heading preset) and **Button** block;
 - our **Bounce carousel** section, which fades the whole carousel;
-- our **Bounce accordion** section, which fades each question on its own.
+- our **Bounce accordion** section, which fades each question and then the subtext and button row, each on its own.
 
 All four use the same two settings:
 

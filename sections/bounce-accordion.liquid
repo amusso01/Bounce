@@ -57,7 +57,10 @@
       {%- endif -%}
 
       {%- if section.settings.subtext != blank or show_button -%}
-        <div class="bounce-accordion__footer">
+        <div
+          class="bounce-accordion__footer"
+          {% render 'bounce-fade-attributes', settings: section.settings %}
+        >
           {%- if section.settings.subtext != blank -%}
             <div class="bounce-accordion__subtext">{{ section.settings.subtext }}</div>
           {%- endif -%}
@@ -109,7 +112,7 @@
       "type": "checkbox",
       "id": "fade_up",
       "label": "Fade up on scroll",
-      "info": "Each question fades in on its own as it scrolls into view.",
+      "info": "Each question, then the subtext and button row, fades in on its own as it scrolls into view.",
       "default": false
     },
     {
