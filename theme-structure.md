@@ -392,7 +392,7 @@ The *Utilities* section (copyright, policies, social links) is still in the foot
 Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means no overlay; its opacity comes from the colour's alpha), and a *Text color* (white).
 
 - **Cards per view:** 1.2 on phones (a peek of the next card), 2 from 750px, 3 from 990px. These are Swiper `breakpoints` on Horizon's widths.
-- **Card:** 5:7 ratio, 16px corners, 30px / 24px padding (local variables at the top of `_carousel.scss`).
+- **Card:** 353:490 ratio (490px tall at page width), 16px corners, 30px / 24px padding (local variables at the top of `_carousel.scss`).
 - **Type:** title 32/48 at weight 400, text 24/32 at weight 300, from 1200px (`media('>=desktop')`). Below that, 24/36 and 18/24.
 - **Ends:** `rewind`. Next on the last card goes back to the first.
 - **Arrows:** 40px white circles 24px inside the edges, hidden below 750px (swipe) and when every card already fits.
