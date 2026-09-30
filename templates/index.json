@@ -91,9 +91,81 @@
         "padding-block-start": 0,
         "padding-block-end": 50
       }
+    },
+    "bounce_carousel_Ag9RGr": {
+      "type": "bounce-carousel",
+      "blocks": {
+        "slide_Jfbrtg": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/001_Portrait_2x_b4c84aac-4018-4e1d-8b5f-8c632f14218b.jpg",
+            "title": "Nelle giornate infinite.",
+            "text": "<p>Quando ti muovi tanto e non ti fermi mai.</p>",
+            "overlay_color": "",
+            "text_color": "{{ settings.color_palette.background }}"
+          }
+        },
+        "slide_FV4LDf": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/005_Portrait_2x_925d554f-e7c5-40d9-85e5-11a7c2fb4ccf.jpg",
+            "title": "Quando dormi poco.",
+            "text": "<p>La giornata parte già in salita? Idratarti aiuta.</p>",
+            "overlay_color": "",
+            "text_color": "#ffffff"
+          }
+        },
+        "slide_bp3Wh8": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/002_Portrait_2x_e2a4acdd-ea31-46b9-b3ec-3da31b52a908.jpg",
+            "title": "Quando sei in viaggio.",
+            "text": "<p>Aria secca e ritmi irregolari: si perdono liquidi.</p>",
+            "overlay_color": "",
+            "text_color": "#ffffff"
+          }
+        },
+        "slide_qnYyVL": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/002_Portrait_2x_e2a4acdd-ea31-46b9-b3ec-3da31b52a908.jpg",
+            "title": "",
+            "text": "",
+            "overlay_color": "",
+            "text_color": "#ffffff"
+          }
+        },
+        "slide_GMYD8Y": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/005_Portrait_2x_925d554f-e7c5-40d9-85e5-11a7c2fb4ccf.jpg",
+            "title": "",
+            "text": "",
+            "overlay_color": "",
+            "text_color": "#ffffff"
+          }
+        }
+      },
+      "block_order": [
+        "slide_Jfbrtg",
+        "slide_FV4LDf",
+        "slide_bp3Wh8",
+        "slide_qnYyVL",
+        "slide_GMYD8Y"
+      ],
+      "name": "Bounce carousel",
+      "settings": {
+        "width": "page",
+        "gap": 30,
+        "autoplay": false,
+        "autoplay_speed": 5,
+        "padding-block-start": 45,
+        "padding-block-end": 45
+      }
     }
   },
   "order": [
-    "section_NNtT7n"
+    "section_NNtT7n",
+    "bounce_carousel_Ag9RGr"
   ]
 }
