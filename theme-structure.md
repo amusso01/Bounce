@@ -325,18 +325,20 @@ Two things outside the variables:
 
 To change weights later, edit the `--font-*--weight` values in `_fonts.scss`. Weights 300/400/500/700 exist; anything in between snaps to the nearest face.
 
-### Restyle Horizon buttons
+### Button component
 
-Horizon buttons are `.button` / `.button-secondary` (not `.btn`), sized by `--button-padding-block` / `--button-padding-inline`. Colors, radius, border width, font and text case already come from Theme settings → Buttons. `src/scss/components/_btn.scss` has the empty rule ready. Example values:
+Horizon buttons are `.button` (primary), `.button-secondary` and `.button-custom` (not `.btn`). Use those classes for any new button, and it picks up the design spec from `src/scss/components/_btn.scss`:
 
-```scss
-.button,
-.button-secondary {
-	--button-padding-block: 12px;
-	--button-padding-inline: 24px;
-	letter-spacing: -0.03em;
-}
-```
+| Property | Value | Where it comes from |
+|---|---|---|
+| Font | Simplon Mono | Theme settings → Buttons → Font (body), locked by `_fonts.scss` |
+| Size / weight / line height | 16px / 400 / 22px | `_btn.scss`: `--font-paragraph--size/--weight/--line-height` set on the button itself |
+| Padding | 11px top/bottom, 24px left/right | `_btn.scss`: `--button-padding-block` / `--button-padding-inline` on `:root` |
+| Colors, radius, border width, text case | Black / white, 12px, 0, none | Theme settings → Buttons |
+
+Horizon has no setting for button size, weight, line height or padding: the type follows the paragraph preset, and the padding is hardcoded (16px / 24px in `snippets/theme-styles-variables.liquid`).
+
+`_btn.scss` changes the tokens that the `.button` rule in `base.css` reads, never `font-size` or `padding` directly. `bounce.css` loads last, so a direct `.button { font-size: … }` would also override the Horizon rules that size a particular button on purpose. Those buttons keep their own values: cart checkout, empty-cart button, sticky add to cart, facets "See results", and the `.button-unstyled` icon buttons (padding 0).
 
 ### Header
 
@@ -515,7 +517,7 @@ The Parcel setup was copied from another project (package name `crashbaggage`, r
 | 2 | `$fontSansSerif` used in `_base.scss` and `_btn.scss` but never defined | Sass build failed | **Fixed.** `_variable.scss` now maps Horizon's font/color variables |
 | 3 | ⚠️ `_reset.scss` sets `* { margin: 0; padding: 0 }`. The rest of the file duplicates `assets/base.css` (box-sizing, `img/svg` display, `font: inherit`) | **Now live, since #1.** It removes the browser's default `p`/heading margins and list indentation. Horizon keeps those defaults and only trims the first/last child (`base.css:147-156`), so paragraphs in text blocks lose their spacing | Open. Delete `_reset.scss` and its `@use`; Horizon's base.css already resets what it needs |
 | 4 | `_base.scss` hard-coded `h1–h4` sizes (70/50/40/30px) and forced the **body** font plus weight 700 on all headings | Overrode the Typography settings: editor changes to heading font/size did nothing | **Fixed.** Rules emptied in `_base.scss`. Set sizes and fonts in the editor, or lock them via tokens (`:root { --font-h1--size: … }`) |
-| 5 | `_btn.scss` targets `.btn` and sets `--top-bottom-padding` / `--left-right-padding` (Dawn names) | No effect: Horizon markup has no `.btn`, and its buttons read `--button-padding-block/inline` | **Fixed.** `_btn.scss` now targets `.button, .button-secondary` (values still to set, see [Restyle Horizon buttons](#restyle-horizon-buttons)) |
+| 5 | `_btn.scss` targets `.btn` and sets `--top-bottom-padding` / `--left-right-padding` (Dawn names) | No effect: Horizon markup has no `.btn`, and its buttons read `--button-padding-block/inline` | **Fixed.** `_btn.scss` now targets `.button, .button-secondary` with the design spec (see [Button component](#button-component)) |
 | 6 | include-media breakpoints 480/768/1024/1440 vs Horizon's 750/990/1200/1400 | Our layout switched at different widths than Horizon's (e.g. 750–767px) | **Fixed.** `_media.scss` uses 750/990/1200/1400 (§4) |
 | 7 | No `browserslist` | Parcel had no explicit browser targets for transpiling JS and lowering CSS | **Fixed.** `"browserslist": "defaults and supports es6-module, ios_saf >= 16.4, safari >= 16.4"` (88% global coverage). 16.4 is the floor because Horizon needs import maps. The build still outputs range media queries (`@media (width<=749px)`), which every target supports |
 | 8 | `.babelrc` with only `@babel/preset-env` | Parcel warned on every build: it forced Babel (slower) and ignored Parcel's targets | **Fixed.** `.babelrc` and `@babel/*` removed. Parcel's built-in SWC transpiles using `browserslist` |

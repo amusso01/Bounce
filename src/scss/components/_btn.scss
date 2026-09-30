@@ -1,10 +1,35 @@
 @use '../base/variable' as *;
 
-// Horizon buttons are .button (primary) and .button-secondary — see "Buttons" in assets/base.css.
-// Colors, radius, border width, font and text case come from Theme settings → Buttons.
-// Size them through Horizon's variables rather than padding/width, e.g.:
-//   --button-padding-block: 12px;
-//   --button-padding-inline: 24px;
+// Button component. Design spec for every text button:
+//   16px Simplon Mono Regular (400), 22px line height, 11px top/bottom, 24px left/right padding.
+//
+// Horizon buttons are .button (primary), .button-secondary, .button-custom and the unbranded
+// "Buy it now" button (the "Buttons" rule in assets/base.css).
+//
+// What Theme settings → Buttons covers: colors, border width, radius, font family (body =
+// Simplon Mono, see _fonts.scss) and text case. Size, weight, line height and padding are not
+// settings: Horizon takes the type from the paragraph preset and hardcodes the padding
+// (16px / 24px in snippets/theme-styles-variables.liquid). That's what this file sets.
+//
+// Everything goes through the tokens that base.css rule reads, rather than the properties
+// themselves. bounce.css loads last, so a plain `.button { font-size }` here would also
+// override Horizon rules that size a particular button on purpose (sticky add to cart,
+// cart checkout, facets). Those keep their own values; every other button gets the spec.
+
+// Padding: Horizon's own tokens, on :root so a wrapper can still resize its buttons.
+:root {
+	--button-padding-block: 11px;
+	--button-padding-inline: 24px;
+}
+
+// Type: base.css ties buttons to the paragraph preset (Theme settings → Typography, 1.4 line
+// height), and the header and cart drawer squash that line height to 1. Setting the preset's
+// tokens on the button itself locks the spec wherever the button sits.
 .button,
-.button-secondary {
+.button-secondary,
+.button-custom,
+button.shopify-payment-button__button--unbranded {
+	--font-paragraph--size: 1rem;
+	--font-paragraph--weight: 400;
+	--font-paragraph--line-height: calc(22 / 16);
 }

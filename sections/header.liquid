@@ -240,7 +240,7 @@
   {% comment %} Bounce: IT | EN switcher in place of Horizon's country/language dropdown {% endcomment %}
   {% if show_language %}
     {% liquid
-      assign localization_font = '--menu-localization-font: var(--font-[localization_font]--family); ' | replace: '[localization_font]', section.settings.localization_font
+      assign localization_font = '--menu-localization-font: var(--font-[localization_font]--family); --menu-localization-font-weight: var(--font-[localization_font]--weight); ' | replace: '[localization_font]', section.settings.localization_font
       assign localization_font_size = '--menu-localization-font-size: [localization_font_size];' | replace: '[localization_font_size]', section.settings.localization_font_size
     %}
     <div

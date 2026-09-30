@@ -8,8 +8,17 @@
 	// the design. Smaller below 990px so the menu doesn't overflow into the drawer.
 	--bounce-header-gap: var(--gap-2xl);
 
+	// Menu links and IT | EN: 22px line height on 16px type in the design. Unitless,
+	// so it keeps the ratio if the size settings change.
+	--bounce-header-line-height: calc(22 / 16);
+
 	@include media('>=tablet') {
 		--bounce-header-gap: 4.5rem;
+	}
+
+	// Horizon's menu token works out to ~1.67 (snippets/theme-styles-variables.liquid)
+	.menu-list__link {
+		line-height: var(--bounce-header-line-height);
 	}
 
 	.header__column--right {
@@ -34,10 +43,12 @@ header-actions:not(:has(.header-actions__action)) {
 	display: flex;
 	align-items: center;
 	gap: 0.75em;
-	// Set by the header from its Localization font/size settings; the drawer inherits its own type
+	// Set by the header from its Localization font/size settings (body, 16px: same as
+	// the menu); the drawer inherits its own type
 	font-family: var(--menu-localization-font, inherit);
+	font-weight: var(--menu-localization-font-weight, inherit);
 	font-size: var(--menu-localization-font-size, inherit);
-	line-height: 1;
+	line-height: var(--bounce-header-line-height, inherit);
 	color: var(--color-foreground);
 }
 
@@ -60,17 +71,13 @@ header-actions:not(:has(.header-actions__action)) {
 	padding-block: var(--padding-sm);
 }
 
-// Acquista button (rendered in the header's actions slot, after the icons)
+// Acquista button (rendered in the header's actions slot, after the icons). Size and
+// type come from the button component (src/scss/components/_btn.scss).
 .bounce-header-button {
-	// 40px tall, 126px wide for "Acquista" in the design
-	--button-padding-block: 0.8125rem;
-	--button-padding-inline: 1.875rem;
-
 	// Same show/hide rule as Horizon's menu and localization: desktop only, and
 	// hidden when the menu collapses into the drawer
 	display: none;
 	margin-inline-start: calc(var(--bounce-header-gap) / 2);
-	font-size: var(--font-size--sm);
 	white-space: nowrap;
 }
 
