@@ -433,7 +433,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 - **Text:** labels, placeholders, the button and the `* Campo obbligatorio` note come from the storefront translations `bounce.contact_form.*` (`locales/it.json`, `locales/en.default.json`), so the EN version needs no editor work. Change them in Online Store → Themes → Edit default theme content. The sent message reuses Horizon's `blocks.contact_form.post_success`.
 - **Type:** title uses the H1 tokens (56px, fluid below 1000px, so 44px on phones) on a 60/56 line. Subtext 24/40, labels 16/25, all weight 400. Field text 12/25: Regular when typed, Light for the placeholder, both full-strength text colour (base.css mutes placeholders to 60%).
 - **Fields:** 40px tall, 10px side padding, square, no border, palette *color 2* (`$color4`, #F0F0F0). The message box is 170px (six lines plus 10px padding). base.css paints inputs from `input:not([type='checkbox'], [type='radio'])`, which outranks a single class, so the grey goes in through `--color-input-background` on the field.
-- **Spacing:** 20px title → subtext, 170px subtext → form (80px below 750px), 32px between fields across and down, 4px label → field, 40px message → button, 10px button → note.
+- **Spacing:** 20px title → subtext, 100px subtext → form (80px below 750px), 32px between fields across and down, 4px label → field, 40px message → button, 10px button → note.
 - **Button:** the standard `.button` (see [Button component](#button-component)), stretched to the column width.
 
 ### Smooth scroll (Lenis)
