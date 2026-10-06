@@ -160,8 +160,73 @@
         "video_loop": true,
         "button_label": "Acquista Bounce",
         "button_link": "shopify://products/bounce",
-        "padding-block-start": 45,
-        "padding-block-end": 45
+        "padding-block-start": 0,
+        "padding-block-end": 60
+      }
+    },
+    "section_gFyWAg": {
+      "type": "section",
+      "blocks": {
+        "text_XnNwTz": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "fade_up": true,
+            "fade_up_delay": 0,
+            "text": "<h2>Bounce è un mix di sali minerali essenziali per l’idratazione di tutti i giorni. Senza zuccheri, edulcoranti e aromi artificiali.</h2>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_XnNwTz"
+      ],
+      "name": "t:names.rich_text_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 25,
+        "section_width": "page-width",
+        "section_height": "custom",
+        "section_height_custom": 0,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 74,
+        "padding-block-end": 74
       }
     },
     "bounce_two_column_ingredients_kPAE3X": {
@@ -472,6 +537,7 @@
   "order": [
     "section_NNtT7n",
     "bounce_two_column_video_Ungyid",
+    "section_gFyWAg",
     "bounce_two_column_ingredients_kPAE3X",
     "section_KEfcBT",
     "bounce_carousel_Ag9RGr",
