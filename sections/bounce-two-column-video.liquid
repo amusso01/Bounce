@@ -1,12 +1,19 @@
 {%- comment -%}
   Bounce two column video: a list of icon + text rows with a button underneath on the left,
   a video on the right. The video is a file uploaded to Shopify (MP4 or WebM); YouTube and
-  Vimeo embeds aren't supported. Only Item blocks can be added. No JS; styles in
+  Vimeo embeds aren't supported. Only Item blocks can be added. No JS of our own; styles in
   src/scss/sections/_two-column-video.scss.
 
+  The video always autoplays muted on a loop, with no controls: it goes through Horizon's
+  background-media snippet, whose <video-background-component> (assets/video-background.js)
+  renders a bare <video playsinline muted autoplay loop> over the preview image. Under
+  prefers-reduced-motion Horizon hides the video and the preview image stays.
+
   Icons are theme assets (assets/bounce-icon-*.svg) inlined with inline_asset_content, so they
-  inherit currentColor and recolour inside a section with its own text colour. A theme setting
-  can't deliver an SVG: image_picker feeds image_url/image_tag, which don't process SVG.
+  inherit currentColor and recolour inside a section with its own text colour. They render at
+  their export size (the width/height on each <svg>), as in the design — no svg-wrapper class,
+  which would force them to Horizon's 20px icon size. A theme setting can't deliver an SVG:
+  image_picker feeds image_url/image_tag, which don't process SVG.
 {%- endcomment -%}
 
 {%- liquid
@@ -42,7 +49,7 @@
                   {{ block.shopify_attributes }}
                 >
                   {%- if block.settings.icon != 'none' -%}
-                    <span class="bounce-two-column-video__icon svg-wrapper" aria-hidden="true">
+                    <span class="bounce-two-column-video__icon" aria-hidden="true">
                       {{- block.settings.icon
                         | prepend: 'bounce-icon-'
                         | append: '.svg'
@@ -71,11 +78,11 @@
           class="bounce-two-column-video__col-media"
           {% render 'bounce-fade-attributes', settings: section.settings %}
         >
-          {% render 'video',
-            video: section.settings.video,
-            video_class: 'bounce-two-column-video__media',
-            video_autoplay: section.settings.video_autoplay,
-            video_loop: section.settings.video_loop
+          {% render 'background-media',
+            background_media: 'video',
+            background_video: section.settings.video,
+            background_video_position: 'cover',
+            section: section
           %}
         </div>
       </div>
@@ -195,20 +202,7 @@
       "type": "video",
       "id": "video",
       "label": "t:settings.video",
-      "info": "Upload an MP4 or WebM file."
-    },
-    {
-      "type": "checkbox",
-      "id": "video_autoplay",
-      "label": "t:settings.video_autoplay",
-      "info": "t:info.video_autoplay",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "video_loop",
-      "label": "t:settings.video_loop",
-      "default": true
+      "info": "Plays muted on a loop, without controls. Upload an MP4 or WebM file."
     },
     {
       "type": "header",
