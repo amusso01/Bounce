@@ -16,16 +16,20 @@
           "type": "text",
           "name": "t:names.title",
           "settings": {
+            "fade_up": false,
+            "fade_up_delay": 0,
             "text": "<h1>{{ closest.page.title }}</h1>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "left",
             "type_preset": "h2",
             "font": "var(--font-body--family)",
+            "font_size": "1rem",
             "line_height": "normal",
             "letter_spacing": "normal",
             "case": "none",
             "wrap": "pretty",
+            "text_color": "",
             "background": false,
             "background_color": "#00000026",
             "corner_radius": 0,
@@ -38,7 +42,9 @@
         },
         "page-content": {
           "type": "page-content",
-          "settings": {},
+          "settings": {
+            "text_color": ""
+          },
           "blocks": {}
         }
       },
@@ -46,6 +52,7 @@
         "heading",
         "page-content"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "gap": 32,
@@ -53,9 +60,259 @@
         "padding-block-start": 40,
         "padding-block-end": 80
       }
+    },
+    "section_BXGVdq": {
+      "type": "section",
+      "blocks": {
+        "text_edGJcX": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "fade_up": false,
+            "fade_up_delay": 0,
+            "text": "<h2>Cosa c’è (e cosa no) dentro Bounce.</h2>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_edGJcX"
+      ],
+      "name": "t:names.rich_text_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 25,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 112,
+        "padding-block-end": 48
+      }
+    },
+    "bounce_accordion_tcDmQM": {
+      "type": "bounce-accordion",
+      "blocks": {
+        "question_WB4zAJ": {
+          "type": "question",
+          "settings": {
+            "title": "Cosa contiene Bounce?",
+            "answer": "<p>Dentro ogni bustina di Bounce trovi solo cinque sali minerali essenziali: sodio, potassio, magnesio, calcio e cloruro. Niente zuccheri, niente edulcoranti, niente aromi artificiali, niente ingredienti dal nome inquietante.</p><p>Solo quello che serve davvero per l’idratazione quotidiana.</p>"
+          }
+        },
+        "question_fdQBH9": {
+          "type": "question",
+          "settings": {
+            "title": "Perché è insapore?",
+            "answer": "<p>È una scelta intenzionale.</p><p>Per evitare di aggiungere sostanze che con l’idratazione c’entrano poco [zuccheri, dolcificanti, aromi artificiali, coloranti], abbiamo scelto una formula neutra, pensata per l’uso frequente. Volevamo creare un prodotto essenziale, pulito per chi vuole idratarsi con regolarità senza dover aggiungere niente di indesiderato alla propria dieta.</p>"
+          }
+        },
+        "question_Ug96QW": {
+          "type": "question",
+          "settings": {
+            "title": "Perché non contiene zuccheri?",
+            "answer": ""
+          }
+        },
+        "question_emBdNG": {
+          "type": "question",
+          "settings": {
+            "title": "Serve anche se non faccio sport?",
+            "answer": ""
+          }
+        },
+        "question_MawRQH": {
+          "type": "question",
+          "settings": {
+            "title": "Quante bustine posso prendere al giorno?",
+            "answer": ""
+          }
+        }
+      },
+      "block_order": [
+        "question_WB4zAJ",
+        "question_fdQBH9",
+        "question_Ug96QW",
+        "question_emBdNG",
+        "question_MawRQH"
+      ],
+      "name": "Bounce accordion",
+      "settings": {
+        "fade_up": false,
+        "fade_up_delay": 0,
+        "width": "narrow",
+        "subtext": "",
+        "button_label": "Vedi tutte le FAQ",
+        "button_link": "",
+        "padding-block-start": 45,
+        "padding-block-end": 45
+      }
+    },
+    "section_CkET8N": {
+      "type": "section",
+      "blocks": {
+        "text_6QjydU": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "fade_up": false,
+            "fade_up_delay": 0,
+            "text": "<h2>Come funziona e come usarlo.</h2>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_6QjydU"
+      ],
+      "name": "t:names.rich_text_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 25,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 78,
+        "padding-block-end": 30
+      }
+    },
+    "bounce_accordion_tKbHPp": {
+      "type": "bounce-accordion",
+      "blocks": {
+        "question_GFE34z": {
+          "type": "question",
+          "settings": {
+            "title": "Cosa contiene Bounce?",
+            "answer": "<p>Dentro ogni bustina di Bounce trovi solo cinque sali minerali essenziali: sodio, potassio, magnesio, calcio e cloruro. Niente zuccheri, niente edulcoranti, niente aromi artificiali, niente ingredienti dal nome inquietante.</p><p>Solo quello che serve davvero per l’idratazione quotidiana.</p>"
+          }
+        },
+        "question_NAAnFK": {
+          "type": "question",
+          "settings": {
+            "title": "Perché è insapore?",
+            "answer": "<p>È una scelta intenzionale.</p><p>Per evitare di aggiungere sostanze che con l’idratazione c’entrano poco [zuccheri, dolcificanti, aromi artificiali, coloranti], abbiamo scelto una formula neutra, pensata per l’uso frequente. Volevamo creare un prodotto essenziale, pulito per chi vuole idratarsi con regolarità senza dover aggiungere niente di indesiderato alla propria dieta.</p>"
+          }
+        },
+        "question_JFCP8y": {
+          "type": "question",
+          "settings": {
+            "title": "Perché non contiene zuccheri?",
+            "answer": ""
+          }
+        },
+        "question_LrxMTN": {
+          "type": "question",
+          "settings": {
+            "title": "Serve anche se non faccio sport?",
+            "answer": ""
+          }
+        },
+        "question_QWf7Ey": {
+          "type": "question",
+          "settings": {
+            "title": "Quante bustine posso prendere al giorno?",
+            "answer": ""
+          }
+        }
+      },
+      "block_order": [
+        "question_GFE34z",
+        "question_NAAnFK",
+        "question_JFCP8y",
+        "question_LrxMTN",
+        "question_QWf7Ey"
+      ],
+      "name": "Bounce accordion",
+      "settings": {
+        "fade_up": false,
+        "fade_up_delay": 0,
+        "width": "narrow",
+        "subtext": "",
+        "button_label": "Vedi tutte le FAQ",
+        "button_link": "",
+        "padding-block-start": 20,
+        "padding-block-end": 100
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "section_BXGVdq",
+    "bounce_accordion_tcDmQM",
+    "section_CkET8N",
+    "bounce_accordion_tKbHPp"
   ]
 }
