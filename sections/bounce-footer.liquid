@@ -1,7 +1,8 @@
 {%- comment -%}
   Bounce footer: logo on the left; menu, IT | EN switcher and the Acquista
   button on the right. No blocks on purpose: everything is set from the
-  section settings. Styles live in src/scss/sections/_footer.scss.
+  section settings. The content fades up as one piece (Animation settings);
+  the background stays put. Styles live in src/scss/sections/_footer.scss.
 {%- endcomment -%}
 
 {% liquid
@@ -30,9 +31,10 @@
 {%- endcapture -%}
 
 <div class="section-background color-custom-{{ section.id }}"></div>
-<div class="section section--page-width color-custom-{{ section.id }}">
+<div class="section section--page-width bounce-footer-section color-custom-{{ section.id }}">
   <div
     class="bounce-footer spacing-style"
+    {% render 'bounce-fade-attributes', settings: section.settings %}
     style="
       {% render 'spacing-style', settings: section.settings %}
       --bounce-footer-logo-height: {{ settings.logo_height }}px;
@@ -96,6 +98,29 @@
     "groups": ["footer"]
   },
   "settings": [
+    {
+      "type": "header",
+      "content": "t:settings.animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "fade_up",
+      "label": "Fade up on scroll",
+      "info": "Fades the whole footer in as it scrolls into view. The background shows straight away.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "fade_up_delay",
+      "label": "Fade up delay",
+      "info": "Seconds to wait before fading in.",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0,
+      "visible_if": "{{ section.settings.fade_up }}"
+    },
     {
       "type": "header",
       "content": "t:content.logo"

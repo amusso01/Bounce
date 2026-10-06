@@ -46,6 +46,12 @@ function fade(el, key, sign) {
 	);
 }
 
+function play(el) {
+	observer.unobserve(el);
+	tweens.get(el)?.play();
+	tweens.delete(el);
+}
+
 function watch(el, key, sign) {
 	if (watched.has(el)) return;
 	watched.add(el);
@@ -70,6 +76,32 @@ function prepareGroup(group) {
 		});
 }
 
+// The last 10% of the page never reaches the trigger line, so an element there (the
+// footer) would stay hidden. A marker at the end of .page-wrapper comes into view when
+// the page is scrolled to the end, or on load if the page is too short to scroll, and
+// whatever is in view then plays. .page-wrapper is the scroll container from 990px and
+// runs to the end of the document below it.
+function watchPageEnd() {
+	const wrapper = document.querySelector('.page-wrapper');
+	if (!wrapper) return;
+
+	const end = document.createElement('div');
+	end.setAttribute('aria-hidden', 'true');
+	// 1px pulled back up adds no height; a 0px marker can miss by a subpixel
+	end.style.cssText = 'height: 1px; margin-top: -1px; pointer-events: none;';
+	wrapper.append(end);
+
+	new IntersectionObserver(([entry]) => {
+		if (!entry.isIntersecting) return;
+
+		tweens.forEach((tween, el) => {
+			// Hidden elements have an all-zero rect, so they are skipped
+			const { top, bottom } = el.getBoundingClientRect();
+			if (bottom > 0 && top < window.innerHeight) play(el);
+		});
+	}).observe(end);
+}
+
 export function initFades() {
 	const root = document.documentElement;
 
@@ -86,13 +118,13 @@ export function initFades() {
 				// Already above the viewport counts too, e.g. after a reload lower down
 				if (!entry.isIntersecting && entry.boundingClientRect.top > 0) return;
 
-				observer.unobserve(entry.target);
-				tweens.get(entry.target)?.play();
-				tweens.delete(entry.target);
+				play(entry.target);
 			});
 		},
 		{ rootMargin: ROOT_MARGIN },
 	);
+
+	watchPageEnd();
 
 	// Groups first, so their children are tagged before the fade-up scan
 	document.arrive('[data-fade-up-group]', { existing: true }, prepareGroup);

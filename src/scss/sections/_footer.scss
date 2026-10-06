@@ -5,6 +5,13 @@
 // on the right. Stacked and left-aligned below 750px. Shared nav values ($nav*) are in
 // _variable.scss; the switcher's own styles are in _header.scss.
 
+// The fade (data-fade-up) starts .bounce-footer 50px low. The footer is the last thing on
+// the page, so without the clip that offset adds 50px of empty scroll below it until the
+// fade ends. clip, not hidden: it doesn't make a scroll container.
+.bounce-footer-section {
+	overflow: clip;
+}
+
 .bounce-footer {
 	// The button is the footer's colours swapped (white on the black footer), so it stays
 	// visible whatever colours the section is set to. These are the tokens base.css reads

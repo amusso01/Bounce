@@ -363,6 +363,7 @@ It has **no blocks on purpose**. A section schema without `blocks` shows no "Add
 
 | Setting group | Settings |
 |---|---|
+| Animation | *Fade up on scroll* (**on**) + *Fade up delay* (0–1s). Logo, menu, `IT \| EN` and button rise in as one piece (`data-fade-up` on `.bounce-footer`); the background shows straight away (see [Fade up / fade down](#fade-up--fade-down)) |
 | Logo | *Use inverse logo* (on). The image and height come from Theme settings → Logo, the same heights as the header logo |
 | Menu | *Menu* (link list, `main-menu`) |
 | Localization | *Language selector* on/off. Same switcher as the header (`bounce-language-switcher`), same guard (needs 2 published languages) |
@@ -375,6 +376,7 @@ Styles are in `src/scss/sections/_footer.scss`:
 - Links, switcher and button use the header's nav values (16px / 400 / 22px, 72px apart) from `_variable.scss`. Links underline on hover.
 - The button swaps the footer's colours: text colour as background, background colour as text, so white on the black footer. It sets the `--color-primary-button-*` tokens that `base.css` reads, so it stays visible if the footer colours change. The section prints the matching selection highlight (`util-selection-background`).
 - Below 750px everything stacks, left-aligned: logo, links, `IT | EN`, button.
+- The section's `.section` div (`.bounce-footer-section`) has `overflow: clip`. The fade starts the content 50px low, and since the footer is the last thing on the page, that offset would otherwise add 50px of empty scroll below it until the fade ends.
 
 The *Utilities* section (copyright, policies, social links) is still in the footer group, disabled.
 
@@ -477,6 +479,7 @@ Consecutive items with `-duration` `.2`, `.4`, `.6`… start together and land o
 - **Mobile.** Fades run on every device. They don't depend on Lenis: the observer fires whatever does the scrolling. To turn them off on touch devices, add a `(hover: none) and (pointer: coarse)` check to both `snippets/bounce-motion-gate.liquid` and `initFades()`, so the hide class is never set.
 - **Hiding before JS.** `_motion.scss` sets `opacity: 0` on these elements and on group children, but only under `html.bounce-fade`. `snippets/bounce-motion-gate.liquid` adds that class from an inline script in `<head>` (both layouts), so nothing flashes. `fade.js` adds `bounce-fade-ready` once it is set up. If that hasn't happened by the window `load` event (bundle failed or blocked), the class comes off and the content shows without the fade. With `prefers-reduced-motion` the class is never set.
 - **Theme Editor.** Fades are mounted with `arrive`, so a section the editor re-renders fades in again rather than staying hidden. `shopify:section:unload` kills its tweens.
+- **End of the page.** An element in the last 10% of the page never reaches the 90% line, so `fade.js` appends a 1px marker to the end of `.page-wrapper`. When it comes into view (the page is scrolled to the end, or is too short to scroll), every waiting element that is in view plays. This is what keeps the footer from staying hidden on tall screens.
 - **Why not ScrollTrigger.** ScrollTrigger works from positions it stores, which can go stale, and an element left at its start state is invisible. `IntersectionObserver` checks each element's real box on every scroll and reflow, in either scroll container.
 - **Header.** Each `.header__row` in `sections/header.liquid` has `data-fade-down`, as FDRY puts it on `.site-header__inner`. The row is in view on load, so the observer's first callback plays it straight away. Nothing waits for scrolling or the `load` event. After a reload lower down, the row counts as above the viewport and plays too. The header background is a separate underlay, so the bar shows at once and its content drops in.
   - Don't move the attribute to `#header-component`: the sticky header fades it with `opacity` (`.header[data-sticky-state='idle']`), which the tween's inline `opacity: 1` would override.
@@ -487,9 +490,10 @@ Consecutive items with `-duration` `.2`, `.4`, `.6`… start together and land o
 - Horizon's **Text** block (which includes the Heading preset) and **Button** block;
 - our **Bounce carousel** section, which fades the whole carousel;
 - our **Bounce accordion** section, which fades each question and then the subtext and button row, each on its own;
-- our **Bounce contact form** section, which fades the title, the subtext, each field, then the button and note, each on its own. It is the only one switched on by default.
+- our **Bounce contact form** section, which fades the title, the subtext, each field, then the button and note, each on its own. Switched on by default;
+- our **Bounce footer** section, which fades the logo, menu, `IT | EN` and button as one piece over the background. Also switched on by default.
 
-All five use the same two settings:
+They all use the same two settings:
 
 | Setting | Attribute it prints | Default |
 |---|---|---|
@@ -498,7 +502,7 @@ All five use the same two settings:
 
 **Why delay, not duration.** The editor offers delay because that's what sequences items. With the heading at 0 and the button at 0.2, the button starts after the heading. That's how FDRY staggers its footer and lists. Duration only adds to the fixed 2s fade: 0.2 makes it 2.2s, and it still starts with everything else, so you can hardly see it. `data-fade-up-duration` still works when written by hand in Liquid.
 
-- **The snippet.** `snippets/bounce-fade-attributes.liquid` turns those settings into attributes. `snippets/text.liquid` and `snippets/button.liquid` render it on the text element and the button's `<a>`. The two sections pass it `section.settings` instead of `block.settings`. Other blocks share those two snippets but have no Animation settings, so they print nothing.
+- **The snippet.** `snippets/bounce-fade-attributes.liquid` turns those settings into attributes. `snippets/text.liquid` and `snippets/button.liquid` render it on the text element and the button's `<a>`. Our sections pass it `section.settings` instead of `block.settings`. Other blocks share those two snippets but have no Animation settings, so they print nothing.
 - **Adding it to another block or section.** Copy the Animation header and its two settings, and render the snippet on the element to fade, passing `block.settings` or `section.settings` (and `section.settings` in `visible_if`). Render it between two attributes with quoted values (see the whitespace note below).
 - **The headers.** Our group sits first, so the original fields get a header of their own: *Text* / *Button* in the blocks, *Carousel* / *Accordion* in the sections. Otherwise they would appear under *Animation*. All the headers reuse Horizon's translation keys, so they show in Italian in an Italian admin. The setting labels themselves are plain English.
 - **A button without a link** never fades. Horizon renders it with `aria-disabled` and dims it with `opacity: 0.5`, which the fade's inline `opacity: 1` would override.
