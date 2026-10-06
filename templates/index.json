@@ -159,7 +159,7 @@
         "video_autoplay": true,
         "video_loop": true,
         "button_label": "Acquista Bounce",
-        "button_link": "",
+        "button_link": "shopify://products/bounce",
         "padding-block-start": 45,
         "padding-block-end": 45
       }
