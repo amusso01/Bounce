@@ -96,6 +96,56 @@
         "padding-block-end": 50
       }
     },
+    "bounce_two_column_ingredients_kPAE3X": {
+      "type": "bounce-two-column-ingredients",
+      "blocks": {
+        "ingredient_gzGBaR": {
+          "type": "ingredient",
+          "settings": {
+            "title": "Sodio",
+            "subtitle": "Gestisce l’assorbimento dei liquidi."
+          }
+        },
+        "ingredient_hhm6iM": {
+          "type": "ingredient",
+          "settings": {
+            "title": "Cloruro",
+            "subtitle": "Mantiene l’equilibrio dei fluidi."
+          }
+        },
+        "ingredient_WVPrWk": {
+          "type": "ingredient",
+          "settings": {
+            "title": "Potassio",
+            "subtitle": "Supporta muscoli e nervi."
+          }
+        },
+        "ingredient_XTUtM6": {
+          "type": "ingredient",
+          "settings": {
+            "title": "Magnesio",
+            "subtitle": "Riduce stanchezza e affaticamento."
+          }
+        }
+      },
+      "block_order": [
+        "ingredient_gzGBaR",
+        "ingredient_hhm6iM",
+        "ingredient_WVPrWk",
+        "ingredient_XTUtM6"
+      ],
+      "name": "Bounce ingredients",
+      "settings": {
+        "fade_up": false,
+        "fade_up_delay": 0,
+        "width": "narrow",
+        "image": "shopify://shop_images/pexels-aysegul-aytoren-46790226-28237976.jpg",
+        "button_label": "Acquista Bounce",
+        "button_link": "shopify://products/bounce",
+        "padding-block-start": 45,
+        "padding-block-end": 45
+      }
+    },
     "section_KEfcBT": {
       "type": "section",
       "blocks": {
@@ -353,6 +403,7 @@
   },
   "order": [
     "section_NNtT7n",
+    "bounce_two_column_ingredients_kPAE3X",
     "section_KEfcBT",
     "bounce_carousel_Ag9RGr",
     "section_P4FWrM",
