@@ -96,6 +96,74 @@
         "padding-block-end": 50
       }
     },
+    "bounce_two_column_video_Ungyid": {
+      "type": "bounce-two-column-video",
+      "blocks": {
+        "item_zn7pTg": {
+          "type": "item",
+          "settings": {
+            "icon": "no-sugar",
+            "text": "Senza zuccheri"
+          }
+        },
+        "item_GBaJfk": {
+          "type": "item",
+          "settings": {
+            "icon": "no-sweeteners",
+            "text": "Senza edulcoranti"
+          }
+        },
+        "item_n9EAUh": {
+          "type": "item",
+          "settings": {
+            "icon": "no-gluten",
+            "text": "Senza glutine"
+          }
+        },
+        "item_r8Fq8X": {
+          "type": "item",
+          "settings": {
+            "icon": "no-calories",
+            "text": "Senza calorie"
+          }
+        },
+        "item_cdQeUf": {
+          "type": "item",
+          "settings": {
+            "icon": "no-carbs",
+            "text": "Senza carboidrati"
+          }
+        },
+        "item_8JjNqf": {
+          "type": "item",
+          "settings": {
+            "icon": "no-artificial-flavours",
+            "text": "Senza aromi artificiali"
+          }
+        }
+      },
+      "block_order": [
+        "item_zn7pTg",
+        "item_GBaJfk",
+        "item_n9EAUh",
+        "item_r8Fq8X",
+        "item_cdQeUf",
+        "item_8JjNqf"
+      ],
+      "name": "Bounce two column video",
+      "settings": {
+        "fade_up": false,
+        "fade_up_delay": 0,
+        "width": "narrow",
+        "video": "shopify://files/videos/99838-video-720.mp4",
+        "video_autoplay": true,
+        "video_loop": true,
+        "button_label": "Acquista Bounce",
+        "button_link": "",
+        "padding-block-start": 45,
+        "padding-block-end": 45
+      }
+    },
     "bounce_two_column_ingredients_kPAE3X": {
       "type": "bounce-two-column-ingredients",
       "blocks": {
@@ -403,6 +471,7 @@
   },
   "order": [
     "section_NNtT7n",
+    "bounce_two_column_video_Ungyid",
     "bounce_two_column_ingredients_kPAE3X",
     "section_KEfcBT",
     "bounce_carousel_Ag9RGr",
