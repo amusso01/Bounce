@@ -31,3 +31,12 @@
 .content-block {
 	padding-inline: var(--page-margin);
 }
+
+// Narrow option on Horizon's generic section (Custom section, Rich text…): the Width
+// select in sections/section.liquid prints section--narrow-width (core edit, see the
+// log). Same as Horizon's .page-width-narrow: the grid's centre column drops to
+// 1024px, while the background and background media stay full-bleed.
+.section--narrow-width {
+	--page-content-width: var(--narrow-page-width);
+	--page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
+}

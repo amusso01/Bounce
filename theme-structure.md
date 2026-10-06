@@ -301,6 +301,7 @@ Gutters: `.content-block` adds Horizon's `--page-margin` on the sides only (16px
   </div>
   ```
 - **A whole section narrow or wide.** Inside a normal Horizon section the content column is already capped at 1120px, so `.content-max--wide` can't grow past it. Put Horizon's own class on the section wrapper instead, e.g. in a `bounce-*` section schema: `"class": "page-width-wide"`. It re-points `--page-width` for everything inside and keeps the full-bleed background. `page-width-narrow` works the same way.
+- **Horizon's Custom section / Rich text** (`sections/section.liquid`, one file for all its presets) has a *Narrow* option under Size → Width, next to *Page* and *Full*. It prints `section--narrow-width`, which `src/scss/base/_layout.scss` turns into a 1024px content column, the same way as `.page-width-narrow`. The background still runs edge to edge.
 
 **Known trade-off.** A few Horizon files are hard-coded for its stock widths:
 - `sections/main-blog.liquid` pins the blog grid to the narrow token, so it's now 1024px.
@@ -748,3 +749,4 @@ Every Horizon file we've changed, and why:
 | `blocks/text.liquid`, `blocks/button.liquid` | Schema: an *Animation* group (`fade_up`, `fade_up_delay`) at the top of the settings, then a *Text* / *Button* header over the original fields | Fade-up option in the editor (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/text.liquid`, `snippets/button.liquid` | Render `bounce-fade-attributes` on the text element and on the button's `<a>` (the button only when it has a link) | Same |
 | `sections/section.liquid` | *Padding* top / bottom: max 100 → **200px**, step 1 → **2** | The design needs taller spacing in Custom section (and its Rich text preset, the same file). Shopify caps a range at 101 steps, so 0–200 needs a 2px step; every saved value was already even |
+| `sections/section.liquid` | Schema: `narrow-width` (*Narrow*, `t:options.narrow`) added first to the `section_width` select; default still `page-width` | Narrow (1024px) Rich text, like our own sections. `snippets/section.liquid` already prints `section--{{ section_width }}`; the width itself is `.section--narrow-width` in `_layout.scss` (see [Content widths](#content-widths)) |
