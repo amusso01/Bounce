@@ -4,9 +4,8 @@
 // Bounce two column ingredients (sections/bounce-two-column-ingredients.liquid).
 // Image on the left, ingredient list + button on the right.
 
-// From the design, measured at the 1120px content width:
-// image ~640px, gutter ~120px, ingredient column ~350px.
-$columnGap: 120px;
+// Two equal columns: at the 1120px content width, image 510px, gutter 100px, ingredients 510px.
+$columnGap: 100px;
 $stackGap: 40px; // between the stacked blocks on phones
 $mediaRadius: 16px;
 $rowPaddingTop: 24px;
@@ -19,7 +18,7 @@ $buttonGap: 40px; // the floor between the list and the button
 	gap: $stackGap;
 
 	@include media('>=mobile') {
-		grid-template-columns: 1.8fr 1fr;
+		grid-template-columns: 1fr 1fr;
 		gap: $columnGap;
 	}
 }
