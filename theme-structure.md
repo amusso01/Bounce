@@ -417,7 +417,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 | *Label* + *Link* | The button shows only when both are set |
 | *Padding* top / bottom | 45px / 45px |
 
-- **Type:** questions (and the subtext) 24px / 400 / 24px; answers 16px / 300 / 24px; all in the page text colour.
+- **Type:** questions (and the subtext) 24px / 400 / 1.15 (27.6px); answers 16px / 300 / 24px; all in the page text colour.
 - **Rows:** 24px / 20px padding, with a 1px dashed line under every question (the browser's standard dash). An open question turns palette *color 2* (`$color4`, #F0F0F0), and its line becomes a solid seam in the page colour, so two open answers stay separate.
 - **Behaviour:** several answers can be open at once; all start closed; the chevron flips when open. Animation is 300ms, or none for viewers who ask for reduced motion.
 - **AccordionJS CSS:** not imported. It's mostly demo styling (Arial, borders, a "+" icon), so the few rules its JS needs (panel `overflow`, `height`, `visibility`) live in `_accordion.scss`. Panels start collapsed in CSS, so answers don't flash open before the deferred script runs.
