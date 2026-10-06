@@ -1,0 +1,9 @@
+// Heading line heights, locked to the design: 60px lines at the desktop sizes in
+// Theme settings → Typography (H1 56px, H2 40px). Unitless, so they follow the fluid
+// H1 size down to phones. Horizon prints these on :root from the H1/H2 Line height
+// settings (snippets/theme-styles-variables.liquid); bounce.css loads after it, so these
+// win and those two settings do nothing.
+:root {
+	--font-h1--line-height: calc(60 / 56);
+	--font-h2--line-height: calc(60 / 40);
+}

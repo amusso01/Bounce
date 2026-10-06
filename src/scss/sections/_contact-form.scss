@@ -40,13 +40,13 @@ $noteGap: 10px; // button → note
 }
 
 // A <p> in the H1 preset (Theme settings → Typography → H1: 56px, fluid below 1000px),
-// on a 60px line at 56px
+// on the shared H1 line (60px at 56px, base/_tokens.scss)
 .bounce-contact-form__title {
 	font-family: var(--font-h1--family);
 	font-style: var(--font-h1--style);
 	font-weight: var(--font-h1--weight);
 	font-size: var(--font-h1--size);
-	line-height: calc(60 / 56);
+	line-height: var(--font-h1--line-height);
 	letter-spacing: var(--font-h1--letter-spacing);
 	text-transform: var(--font-h1--case);
 }

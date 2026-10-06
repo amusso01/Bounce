@@ -82,7 +82,7 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 | Group | Examples | Driven by setting? |
 |---|---|---|
 | Font families | `--font-body--family`, `--font-heading--family`, `--font-subheading--family`, `--font-accent--family` (+ `--style`, `--weight`) | **Overridden by us**: all four are Simplon Mono with fixed weights (see [Custom font](#custom-font-simplon-mono)) |
-| Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px) |
+| Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px). **H1 and H2 `--line-height` are overridden by us** in `src/scss/base/_tokens.scss`: 60/56 and 60/40, a 60px line at the desktop sizes, so their *Line height* settings do nothing |
 | Fixed type scale | `--font-size--3xs` … `--font-size--6xl` | No |
 | Page widths | `--narrow-page-width`, `--normal-page-width`, `--wide-page-width` (Horizon: 1440 / 1920 / 2400px) | **Overridden by us** to 1024 / 1120 / 1440px (see [Content widths](#content-widths)). `page_width` setting picks one → `body.page-width-*` |
 | Spacing | `--padding-3xs…6xl`, `--margin-3xs…6xl`, `--gap-3xs…3xl` | No |
@@ -255,12 +255,14 @@ Use `{% style %}` (Liquid allowed, live-updates in the editor), not `{% styleshe
 
 ### Change a design token globally
 
+Global token overrides go in `src/scss/base/_tokens.scss`. It already locks the H1 and H2 line heights:
+
 ```scss
-// src/scss/base/_tokens.scss  (new partial; add `@use './scss/base/tokens';` to src/bounce.scss)
+// src/scss/base/_tokens.scss
 :root {
-	--style-border-radius-md: 0;
-	--font-heading--spacing: 0.4em;
-	--button-padding-inline: 2rem;
+	--font-h1--line-height: calc(60 / 56); // 60px at the 56px desktop H1, scales with the fluid size
+	--font-h2--line-height: calc(60 / 40); // 60px at 40px
+	--style-border-radius-md: 0;          // e.g. more tokens here
 }
 ```
 
@@ -433,7 +435,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 
 - **Fields:** Nome\*, E-Mail\*, Numero di telefono, Nazione, Messaggio\*. Two columns from 750px (the message spans both), one below. Required fields carry `required`; the asterisk is `aria-hidden`. They post as `contact[name]`, `[email]`, `[phone]`, `[country]` and `[body]`, which is how they are labelled in the notification email.
 - **Text:** labels, placeholders, the button and the `* Campo obbligatorio` note come from the storefront translations `bounce.contact_form.*` (`locales/it.json`, `locales/en.default.json`), so the EN version needs no editor work. Change them in Online Store → Themes → Edit default theme content. The sent message reuses Horizon's `blocks.contact_form.post_success`.
-- **Type:** title uses the H1 tokens (56px, fluid below 1000px, so 44px on phones) on a 60/56 line. Subtext 24/40, labels 16/25, all weight 400. Field text 12/25: Regular when typed, Light for the placeholder, both full-strength text colour (base.css mutes placeholders to 60%).
+- **Type:** title uses the H1 tokens (56px, fluid below 1000px, so 44px on phones), including the shared 60/56 line height. Subtext 24/40, labels 16/25, all weight 400. Field text 12/25: Regular when typed, Light for the placeholder, both full-strength text colour (base.css mutes placeholders to 60%).
 - **Fields:** 40px tall, 10px side padding, square, no border, palette *color 2* (`$color4`, #F0F0F0). The message box is 170px (six lines plus 10px padding). base.css paints inputs from `input:not([type='checkbox'], [type='radio'])`, which outranks a single class, so the grey goes in through `--color-input-background` on the field.
 - **Spacing:** 20px title → subtext, 100px subtext → form (80px below 750px), 32px between fields across and down, 4px label → field, 40px message → button, 10px button → note.
 - **Button:** the standard `.button` (see [Button component](#button-component)), stretched to the column width.

@@ -4,8 +4,8 @@
 // Bounce two column video (sections/bounce-two-column-video.liquid).
 // Claim list + button on the left, video on the right.
 
-// From the design (XD, 1120px content width): list 352px, gap 128px, video 640 × 427 (3:2)
-$columnGap: 128px;
+// At the 1120px content width: list 387px, gap 100px, video 633 × 422 (3:2)
+$columnGap: 100px;
 $columnGapCompact: 40px;
 $mediaRadius: 24px;
 
@@ -13,24 +13,23 @@ $mediaRadius: 24px;
 $rowPaddingBlock: 14.5px;
 $buttonGap: 42px;
 
-// Icons are centred 31px in from the rule's left end and every label starts 104px in:
-// 16px inset + 30px icon box + 58px gap. The box is the largest icon (no-carbs, 30 × 30);
+// Icons are centred 31px in from the rule's left end and every label starts 94px in:
+// 16px inset + 30px icon box + 48px gap. The box is the largest icon (no-carbs, 30 × 30);
 // widen it if a larger icon is ever added, or that icon will push its label out of line.
 $iconInset: 16px;
 $iconBox: 30px;
-$iconGap: 58px;
+$iconGap: 48px;
 
-// Stacked below tablet; side by side from there, in the design's 352:640 split. Below 990px
-// that split leaves the list ~220px wide and every label wraps, so phones and small tablets
-// stack. The design's 128px gap only from desktop, where the content column reaches 1120px.
-// `end` puts the button's bottom level with the video's bottom, as drawn.
+// Stacked below tablet; side by side from there, 11:18. Below 990px that split leaves the
+// list ~240px wide and every label wraps, so phones and small tablets stack. The full gap
+// only from desktop, where the content column reaches 1120px.
 .bounce-two-column-video__grid {
 	display: grid;
 	gap: $columnGapCompact;
 
 	@include media('>=tablet') {
-		grid-template-columns: 11fr 20fr;
-		align-items: end;
+		grid-template-columns: 11fr 18fr;
+		align-items: center;
 	}
 
 	@include media('>=desktop') {
