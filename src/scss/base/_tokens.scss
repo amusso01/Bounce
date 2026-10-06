@@ -1,9 +1,16 @@
 // Heading line heights, locked to the design: 60px lines at the desktop sizes in
 // Theme settings → Typography (H1 56px, H2 40px). Unitless, so they follow the fluid
-// H1 size down to phones. Horizon prints these on :root from the H1/H2 Line height
+// sizes down to phones. Horizon prints these on :root from the H1/H2 Line height
 // settings (snippets/theme-styles-variables.liquid); bounce.css loads after it, so these
 // win and those two settings do nothing.
+//
+// H2 size: Horizon only makes sizes from 48px fluid, as clamp(next smaller size + 4px,
+// size × 0.1vw, size). So H1 56px slides from 56px at a 1000px viewport to 44px at 786px,
+// while H2 40px stays 40px everywhere. This gives H2 the same curve: 44/56 of its size at
+// the bottom (≈31.4px), 4vw (0.1vw per px of 40px) in between. The H2 Size setting still
+// sets the desktop size.
 :root {
 	--font-h1--line-height: calc(60 / 56);
 	--font-h2--line-height: calc(60 / 40);
+	--font-h2--size: clamp(calc(var(--font-size--h2) * 44 / 56), 4vw, var(--font-size--h2));
 }

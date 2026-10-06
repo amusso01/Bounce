@@ -82,7 +82,7 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 | Group | Examples | Driven by setting? |
 |---|---|---|
 | Font families | `--font-body--family`, `--font-heading--family`, `--font-subheading--family`, `--font-accent--family` (+ `--style`, `--weight`) | **Overridden by us**: all four are Simplon Mono with fixed weights (see [Custom font](#custom-font-simplon-mono)) |
-| Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px). **H1 and H2 `--line-height` are overridden by us** in `src/scss/base/_tokens.scss`: 60/56 and 60/40, a 60px line at the desktop sizes, so their *Line height* settings do nothing |
+| Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px). **H1 and H2 `--line-height` are overridden by us** in `src/scss/base/_tokens.scss`: 60/56 and 60/40, a 60px line at the desktop sizes, so their *Line height* settings do nothing. **H2 `--size` is made fluid there too**: Horizon only scales sizes from 48px, so H1 goes 56 → 44px below a 1000px viewport but H2 stayed 40px. Ours follows H1's curve, 40 → ≈31.4px (44/56), and still takes its desktop size from the setting |
 | Fixed type scale | `--font-size--3xs` … `--font-size--6xl` | No |
 | Page widths | `--narrow-page-width`, `--normal-page-width`, `--wide-page-width` (Horizon: 1440 / 1920 / 2400px) | **Overridden by us** to 1024 / 1120 / 1440px (see [Content widths](#content-widths)). `page_width` setting picks one → `body.page-width-*` |
 | Spacing | `--padding-3xs…6xl`, `--margin-3xs…6xl`, `--gap-3xs…3xl` | No |
@@ -255,13 +255,14 @@ Use `{% style %}` (Liquid allowed, live-updates in the editor), not `{% styleshe
 
 ### Change a design token globally
 
-Global token overrides go in `src/scss/base/_tokens.scss`. It already locks the H1 and H2 line heights:
+Global token overrides go in `src/scss/base/_tokens.scss`. It already locks the H1 and H2 line heights and makes H2 fluid:
 
 ```scss
 // src/scss/base/_tokens.scss
 :root {
 	--font-h1--line-height: calc(60 / 56); // 60px at the 56px desktop H1, scales with the fluid size
 	--font-h2--line-height: calc(60 / 40); // 60px at 40px
+	--font-h2--size: clamp(calc(var(--font-size--h2) * 44 / 56), 4vw, var(--font-size--h2)); // H1's curve
 	--style-border-radius-md: 0;          // e.g. more tokens here
 }
 ```
