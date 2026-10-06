@@ -172,6 +172,9 @@
         "question_emBdNG",
         "question_MawRQH"
       ],
+      "custom_css": [
+        ".bounce-accordion__trigger {padding-left: 0px !important;}"
+      ],
       "name": "Bounce accordion",
       "settings": {
         "fade_up": false,
@@ -294,6 +297,9 @@
         "question_JFCP8y",
         "question_LrxMTN",
         "question_QWf7Ey"
+      ],
+      "custom_css": [
+        ".bounce-accordion__trigger {padding-left: 0px !important;}"
       ],
       "name": "Bounce accordion",
       "settings": {
