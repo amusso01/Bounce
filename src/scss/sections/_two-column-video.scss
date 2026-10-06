@@ -1,0 +1,110 @@
+@use '../base/variable' as *;
+@use '../base/media' as *;
+
+// Bounce two column video (sections/bounce-two-column-video.liquid).
+// Claim list + button on the left, video on the right.
+
+// From the design
+$columnGap: 40px;
+$rowPaddingBlock: 14px;
+$iconGap: 20px;
+$iconSize: 25px;
+$buttonGap: 24px;
+$mediaRadius: 16px;
+
+// The icons have very different aspect ratios (0.37 to 1.57), so at a uniform 25px height
+// they range from ~9px to ~40px wide. A fixed column keeps every label starting at the same
+// x; widen this if an icon wider than the current widest (no-sugar, ~40px) is ever added.
+$iconColumn: 40px;
+
+// Stacked on phones; 1fr / 1.5fr side by side from Horizon's mobile/desktop switch.
+.bounce-two-column-video__grid {
+	display: grid;
+	gap: $columnGap;
+
+	@include media('>=mobile') {
+		grid-template-columns: 1fr 1.5fr;
+		align-items: center;
+	}
+}
+
+.bounce-two-column-video__list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+// Dashed rule under every row, including the last — same recipe as the accordion, so the
+// two sections draw the same line.
+.bounce-two-column-video__row {
+	display: flex;
+	align-items: center;
+	gap: $iconGap;
+	padding-block: $rowPaddingBlock;
+	border-bottom: 1px dashed rgb(var(--color-foreground-rgb) / var(--opacity-40));
+}
+
+// Inline SVG, so it recolours with the section's text colour — but only because of the
+// `fill` below: the exported icons carry no fill attribute, and SVG's default fill is black,
+// not currentColor. Without it they'd stay black and vanish on a dark background.
+.bounce-two-column-video__icon {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: $iconColumn;
+	color: var(--color-foreground);
+
+	svg {
+		width: auto;
+		height: $iconSize;
+	}
+
+	// On the shapes, not just the <svg>: a CSS rule outranks a fill="#000" presentation
+	// attribute, so this still holds if a future export arrives with its colour baked in.
+	svg,
+	svg :is(path, g, circle, ellipse, rect, polygon, polyline) {
+		fill: currentColor;
+	}
+}
+
+.bounce-two-column-video__text {
+	font-family: var(--font-body--family);
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: calc(24 / 16);
+	color: var(--color-foreground);
+}
+
+// Spans the left column, as drawn. Size, type and padding come from _btn.scss; base.css
+// sets the button to `display: grid; width: fit-content`, so only the width is overridden —
+// switching the display would drop its text centring.
+.bounce-two-column-video__button {
+	width: 100%;
+	margin-top: $buttonGap;
+
+	// No rows above: nothing to keep a distance from
+	&:first-child {
+		margin-top: 0;
+	}
+}
+
+.bounce-two-column-video__col-media {
+	border-radius: $mediaRadius;
+	overflow: hidden;
+
+	// deferred-media is inline by default; the placeholder wrapper needs the same treatment
+	> * {
+		display: block;
+		width: 100%;
+	}
+
+	video,
+	iframe,
+	img,
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+}
