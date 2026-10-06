@@ -1,0 +1,251 @@
+{%- comment -%}
+  Bounce two column ingredients: an image on the left, a list of ingredients (title + subtitle,
+  separated by dashed rules) with a button underneath on the right. Only Ingredient blocks can
+  be added. No JS; styles in src/scss/sections/_two-column-ingredients.scss.
+
+  Sibling of sections/bounce-two-column-video.liquid: same shell, same settings, media on the
+  other side.
+{%- endcomment -%}
+
+{%- liquid
+  case section.settings.width
+    when 'narrow'
+      assign container_class = 'content-max content-max--narrow'
+    when 'full'
+      assign container_class = ''
+    else
+      assign container_class = 'content-max'
+  endcase
+
+  assign show_button = false
+  if section.settings.button_label != blank and section.settings.button_link != blank
+    assign show_button = true
+  endif
+-%}
+
+<div
+  class="bounce-two-column-ingredients spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="content-block">
+    <div class="{{ container_class }}">
+      <div class="bounce-two-column-ingredients__grid">
+        <div
+          class="bounce-two-column-ingredients__col-media"
+          {% render 'bounce-fade-attributes', settings: section.settings %}
+        >
+          {%- if section.settings.image != blank -%}
+            {{
+              section.settings.image
+              | image_url: width: 1400
+              | image_tag:
+                widths: '400, 600, 800, 1100, 1400',
+                sizes: '(min-width: 1200px) 640px, (min-width: 750px) 55vw, 100vw',
+                loading: 'lazy',
+                class: 'bounce-two-column-ingredients__image'
+            }}
+          {%- else -%}
+            {{
+              'hero-apparel-1'
+              | placeholder_svg_tag: 'bounce-two-column-ingredients__image bounce-two-column-ingredients__image--placeholder'
+            }}
+          {%- endif -%}
+        </div>
+
+        <div class="bounce-two-column-ingredients__col-list">
+          {%- if section.blocks.size > 0 -%}
+            <ul class="bounce-two-column-ingredients__list" role="list">
+              {%- for block in section.blocks -%}
+                <li
+                  class="bounce-two-column-ingredients__row"
+                  {% render 'bounce-fade-attributes', settings: section.settings %}
+                  {{ block.shopify_attributes }}
+                >
+                  {%- if block.settings.title != blank -%}
+                    <h3 class="bounce-two-column-ingredients__title">{{ block.settings.title | escape }}</h3>
+                  {%- endif -%}
+                  {%- if block.settings.subtitle != blank -%}
+                    <p class="bounce-two-column-ingredients__subtitle">{{ block.settings.subtitle | escape }}</p>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          {%- if show_button -%}
+            <a
+              href="{{ section.settings.button_link }}"
+              class="button bounce-two-column-ingredients__button"
+              {% render 'bounce-fade-attributes', settings: section.settings %}
+            >
+              {{- section.settings.button_label | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bounce two column ingredients",
+  "class": "bounce-two-column-ingredients-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:settings.title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:settings.animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "fade_up",
+      "label": "Fade up on scroll",
+      "info": "The image, each ingredient, then the button fades in on its own as it scrolls into view.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "fade_up_delay",
+      "label": "Fade up delay",
+      "info": "Seconds to wait before fading in. Give later items a higher delay (e.g. heading 0, button 0.2) so they arrive one after another.",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0,
+      "visible_if": "{{ section.settings.fade_up }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "narrow",
+          "label": "t:options.narrow"
+        },
+        {
+          "value": "page",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page"
+    },
+    {
+      "type": "header",
+      "content": "t:names.image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:settings.image"
+    },
+    {
+      "type": "header",
+      "content": "t:names.button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:settings.label",
+      "info": "The button shows only when both a label and a link are set."
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:settings.link"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 45
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 45
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bounce two column ingredients",
+      "settings": {
+        "button_label": "Acquista Bounce"
+      },
+      "blocks": [
+        {
+          "type": "ingredient",
+          "settings": {
+            "title": "Sodio",
+            "subtitle": "Gestisce l’assorbimento dei liquidi."
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "title": "Cloruro",
+            "subtitle": "Mantiene l’equilibrio dei fluidi."
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "title": "Potassio",
+            "subtitle": "Supporta muscoli e nervi."
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "title": "Magnesio",
+            "subtitle": "Riduce stanchezza e affaticamento."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

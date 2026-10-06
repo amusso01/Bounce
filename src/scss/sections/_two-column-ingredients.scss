@@ -1,0 +1,104 @@
+@use '../base/variable' as *;
+@use '../base/media' as *;
+
+// Bounce two column ingredients (sections/bounce-two-column-ingredients.liquid).
+// Image on the left, ingredient list + button on the right.
+
+// From the design, measured at the 1120px content width:
+// image ~640px, gutter ~120px, ingredient column ~350px.
+$columnGap: 120px;
+$stackGap: 40px; // between the stacked blocks on phones
+$mediaRadius: 16px;
+$rowPaddingTop: 24px;
+$rowPaddingBottom: 16px;
+$titleGap: 8px;
+$buttonGap: 40px; // the floor between the list and the button
+
+.bounce-two-column-ingredients__grid {
+	display: grid;
+	gap: $stackGap;
+
+	@include media('>=mobile') {
+		grid-template-columns: 1.8fr 1fr;
+		gap: $columnGap;
+	}
+}
+
+// align-self so the rounded container hugs the image instead of stretching past it when the
+// ingredient list is the taller column — otherwise the bottom corners would curve around
+// empty space.
+.bounce-two-column-ingredients__col-media {
+	align-self: start;
+	border-radius: $mediaRadius;
+	overflow: hidden;
+
+	img,
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+}
+
+// A flex column so the button can be pushed to the bottom, lining its bottom edge up with the
+// image's.
+.bounce-two-column-ingredients__col-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.bounce-two-column-ingredients__list {
+	// Keeps the button clear of the list when the list is the taller column and the auto
+	// margin below has no space left to give. Auto margins don't collapse in flex, so both apply.
+	margin: 0 0 $buttonGap;
+	padding: 0;
+	list-style: none;
+}
+
+// Dashed rule under every ingredient, including the last — same recipe as the accordion and
+// the two-column video section, so all three draw the same line.
+.bounce-two-column-ingredients__row {
+	padding-top: $rowPaddingTop;
+	padding-bottom: $rowPaddingBottom;
+	border-bottom: 1px dashed rgb(var(--color-foreground-rgb) / var(--opacity-40));
+
+	// The first title sits level with the top of the image, as drawn
+	&:first-child {
+		padding-top: 0;
+	}
+}
+
+.bounce-two-column-ingredients__title {
+	margin: 0 0 $titleGap;
+	font-family: var(--font-body--family);
+	font-size: 1.5rem;
+	font-weight: 400;
+	line-height: calc(24 / 24);
+	color: var(--color-foreground);
+}
+
+.bounce-two-column-ingredients__subtitle {
+	margin: 0;
+	font-family: var(--font-body--family);
+	font-size: 1rem;
+	font-weight: 300;
+	line-height: calc(24 / 16);
+	color: var(--color-foreground);
+}
+
+// Spans the ingredient column. Size, type and padding come from _btn.scss; base.css sets the
+// button to `display: grid; width: fit-content`, so only the width is overridden — switching
+// the display would drop its text centring.
+.bounce-two-column-ingredients__button {
+	width: 100%;
+
+	// No list above: nothing to keep a distance from
+	&:first-child {
+		margin-top: 0;
+	}
+
+	// Takes the leftover height so it sits at the bottom of the column
+	@include media('>=mobile') {
+		margin-top: auto;
+	}
+}
