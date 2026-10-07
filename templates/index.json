@@ -267,7 +267,7 @@
       ],
       "name": "Bounce ingredients",
       "settings": {
-        "fade_up": false,
+        "fade_up": true,
         "fade_up_delay": 0,
         "width": "page",
         "image": "shopify://shop_images/pexels-aysegul-aytoren-46790226-28237976.jpg",
