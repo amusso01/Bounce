@@ -33,3 +33,18 @@ button.shopify-payment-button__button--unbranded {
 	--font-paragraph--weight: 400;
 	--font-paragraph--line-height: calc(22 / 16);
 }
+
+// Hover: the button inverts. Its text colour becomes the fill, and its fill becomes the
+// text and a 1px border: black → white with a black border, white (footer, transparent
+// header) → black with a white border. Built from the at-rest tokens, so it follows any
+// wrapper that recolours them without hover values of its own; Horizon's
+// --color-primary-button-hover-* are no longer read. The border is base.css's inset
+// box-shadow, so nothing shifts. Not .button-custom (colours per block in the editor),
+// .button-secondary, icon buttons (.button-unstyled) or disabled buttons.
+.button:not(.button-secondary, .button-unstyled, :disabled, [aria-disabled='true']):hover,
+button.shopify-payment-button__button--unbranded:hover:not([disabled]) {
+	--button-color: var(--color-primary-button-background);
+	--button-background-color: var(--color-primary-button-text);
+	--button-border-color: var(--color-primary-button-background);
+	--button-border-width: 1px;
+}

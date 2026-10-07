@@ -15,13 +15,11 @@
 .bounce-footer {
 	// The button is the footer's colours swapped (white on the black footer), so it stays
 	// visible whatever colours the section is set to. These are the tokens base.css reads
-	// for .button; the header's transparent mode swaps them the same way.
+	// for .button; the header's transparent mode swaps them the same way. On hover it swaps
+	// back (black with a 1px white border), built from these same tokens in _btn.scss.
 	--color-primary-button-background: var(--color-foreground);
 	--color-primary-button-border: var(--color-foreground);
 	--color-primary-button-text: var(--color-background);
-	--color-primary-button-hover-background: rgb(var(--color-foreground-rgb) / var(--opacity-85));
-	--color-primary-button-hover-border: rgb(var(--color-foreground-rgb) / var(--opacity-85));
-	--color-primary-button-hover-text: var(--color-background);
 
 	--bounce-footer-gap: #{$navGapCompact};
 

@@ -336,8 +336,9 @@ Horizon buttons are `.button` (primary), `.button-secondary` and `.button-custom
 | Size / weight / line height | 16px / 400 / 22px | `_btn.scss`: `--font-paragraph--size/--weight/--line-height` set on the button itself |
 | Padding | 11px top/bottom, 24px left/right | `_btn.scss`: `--button-padding-block` / `--button-padding-inline` on `:root` |
 | Colors, radius, border width, text case | Black / white, 12px, 0, none | Theme settings → Buttons |
+| Hover (`.button` and the unbranded *Buy it now*) | Inverts: the text color becomes the fill, and the fill becomes the text plus a 1px border. Black → white with a black border; white (footer, transparent header) → black with a white border | `_btn.scss`, built from the at-rest `--color-primary-button-*` tokens |
 
-Horizon has no setting for button size, weight, line height or padding: the type follows the paragraph preset, and the padding is hardcoded (16px / 24px in `snippets/theme-styles-variables.liquid`).
+Horizon has no setting for button size, weight, line height or padding: the type follows the paragraph preset, and the padding is hardcoded (16px / 24px in `snippets/theme-styles-variables.liquid`). It has no hover color setting either: it shifts the at-rest colors slightly (`util-palette-hover-shift`) into `--color-primary-button-hover-*`. `.button` no longer reads those, so a wrapper that recolors its buttons only sets the at-rest tokens and the hover follows. `.button-secondary`, `.button-custom` (colors per block in the editor), `.button-unstyled` icon buttons and disabled buttons keep Horizon's hover. The 1px border is the inset `box-shadow` that `base.css` draws, so the button doesn't change size.
 
 `_btn.scss` changes the tokens that the `.button` rule in `base.css` reads, never `font-size` or `padding` directly. `bounce.css` loads last, so a direct `.button { font-size: … }` would also override the Horizon rules that size a particular button on purpose. Those buttons keep their own values: cart checkout, empty-cart button, sticky add to cart, facets "See results", and the `.button-unstyled` icon buttons (padding 0).
 
@@ -375,7 +376,7 @@ It has **no blocks on purpose**. A section schema without `blocks` shows no "Add
 Styles are in `src/scss/sections/_footer.scss`:
 
 - Links, switcher and button use the header's nav values (16px / 400 / 22px, 72px apart) from `_variable.scss`. Links underline on hover.
-- The button swaps the footer's colours: text colour as background, background colour as text, so white on the black footer. It sets the `--color-primary-button-*` tokens that `base.css` reads, so it stays visible if the footer colours change. The selection highlight inside it follows those tokens too (see [Text selection](#text-selection)).
+- The button swaps the footer's colours: text colour as background, background colour as text, so white on the black footer. It sets the `--color-primary-button-*` tokens that `base.css` reads, so it stays visible if the footer colours change. On hover it inverts back: black with white text and a 1px white border (see [Button component](#button-component)). The selection highlight inside it follows those tokens too (see [Text selection](#text-selection)).
 - Below 750px everything stacks, left-aligned: logo, links, `IT | EN`, button.
 - The section's `.section` div (`.bounce-footer-section`) has `overflow: clip`. The fade starts the content 50px low, and since the footer is the last thing on the page, that offset would otherwise add 50px of empty scroll below it until the fade ends.
 
