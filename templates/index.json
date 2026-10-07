@@ -152,7 +152,7 @@
       ],
       "name": "Bounce two column video",
       "settings": {
-        "fade_up": false,
+        "fade_up": true,
         "fade_up_delay": 0,
         "width": "page",
         "video": "shopify://files/videos/99838-video-720.mp4",
