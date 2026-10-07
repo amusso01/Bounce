@@ -528,7 +528,7 @@
         "button_label": "Vedi tutte le FAQ",
         "button_link": "shopify://pages/faqs",
         "padding-block-start": 45,
-        "padding-block-end": 45
+        "padding-block-end": 100
       }
     }
   },
