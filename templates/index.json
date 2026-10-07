@@ -34,7 +34,7 @@
             "background_color": "#00000026",
             "corner_radius": 0,
             "padding-block-start": 19,
-            "padding-block-end": 46,
+            "padding-block-end": 57,
             "padding-inline-start": 0,
             "padding-inline-end": 0
           },
@@ -156,8 +156,6 @@
         "fade_up_delay": 0,
         "width": "narrow",
         "video": "shopify://files/videos/99838-video-720.mp4",
-        "video_autoplay": true,
-        "video_loop": true,
         "button_label": "Acquista Bounce",
         "button_link": "shopify://products/bounce",
         "padding-block-start": 0,
