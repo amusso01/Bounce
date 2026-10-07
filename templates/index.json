@@ -154,7 +154,7 @@
       "settings": {
         "fade_up": false,
         "fade_up_delay": 0,
-        "width": "narrow",
+        "width": "page",
         "video": "shopify://files/videos/99838-video-720.mp4",
         "button_label": "Acquista Bounce",
         "button_link": "shopify://products/bounce",
@@ -269,7 +269,7 @@
       "settings": {
         "fade_up": false,
         "fade_up_delay": 0,
-        "width": "narrow",
+        "width": "page",
         "image": "shopify://shop_images/pexels-aysegul-aytoren-46790226-28237976.jpg",
         "button_label": "Acquista Bounce",
         "button_link": "shopify://products/bounce",

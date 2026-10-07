@@ -14,10 +14,12 @@
     "bounce_footer": {
       "type": "bounce-footer",
       "settings": {
+        "fade_up": true,
+        "fade_up_delay": 0,
         "inverse_logo": true,
         "menu": "main-menu",
         "show_language": true,
-        "button_label": "",
+        "button_label": "ACQUISTA",
         "button_link": "shopify://products/bounce",
         "background_color": "{{ settings.color_palette.foreground }}",
         "text_color": "{{ settings.color_palette.background }}",
