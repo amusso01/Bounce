@@ -1,8 +1,10 @@
 {%- comment -%}
-  Bounce footer: logo on the left; menu, IT | EN switcher and the Acquista
-  button on the right. No blocks on purpose: everything is set from the
-  section settings. The content fades up as one piece (Animation settings);
-  the background stays put. Styles live in src/scss/sections/_footer.scss.
+  Bounce footer, three rows: the tagline on the left with the menu, IT | EN switcher and the
+  Acquista button on the right; the logo across the full content width; then the year and
+  company name on the left and "All rights reserved" on the right. No blocks on purpose:
+  everything is set from the section settings. Each element fades up on its own, top left to
+  bottom right (Animation settings); the background stays put. Styles live in
+  src/scss/sections/_footer.scss.
 {%- endcomment -%}
 
 {% liquid
@@ -13,6 +15,7 @@
     assign logo = settings.logo_inverse
   endif
   assign logo_alt = 'accessibility.home_logo_alt' | t: store_name: shop.name
+  assign logo_alt = logo.alt | default: logo_alt
 
   assign footer_menu = section.settings.menu
 
@@ -20,62 +23,112 @@
   if localization.available_languages.size <= 1
     assign show_language = false
   endif
+
+  # Fade cascade: each element waits fade_step longer than the one before it
+  assign fade_step = 0.1
+  assign fade_delay = 0
 %}
 
 <div class="section-background color-custom-{{ section.id }}"></div>
 <div class="section section--page-width bounce-footer-section color-custom-{{ section.id }}">
   <div
     class="bounce-footer spacing-style"
-    {% render 'bounce-fade-attributes', settings: section.settings %}
-    style="
-      {% render 'spacing-style', settings: section.settings %}
-      --bounce-footer-logo-height: {{ settings.logo_height }}px;
-      --bounce-footer-logo-height-mobile: {{ settings.logo_height_mobile }}px;
-    "
+    style="{% render 'spacing-style', settings: section.settings %}"
   >
+    <div class="bounce-footer__top">
+      {%- if section.settings.tagline != blank -%}
+        <p
+          class="bounce-footer__tagline"
+          {% render 'bounce-fade-attributes', settings: section.settings, delay: fade_delay %}
+        >
+          {{- section.settings.tagline | escape -}}
+        </p>
+      {%- endif -%}
+
+      <div class="bounce-footer__nav">
+        {%- if footer_menu.links.size > 0 -%}
+          <nav aria-label="{{ footer_menu.title | escape }}">
+            <ul class="bounce-footer__menu list-unstyled">
+              {%- for link in footer_menu.links -%}
+                {%- assign fade_delay = fade_delay | plus: fade_step -%}
+                <li
+                  class="bounce-footer__menu-item"
+                  {% render 'bounce-fade-attributes', settings: section.settings, delay: fade_delay %}
+                >
+                  <a
+                    href="{{ link.url }}"
+                    class="bounce-footer__link"
+                    {% if link.current %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    {{- link.title | escape -}}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+
+        {%- if show_language -%}
+          {%- assign fade_delay = fade_delay | plus: fade_step -%}
+          <div
+            class="bounce-footer__language"
+            {% render 'bounce-fade-attributes', settings: section.settings, delay: fade_delay %}
+          >
+            {% render 'bounce-language-switcher', form_id: section.id %}
+          </div>
+        {%- endif -%}
+
+        {%- assign fade_delay = fade_delay | plus: fade_step -%}
+        {% render 'bounce-buy-button',
+          link: section.settings.button_link,
+          label: section.settings.button_label,
+          class: 'button bounce-footer__button',
+          fade_settings: section.settings,
+          fade_delay: fade_delay
+        %}
+      </div>
+    </div>
+
+    {%- assign fade_delay = fade_delay | plus: fade_step -%}
     <a
       href="{{ routes.root_url }}"
       class="bounce-footer__logo"
+      {% render 'bounce-fade-attributes', settings: section.settings, delay: fade_delay %}
     >
-      {% render 'image',
-        image: logo,
-        class: 'bounce-footer__logo-image',
-        height: settings.logo_height,
-        alt_text_fallback: logo_alt,
-        text_fallback: shop.name
-      %}
+      {%- if logo != blank -%}
+        {{
+          logo
+          | image_url: width: 2240
+          | image_tag:
+            widths: '375, 750, 1120, 1500, 2240',
+            sizes: '(min-width: 1200px) 1120px, 100vw',
+            loading: 'lazy',
+            alt: logo_alt,
+            class: 'bounce-footer__logo-image'
+        }}
+      {%- else -%}
+        <span class="bounce-footer__logo-text">{{ shop.name | escape }}</span>
+      {%- endif -%}
     </a>
 
-    <div class="bounce-footer__nav">
-      {%- if footer_menu.links.size > 0 -%}
-        <nav aria-label="{{ footer_menu.title | escape }}">
-          <ul class="bounce-footer__menu list-unstyled">
-            {%- for link in footer_menu.links -%}
-              <li>
-                <a
-                  href="{{ link.url }}"
-                  class="bounce-footer__link"
-                  {% if link.current %}
-                    aria-current="page"
-                  {% endif %}
-                >
-                  {{- link.title | escape -}}
-                </a>
-              </li>
-            {%- endfor -%}
-          </ul>
-        </nav>
-      {%- endif -%}
+    <div class="bounce-footer__bottom">
+      {%- assign fade_delay = fade_delay | plus: fade_step -%}
+      <p
+        class="bounce-footer__copyright"
+        {% render 'bounce-fade-attributes', settings: section.settings, delay: fade_delay %}
+      >
+        {{- 'now' | date: '%Y' }} {{ section.settings.company_name | escape -}}
+      </p>
 
-      {%- if show_language -%}
-        {% render 'bounce-language-switcher', form_id: section.id %}
-      {%- endif -%}
-
-      {% render 'bounce-buy-button',
-        link: section.settings.button_link,
-        label: section.settings.button_label,
-        class: 'button bounce-footer__button'
-      %}
+      {%- assign fade_delay = fade_delay | plus: fade_step -%}
+      <p
+        class="bounce-footer__rights"
+        {% render 'bounce-fade-attributes', settings: section.settings, delay: fade_delay %}
+      >
+        {{- 'bounce.footer.rights_reserved' | t -}}
+      </p>
     </div>
   </div>
 </div>
@@ -97,14 +150,14 @@
       "type": "checkbox",
       "id": "fade_up",
       "label": "Fade up on scroll",
-      "info": "Fades the whole footer in as it scrolls into view. The background shows straight away.",
+      "info": "Each element fades in on its own, top left to bottom right. The background shows straight away.",
       "default": true
     },
     {
       "type": "range",
       "id": "fade_up_delay",
       "label": "Fade up delay",
-      "info": "Seconds to wait before fading in.",
+      "info": "Seconds before the first element fades in.",
       "min": 0,
       "max": 1,
       "step": 0.1,
@@ -114,17 +167,13 @@
     },
     {
       "type": "header",
-      "content": "t:content.logo"
+      "content": "Tagline"
     },
     {
-      "type": "checkbox",
-      "id": "inverse_logo",
-      "label": "t:settings.use_inverse_logo",
-      "default": true
-    },
-    {
-      "type": "paragraph",
-      "content": "t:content.edit_logo_in_theme_settings"
+      "type": "text",
+      "id": "tagline",
+      "label": "t:settings.text",
+      "default": "Less inside"
     },
     {
       "type": "header",
@@ -155,13 +204,38 @@
       "type": "text",
       "id": "button_label",
       "label": "t:settings.label",
-      "info": "Leave blank to use the default: Acquista (IT), Buy now (EN)."
+      "info": "Leave blank to use the default: Acquista (IT), Buy now (EN). Shown in capitals."
     },
     {
       "type": "url",
       "id": "button_link",
       "label": "t:settings.link",
       "info": "The button is hidden until a link is set."
+    },
+    {
+      "type": "header",
+      "content": "t:content.logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "inverse_logo",
+      "label": "t:settings.use_inverse_logo",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "t:content.edit_logo_in_theme_settings"
+    },
+    {
+      "type": "header",
+      "content": "Copyright"
+    },
+    {
+      "type": "text",
+      "id": "company_name",
+      "label": "Company name",
+      "info": "Shown after the current year, which updates on its own.",
+      "default": "Bounce SRLS"
     },
     {
       "type": "header",
@@ -188,20 +262,20 @@
       "id": "padding-block-start",
       "label": "t:settings.top",
       "min": 0,
-      "max": 100,
-      "step": 1,
+      "max": 200,
+      "step": 2,
       "unit": "px",
-      "default": 80
+      "default": 120
     },
     {
       "type": "range",
       "id": "padding-block-end",
       "label": "t:settings.bottom",
       "min": 0,
-      "max": 100,
-      "step": 1,
+      "max": 200,
+      "step": 2,
       "unit": "px",
-      "default": 80
+      "default": 120
     }
   ],
   "presets": [

@@ -6,6 +6,8 @@
   @param {string} link - The button URL
   @param {string} [label] - Custom label; blank uses the translation
   @param {string} [class] - Classes for the link, e.g. 'button bounce-header-button'
+  @param {object} [fade_settings] - Section or block settings with the Animation settings, to fade the button up
+  @param {number} [fade_delay] - Seconds added to the setting's fade delay
 
   @example
   {% render 'bounce-buy-button', link: section.settings.button_link, label: section.settings.button_label, class: 'button' %}
@@ -20,6 +22,7 @@
   -%}
   <a
     href="{{ link }}"
+    {% render 'bounce-fade-attributes', settings: fade_settings, delay: fade_delay %}
     class="{{ class }}"
   >
     {{- button_label | escape -}}

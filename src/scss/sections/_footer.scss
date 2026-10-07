@@ -1,17 +1,26 @@
 @use '../base/variable' as *;
 @use '../base/media' as *;
 
-// Footer (sections/bounce-footer.liquid): logo on the left; menu, IT | EN and the button
-// on the right. Stacked and left-aligned below 750px. Shared nav values ($nav*) are in
-// _variable.scss; the switcher's own styles are in _header.scss.
+// Footer (sections/bounce-footer.liquid), three rows: the tagline on the left with the
+// menu, IT | EN and the button on the right; the logo across the full content width; the
+// year + company name and "All rights reserved", space-between. The top row stacks,
+// left-aligned, below 750px. Shared nav values ($nav*) are in _variable.scss; the
+// switcher's own styles are in _header.scss.
 
-// The fade (data-fade-up) starts .bounce-footer 50px low. The footer is the last thing on
-// the page, so without the clip that offset adds 50px of empty scroll below it until the
-// fade ends. clip, not hidden: it doesn't make a scroll container.
+// XD: 75px from the top row to the logo, 65px from the logo to the bottom row. No mobile
+// design, so both close up to the compact value below 750px.
+$footerLogoGapTop: 75px;
+$footerLogoGapBottom: 65px;
+$footerLogoGapCompact: 40px;
+
+// The fade (data-fade-up) starts each element 50px low. The footer is the last thing on
+// the page, so without the clip the bottom row's offset adds 50px of empty scroll below it
+// until the fade ends. clip, not hidden: it doesn't make a scroll container.
 .bounce-footer-section {
 	overflow: clip;
 }
 
+// Every line of text is 16px / 400 / 22px, like the header nav, and in capitals
 .bounce-footer {
 	// The button is the footer's colours swapped (white on the black footer), so it stays
 	// visible whatever colours the section is set to. These are the tokens base.css reads
@@ -20,56 +29,55 @@
 	--color-primary-button-background: var(--color-foreground);
 	--color-primary-button-border: var(--color-foreground);
 	--color-primary-button-text: var(--color-background);
+	// Capitals like the rest of the footer; the header's button keeps the label's own case
+	--button-text-case-primary: uppercase;
 
 	--bounce-footer-gap: #{$navGapCompact};
 
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: var(--gap-2xl);
 	color: var(--color-foreground);
-
-	@include media('>=mobile') {
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-between;
-	}
+	font-size: $navFontSize;
+	font-weight: var(--font-body--weight);
+	line-height: $navLineHeight;
+	text-transform: uppercase;
 
 	@include media('>=tablet') {
 		--bounce-footer-gap: #{$navGap};
 	}
 }
 
-// Logo: same heights as the header logo (Theme settings → Logo)
-.bounce-footer__logo {
-	display: flex;
-	color: var(--color-foreground);
-	text-decoration: none;
+.bounce-footer__tagline,
+.bounce-footer__copyright,
+.bounce-footer__rights {
+	margin: 0;
 }
 
-.bounce-footer__logo-image {
-	width: auto;
-	height: var(--bounce-footer-logo-height-mobile);
+// Top row: tagline left, nav right
+.bounce-footer__top {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--gap-2xl);
 
 	@include media('>=mobile') {
-		height: var(--bounce-footer-logo-height);
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
 	}
 }
 
-// Menu, IT | EN and button: 16px / 400 / 22px, like the header
+// Menu, IT | EN and button
 .bounce-footer__nav {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	gap: var(--gap-2xl);
-	font-size: $navFontSize;
-	font-weight: var(--font-body--weight);
-	line-height: $navLineHeight;
 
 	@include media('>=mobile') {
 		flex-direction: row;
 		align-items: center;
 		gap: var(--bounce-footer-gap);
+		// Stays on the right when the tagline is blank
+		margin-inline-start: auto;
 	}
 }
 
@@ -100,4 +108,30 @@
 // Size, type and padding come from the button component (src/scss/components/_btn.scss)
 .bounce-footer__button {
 	white-space: nowrap;
+}
+
+// Logo: the full width of the content column (1120px), height from the image's ratio
+.bounce-footer__logo {
+	display: block;
+	margin-block: $footerLogoGapCompact;
+	color: var(--color-foreground);
+	text-decoration: none;
+
+	@include media('>=mobile') {
+		margin-block: $footerLogoGapTop $footerLogoGapBottom;
+	}
+}
+
+.bounce-footer__logo-image {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+// Bottom row: year + company left, rights right. Wraps onto two lines on narrow phones.
+.bounce-footer__bottom {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: var(--gap-sm) var(--gap-2xl);
 }

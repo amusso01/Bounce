@@ -7,12 +7,16 @@
   bare attribute glues the two together.
 
   @param {object} settings - The block's or section's settings
+  @param {number} [delay] - Seconds added to the setting's delay, to sequence elements
 
   @example
   {% render 'bounce-fade-attributes', settings: block.settings %}
+  {% render 'bounce-fade-attributes', settings: section.settings, delay: 0.2 %}
 {%- enddoc -%}
 
 {%- if settings.fade_up -%}
+  {%- comment -%} round: 0.1 + 0.2 adds up to 0.30000000000000004 {%- endcomment -%}
+  {%- assign fade_delay = settings.fade_up_delay | plus: delay | round: 2 -%}
   data-fade-up
-  {%- if settings.fade_up_delay > 0 %} data-fade-up-delay="{{ settings.fade_up_delay }}"{% endif -%}
+  {%- if fade_delay > 0 %} data-fade-up-delay="{{ fade_delay }}"{% endif -%}
 {%- endif -%}

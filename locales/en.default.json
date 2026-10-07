@@ -374,6 +374,9 @@
   },
   "bounce": {
     "buy_button": "Buy now",
+    "footer": {
+      "rights_reserved": "All rights reserved"
+    },
     "contact_form": {
       "name": "Name",
       "name_placeholder": "Your name",

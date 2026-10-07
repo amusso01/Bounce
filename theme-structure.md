@@ -359,26 +359,38 @@ With the cart icon off, add to cart still opens the cart drawer (`auto_open_cart
 
 ### Footer
 
-`sections/bounce-footer.liquid` replaces Horizon's `sections/footer.liquid` in `sections/footer-group.json`. Horizon's file is untouched, just unused. Same layout as the header: the logo on the left; the menu, `IT | EN` and the Acquista button on the right.
+`sections/bounce-footer.liquid` replaces Horizon's `sections/footer.liquid` in `sections/footer-group.json`. Horizon's file is untouched, just unused. Three rows in the 1120px content column:
 
-It has **no blocks on purpose**. A section schema without `blocks` shows no "Add block" in the editor (Horizon's header works the same way), so the footer can't drift from the design. Everything is a section setting:
+1. **Top row:** the tagline (*Less inside*) on the left; the menu, `IT | EN` and the Acquista button on the right, the same as the header.
+2. **Logo** across the full content width (1120px on desktop, the page width minus gutters on phones). Its height follows the image's ratio. It links to the home page.
+3. **Bottom row**, space-between: the current year plus the company name (`2026 Bounce SRLS`) on the left, and *All rights reserved* on the right.
+
+It has **no blocks on purpose**. A section schema without `blocks` shows no "Add block" in the editor (Horizon's header works the same way), so the footer can't drift from the design. Everything is a section setting, grouped in layout order:
 
 | Setting group | Settings |
 |---|---|
-| Animation | *Fade up on scroll* (**on**) + *Fade up delay* (0–1s). Logo, menu, `IT \| EN` and button rise in as one piece (`data-fade-up` on `.bounce-footer`); the background shows straight away (see [Fade up / fade down](#fade-up--fade-down)) |
-| Logo | *Use inverse logo* (on). The image and height come from Theme settings → Logo, the same heights as the header logo |
+| Animation | *Fade up on scroll* (**on**) + *Fade up delay* (0–1s, before the first element). Each element fades up on its own, cascading top left to bottom right (see below). The background shows straight away |
+| Tagline | *Text*, default `Less inside`. Hidden when blank; the nav stays on the right |
 | Menu | *Menu* (link list, `main-menu`) |
 | Localization | *Language selector* on/off. Same switcher as the header (`bounce-language-switcher`), same guard (needs 2 published languages) |
-| Button | *Label* and *Link*, the same as the header's (`bounce-buy-button`, blank label → Acquista / Buy now) |
+| Button | *Label* and *Link*, the same as the header's (`bounce-buy-button`, blank label → Acquista / Buy now, shown in capitals) |
+| Logo | *Use inverse logo* (on). The image comes from Theme settings → Logo; the logo height settings there don't apply, since the footer logo fills the width |
+| Copyright | *Company name*, default `Bounce SRLS`. The year in front of it is `'now' \| date: '%Y'`, so it changes on its own |
 | Colors | *Background* (black) and *Text* (white), applied through Horizon's `contrast-override` |
-| Padding | Top / bottom, 80px |
+| Padding | Top / bottom, 0–200px in 2px steps, 120px |
+
+*All rights reserved* is the storefront translation `bounce.footer.rights_reserved` (`Tutti i diritti riservati` / `All rights reserved`), so it follows `IT | EN`.
+
+**Fade cascade.** `data-fade-up` sits on each element: the tagline, each menu item, the switcher, the button, the logo, then the two bottom texts. Each one waits 0.1s longer than the one before (`fade_step` in the section), through the `delay` param of `bounce-fade-attributes`. The editor's *Fade up delay* is added on top. Each element still waits until it reaches the viewport, so on a long scroll the rows come in one after another.
 
 Styles are in `src/scss/sections/_footer.scss`:
 
-- Links, switcher and button use the header's nav values (16px / 400 / 22px, 72px apart) from `_variable.scss`. Links underline on hover.
+- Every line of text is 16px / 400 / 22px (the header's `$navFontSize` / `$navLineHeight`) and set in capitals with `text-transform: uppercase`. The settings and translations stay in sentence case. The button gets its capitals from `--button-text-case-primary: uppercase` on `.bounce-footer`, the token `base.css` reads for `.button`, so the header's button keeps the label's own case.
+- XD spacing: 75px from the top row to the logo, 65px from the logo to the bottom row (`$footerLogoGapTop` / `$footerLogoGapBottom`); both 40px below 750px. Nav items are 72px apart, the same as the header.
+- Links underline on hover.
 - The button swaps the footer's colours: text colour as background, background colour as text, so white on the black footer. It sets the `--color-primary-button-*` tokens that `base.css` reads, so it stays visible if the footer colours change. On hover it inverts back: black with white text and a 1px white border (see [Button component](#button-component)). The selection highlight inside it follows those tokens too (see [Text selection](#text-selection)).
-- Below 750px everything stacks, left-aligned: logo, links, `IT | EN`, button.
-- The section's `.section` div (`.bounce-footer-section`) has `overflow: clip`. The fade starts the content 50px low, and since the footer is the last thing on the page, that offset would otherwise add 50px of empty scroll below it until the fade ends.
+- Below 750px the top row stacks, left-aligned: tagline, links, `IT | EN`, button. The bottom row wraps onto two lines when the two texts don't fit side by side.
+- The section's `.section` div (`.bounce-footer-section`) has `overflow: clip`. The fade starts the bottom row 50px low, and since the footer is the last thing on the page, that offset would otherwise add 50px of empty scroll below it until the fade ends.
 
 The *Utilities* section (copyright, policies, social links) is still in the footer group, disabled.
 
@@ -493,7 +505,7 @@ Consecutive items with `-duration` `.2`, `.4`, `.6`… start together and land o
 - our **Bounce carousel** section, which fades the whole carousel;
 - our **Bounce accordion** section, which fades each question and then the subtext and button row, each on its own;
 - our **Bounce contact form** section, which fades the title, the subtext, each field, then the button and note, each on its own. Switched on by default;
-- our **Bounce footer** section, which fades the logo, menu, `IT | EN` and button as one piece over the background. Also switched on by default.
+- our **Bounce footer** section, which fades each element on its own, cascading 0.1s apart from the tagline to *All rights reserved*, over the background. Also switched on by default.
 
 They all use the same two settings:
 
@@ -504,7 +516,7 @@ They all use the same two settings:
 
 **Why delay, not duration.** The editor offers delay because that's what sequences items. With the heading at 0 and the button at 0.2, the button starts after the heading. That's how FDRY staggers its footer and lists. Duration only adds to the fixed 2s fade: 0.2 makes it 2.2s, and it still starts with everything else, so you can hardly see it. `data-fade-up-duration` still works when written by hand in Liquid.
 
-- **The snippet.** `snippets/bounce-fade-attributes.liquid` turns those settings into attributes. `snippets/text.liquid` and `snippets/button.liquid` render it on the text element and the button's `<a>`. Our sections pass it `section.settings` instead of `block.settings`. Other blocks share those two snippets but have no Animation settings, so they print nothing.
+- **The snippet.** `snippets/bounce-fade-attributes.liquid` turns those settings into attributes. `snippets/text.liquid` and `snippets/button.liquid` render it on the text element and the button's `<a>`. Our sections pass it `section.settings` instead of `block.settings`. Other blocks share those two snippets but have no Animation settings, so they print nothing. An optional `delay` adds seconds to the setting's delay, to sequence elements: the footer passes 0, 0.1, 0.2… (rounded to two decimals). `bounce-buy-button` passes its `fade_settings` / `fade_delay` params through to it.
 - **Adding it to another block or section.** Copy the Animation header and its two settings, and render the snippet on the element to fade, passing `block.settings` or `section.settings` (and `section.settings` in `visible_if`). Render it between two attributes with quoted values (see the whitespace note below).
 - **The headers.** Our group sits first, so the original fields get a header of their own: *Text* / *Button* in the blocks, *Carousel* / *Accordion* in the sections. Otherwise they would appear under *Animation*. All the headers reuse Horizon's translation keys, so they show in Italian in an Italian admin. The setting labels themselves are plain English.
 - **A button without a link** never fades. Horizon renders it with `aria-disabled` and dims it with `opacity: 0.5`, which the fade's inline `opacity: 1` would override.
@@ -740,7 +752,7 @@ Every Horizon file we've changed, and why:
 | `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and renders `bounce-buy-button` after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style`. `data-fade-down` on each `.header__row` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)). The rows drop in on load (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |
-| `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`) and `bounce.contact_form.*` | Default button label per language; the contact form's labels, placeholders, button and note (see [Contact form](#contact-form)) |
+| `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`), `bounce.footer.rights_reserved` and `bounce.contact_form.*` | Default button label per language; the footer's *All rights reserved* (see [Footer](#footer)); the contact form's labels, placeholders, button and note (see [Contact form](#contact-form)) |
 | `blocks/text.liquid`, `blocks/button.liquid` | Schema: an *Animation* group (`fade_up`, `fade_up_delay`) at the top of the settings, then a *Text* / *Button* header over the original fields | Fade-up option in the editor (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/text.liquid`, `snippets/button.liquid` | Render `bounce-fade-attributes` on the text element and on the button's `<a>` (the button only when it has a link) | Same |
 | `sections/section.liquid` | *Padding* top / bottom: max 100 → **200px**, step 1 → **2** | The design needs taller spacing in Custom section (and its Rich text preset, the same file). Shopify caps a range at 101 steps, so 0–200 needs a 2px step; every saved value was already even |

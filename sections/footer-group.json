@@ -19,12 +19,12 @@
         "inverse_logo": true,
         "menu": "main-menu",
         "show_language": true,
-        "button_label": "ACQUISTA",
+        "button_label": "",
         "button_link": "shopify://products/bounce",
         "background_color": "{{ settings.color_palette.foreground }}",
         "text_color": "{{ settings.color_palette.background }}",
-        "padding-block-start": 69,
-        "padding-block-end": 69
+        "padding-block-start": 120,
+        "padding-block-end": 120
       }
     },
     "footer_utilities_jLGE8U": {
