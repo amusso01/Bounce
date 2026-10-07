@@ -24,7 +24,8 @@
     assign show_language = false
   endif
 
-  # Fade cascade: each element waits fade_step longer than the one before it
+  # Fade cascade: the top row goes left to right, fade_step apart; the logo and the bottom
+  # row start at set delays, and each element after them waits fade_step longer
   assign fade_step = 0.1
   assign fade_delay = 0
 %}
@@ -91,7 +92,7 @@
       </div>
     </div>
 
-    {%- assign fade_delay = fade_delay | plus: fade_step -%}
+    {%- assign fade_delay = 0.3 -%}
     <a
       href="{{ routes.root_url }}"
       class="bounce-footer__logo"
@@ -114,7 +115,7 @@
     </a>
 
     <div class="bounce-footer__bottom">
-      {%- assign fade_delay = fade_delay | plus: fade_step -%}
+      {%- assign fade_delay = 0.5 -%}
       <p
         class="bounce-footer__copyright"
         {% render 'bounce-fade-attributes', settings: section.settings, delay: fade_delay %}

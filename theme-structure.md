@@ -381,7 +381,7 @@ It has **no blocks on purpose**. A section schema without `blocks` shows no "Add
 
 *All rights reserved* is the storefront translation `bounce.footer.rights_reserved` (`Tutti i diritti riservati` / `All rights reserved`), so it follows `IT | EN`.
 
-**Fade cascade.** `data-fade-up` sits on each element: the tagline, each menu item, the switcher, the button, the logo, then the two bottom texts. Each one waits 0.1s longer than the one before (`fade_step` in the section), through the `delay` param of `bounce-fade-attributes`. The editor's *Fade up delay* is added on top. Each element still waits until it reaches the viewport, so on a long scroll the rows come in one after another.
+**Fade cascade.** `data-fade-up` sits on each element: the tagline, each menu item, the switcher, the button, the logo, then the two bottom texts. The top row goes left to right, 0.1s apart (`fade_step` in the section): tagline 0, then each menu item, the switcher and the button. The logo starts at 0.3s and the copyright at 0.5s, with *All rights reserved* 0.1s after it. The delays go through the `delay` param of `bounce-fade-attributes`. The editor's *Fade up delay* is added on top. Each element still waits until it reaches the viewport, so on a long scroll the rows come in one after another.
 
 Styles are in `src/scss/sections/_footer.scss`:
 
@@ -505,7 +505,7 @@ Consecutive items with `-duration` `.2`, `.4`, `.6`… start together and land o
 - our **Bounce carousel** section, which fades the whole carousel;
 - our **Bounce accordion** section, which fades each question and then the subtext and button row, each on its own;
 - our **Bounce contact form** section, which fades the title, the subtext, each field, then the button and note, each on its own. Switched on by default;
-- our **Bounce footer** section, which fades each element on its own, cascading 0.1s apart from the tagline to *All rights reserved*, over the background. Also switched on by default.
+- our **Bounce footer** section, which fades each element on its own, cascading from the tagline to *All rights reserved*, over the background. Also switched on by default.
 
 They all use the same two settings:
 
