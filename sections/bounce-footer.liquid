@@ -20,15 +20,7 @@
   if localization.available_languages.size <= 1
     assign show_language = false
   endif
-
-  # The button's text uses the footer background colour (see _footer.scss), so pick
-  # the selection highlight for that colour.
-  assign button_text_color = section.settings.background_color | default: settings.page_background_color
 %}
-
-{%- capture button_selection -%}
-  {%- render 'util-selection-background', color: button_text_color -%}
-{%- endcapture -%}
 
 <div class="section-background color-custom-{{ section.id }}"></div>
 <div class="section section--page-width bounce-footer-section color-custom-{{ section.id }}">
@@ -39,7 +31,6 @@
       {% render 'spacing-style', settings: section.settings %}
       --bounce-footer-logo-height: {{ settings.logo_height }}px;
       --bounce-footer-logo-height-mobile: {{ settings.logo_height_mobile }}px;
-      --bounce-footer-button-selection: {{ button_selection | strip }};
     "
   >
     <a

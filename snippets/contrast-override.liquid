@@ -98,23 +98,6 @@
       assign effective_border_color = contrast_var
       assign effective_border_color_rgb = contrast_rgb_var
     endif
-
-    if text_color != blank
-      capture selection_background
-        render 'util-selection-background', color: text_color
-      endcapture
-    else
-      assign page_text_contrast = background_color | color_contrast: settings.page_text_color
-      if page_text_contrast >= 4.5
-        capture selection_background
-          render 'util-selection-background', color: settings.page_text_color
-        endcapture
-      elsif bg_brightness > 128
-        assign selection_background = settings.color_palette.color1
-      else
-        assign selection_background = '#000000'
-      endif
-    endif
   endif
 %}
 
@@ -139,7 +122,6 @@
         --color-foreground-subdued: rgb({{ effective_text_color_rgb }} / var(--opacity-subdued-text));
         --color-border: {{ effective_border_color }};
         --color-border-rgb: {{ effective_border_color_rgb }};
-        --selection-background: {{ selection_background | strip }};
       {% endunless %}
     }
 
@@ -161,9 +143,6 @@
     }
   {% endstyle %}
 {% elsif text_color != blank %}
-  {% capture selection_background %}
-    {% render 'util-selection-background', color: text_color %}
-  {% endcapture %}
   {% liquid
     if border_color != blank
       assign effective_no_bg_border = border_color
@@ -182,7 +161,6 @@
       --color-foreground-rgb: {{ text_color.rgb }};
       --color-foreground-muted: rgb({{ text_color.rgb }} / var(--opacity-muted-text));
       --color-foreground-subdued: rgb({{ text_color.rgb }} / var(--opacity-subdued-text));
-      --selection-background: {{ selection_background | strip }};
 
       {% if preset == 'ui' %}
         --color-border: {{ effective_no_bg_border }};

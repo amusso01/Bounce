@@ -9,7 +9,7 @@ Bounce is built on **Horizon 4.2.0** (`theme_info` in `config/settings_schema.js
 1. **Prefix everything we create with `bounce-`** — `sections/bounce-footer.liquid`, `snippets/bounce-colors.liquid`, `assets/bounce-countdown.js`. A diff against a new Horizon release then shows at a glance which files are ours. → §1
 2. **Override ladder, try the top one first:** Theme Editor setting → override a CSS variable → CSS rule in `bounce.css` → new `bounce-*` section/block/snippet → **edit a Horizon core file (last resort — keep it small and log it in the Core edits log, §10)**. → §7
 3. **Horizon already prints every theme setting as a CSS custom property** on `:root` (`snippets/theme-styles-variables.liquid`, `snippets/color-palette.liquid`). Do **not** add a Dawn-style `:root` block to `theme.liquid` — map the existing variables in `src/scss/base/_variable.scss` (`$fontHeading: var(--font-heading--family);`). A genuinely new merchant-editable value goes: setting in `config/settings_schema.json` → printed in a new `snippets/bounce-variables.liquid` → mapped in `_variable.scss`. → §3, §6
-4. **Never hard-code colors.** Use `var(--color-foreground)` / `var(--color-background)` so the component recolors correctly inside any section (`snippets/contrast-override.liquid` scopes them per section). White text that bypasses those tokens needs `--selection-background: #000` set on it. → §3
+4. **Never hard-code colors.** Use `var(--color-foreground)` / `var(--color-background)` so the component recolors correctly inside any section (`snippets/contrast-override.liquid` scopes them per section). Text whose colors bypass those tokens sets `--selection-background` (its text color) and `--selection-color` (its background color), or the selection highlight won't invert. → §3
 5. **Sass color functions can't read `var()`** (`darken()`, `rgba($var, .5)`, `color.adjust`). Use the `-rgb` twins — `rgb(var(--color-foreground-rgb) / 0.5)` — or `color-mix()`. → §3
 6. **Run `pnpm build` before every commit.** The GitHub integration has no build step, so the committed `assets/bounce.*` is literally what goes live. → §8
 7. **`templates/*.json`, `config/settings_data.json` and `sections/*-group.json` are editor content, not code.** Shopify commits Theme Editor changes back to the branch automatically and this can't be turned off — pull before you start working. → §1, §8
@@ -50,7 +50,7 @@ Bounce is built on **Horizon 4.2.0** (`theme_info` in `config/settings_schema.js
 
 ## Already built — extend these rather than rebuild
 
-`snippets/bounce-fade-attributes.liquid`, `snippets/bounce-language-switcher.liquid` (IT | EN), `snippets/bounce-buy-button.liquid` (shared header/footer *Acquista* button), `snippets/bounce-colors.liquid`, `snippets/bounce-motion-gate.liquid`, `snippets/util-selection-background.liquid`, and the sections `bounce-footer`, `bounce-carousel`, `bounce-accordion`, `bounce-contact-form`. → §7
+`snippets/bounce-fade-attributes.liquid`, `snippets/bounce-language-switcher.liquid` (IT | EN), `snippets/bounce-buy-button.liquid` (shared header/footer *Acquista* button), `snippets/bounce-colors.liquid`, `snippets/bounce-motion-gate.liquid`, and the sections `bounce-footer`, `bounce-carousel`, `bounce-accordion`, `bounce-contact-form`. → §7
 
 ## Build (→ §8)
 

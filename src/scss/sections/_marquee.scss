@@ -1,9 +1,9 @@
 @use '../base/variable' as *;
 
 .bounce-marquee {
-	// The bar is already black, so a black highlight would be invisible. Pink
-	// still keeps the white text readable.
-	--selection-background: #{$color3};
+	// Colours bypass the tokens, so invert them here for the selection.
+	--selection-background: #fff;
+	--selection-color: #000;
 	background-color: #000;
 	color: #fff;
 	overflow: hidden;

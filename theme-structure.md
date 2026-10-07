@@ -101,42 +101,39 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 | Buttons | `--color-primary-button-{text,background,border,hover-*}`, same for `secondary` |
 | Inputs / variants | `--color-input-*`, `--color-variant-*`, `--color-selected-variant-*` |
 | Derived | `--color-foreground-muted`, `--color-foreground-subdued`, `--opacity-*` |
-| Selection | `--selection-background` on `:root`, and again on buttons, inputs and selected variant labels (see [Text selection](#text-selection)) |
+| Selection | none: `::selection` reads `--color-foreground` / `--color-background`. Optional `--selection-background` / `--selection-color` overrides (see [Text selection](#text-selection)) |
 
 Horizon 4.2 uses a **color palette** (`settings.color_palette`) plus per-section background colors. It doesn't use Dawn-style color schemes.
 
 ### Per-section color scope
 
-When a section or block has a custom background color, `snippets/contrast-override.liquid` prints a scoped rule, `.color-custom-{section_id} { --color-background: …; --color-foreground: …; }`, and works out a readable text color automatically. The same rule sets `--selection-background` from that text color. So **always use `var(--color-foreground)` / `var(--color-background)` rather than hard-coded colors**, and your component recolors correctly inside any section.
+When a section or block has a custom background color, `snippets/contrast-override.liquid` prints a scoped rule, `.color-custom-{section_id} { --color-background: …; --color-foreground: …; }`, and works out a readable text color automatically. The text selection highlight follows the same two tokens. So **always use `var(--color-foreground)` / `var(--color-background)` rather than hard-coded colors**, and your component recolors correctly inside any section.
 
 ### Text selection
 
-`::selection` cannot read an element's text color, so the highlight is a custom property set beside the text color. Do not hard-code `::selection { background: #000 }` again: black text on a black highlight disappears.
+Selection inverts the surface: the highlight takes the text color and the selected text takes the background color. On white with black text that gives a black highlight with white text. On black with white text it gives a white highlight with black text. Horizon already prints both colors as tokens, and `snippets/contrast-override.liquid` rescopes them per section, so no Liquid is involved.
 
 `src/scss/base/_base.scss` keeps `::selection` and `::-moz-selection` as separate rules (grouping them drops the rule in browsers that don't know one of the pseudos). Both are:
 
 ```scss
-background: var(--selection-background, #{$color3});
+background: var(--selection-background, var(--color-foreground));
+color: var(--selection-color, var(--color-background));
 ```
 
-`$color3` is palette **color1** (pink), printed as `--bounce-color-3` by `snippets/bounce-colors.liquid`. The selected text color is left alone; only the highlight background changes.
+Elements that paint their own colors instead of the section's set the two overrides. All of them except the marquee are in `_base.scss`:
 
-`snippets/util-selection-background.liquid` picks that background from a text color. Shopify `color_brightness` of **200 or higher** (white is 255) returns `#000000`. Anything else returns `settings.color_palette.color1`.
-
-| Surface | Where `--selection-background` is set | Text color it follows |
+| Surface | `--selection-background` | `--selection-color` |
 |---|---|---|
-| Page | `snippets/color-palette.liquid` on `:root` | `settings.page_text_color` (black today, so the highlight is pink) |
-| Primary buttons | same file: `.button`, `.button-custom`, unbranded payment button, including `:hover` | primary button text / hover text |
-| Secondary buttons | same file: `.button-secondary`, including `:hover` | secondary button text / hover text |
-| Inputs | same file: `input`, `textarea`, `select` | input text |
-| Selected variant | same file: `.variant-option__button-label:has(:checked)`, including `:hover` | selected variant text / hover text |
-| Custom section or block color | `snippets/contrast-override.liquid` on `.color-custom-{id}`, next to `--color-foreground` | the effective text color. An explicit text color uses its brightness. The dark-background fallback (`var(--palette-lightest)`) is treated as white, so that highlight stays black |
-| Marquee | `.bounce-marquee` in `src/scss/sections/_marquee.scss` | white text, but the bar is already `#000`, so the highlight is `$color3`. A black highlight would match the bar and disappear |
-| On-media slideshow controls | `snippets/slideshow-controls.liquid` | forced `#000`. The text is hardcoded white and sits on a photo, not a black fill |
+| Buttons: `.button`, `.button-secondary`, `.button-custom`, unbranded payment button | `var(--button-color)` | `var(--button-background-color)` |
+| Inputs: `input`, `textarea`, `select` | `var(--color-input-text)` | `var(--color-input-background)` |
+| Selected variant, `.variant-option__button-label:has(:checked)` | `var(--color-selected-variant-text)` | `var(--color-selected-variant-background)` |
+| The same, on `:hover` | `var(--color-selected-variant-hover-text)` | `var(--color-selected-variant-hover-background)` |
+| On-media slideshow controls (`slideshow-controls[controls-on-media]`) | not set: Horizon forces `--color-foreground: #fff` | `#000`. The section background would make the selected text white on white |
+| Marquee, `.bounce-marquee` in `src/scss/sections/_marquee.scss` | `#fff` | `#000`. The bar hard-codes black and white |
 
-A button, input or selected variant sets its own variable, so it wins over a section's. Button text is independent of the section foreground.
+`base.css` swaps `--button-color` / `--button-background-color` on `:hover`. The footer and the header's transparent mode feed them through `--color-primary-button-*`, so every button follows without its own rule.
 
-When you add white text that doesn't go through those tokens, set `--selection-background: #000` on that element. If that element's own background is already black, use `$color3` instead, or the highlight matches the surface and disappears. Otherwise the pink fallback sits on white type.
+When you add a component whose colors bypass `--color-foreground` / `--color-background`, set `--selection-background` to its text color and `--selection-color` to its background color. Otherwise the highlight takes the section's colors and can disappear against the component's own fill. Better still, use the tokens so it never needs the override.
 
 > **Sass + CSS variables gotcha.** Sass color functions (`darken()`, `rgba($var, .5)`, `color.adjust`) can't read `var()` at build time. Use the `-rgb` twins or `color-mix()` instead:
 > `rgb(var(--color-foreground-rgb) / 0.5)` or `color-mix(in srgb, var(--color-foreground) 50%, transparent)`.
@@ -378,7 +375,7 @@ It has **no blocks on purpose**. A section schema without `blocks` shows no "Add
 Styles are in `src/scss/sections/_footer.scss`:
 
 - Links, switcher and button use the header's nav values (16px / 400 / 22px, 72px apart) from `_variable.scss`. Links underline on hover.
-- The button swaps the footer's colours: text colour as background, background colour as text, so white on the black footer. It sets the `--color-primary-button-*` tokens that `base.css` reads, so it stays visible if the footer colours change. The section prints the matching selection highlight (`util-selection-background`).
+- The button swaps the footer's colours: text colour as background, background colour as text, so white on the black footer. It sets the `--color-primary-button-*` tokens that `base.css` reads, so it stays visible if the footer colours change. The selection highlight inside it follows those tokens too (see [Text selection](#text-selection)).
 - Below 750px everything stacks, left-aligned: logo, links, `IT | EN`, button.
 - The section's `.section` div (`.bounce-footer-section`) has `overflow: clip`. The fade starts the content 50px low, and since the footer is the last thing on the page, that offset would otherwise add 50px of empty scroll below it until the fade ends.
 
@@ -739,9 +736,6 @@ Every Horizon file we've changed, and why:
 | `layout/password.liquid` | Same as above | Same, for the password page |
 | `layout/theme.liquid`, `layout/password.liquid` | Added `{%- render 'bounce-fonts' -%}` after `{%- render 'fonts' -%}` | Load Simplon Mono early in `<head>` (see [Custom font](#custom-font-simplon-mono)) |
 | `layout/theme.liquid`, `layout/password.liquid` | Added `{%- render 'bounce-motion-gate' -%}` after `bounce-fonts` | Hide fade elements before first paint, only when `fade.js` will play them (see [Fade up / fade down](#fade-up--fade-down)) |
-| `snippets/color-palette.liquid` | Prints `--selection-background` on `:root`, buttons (including hover), inputs and selected variant labels | Black highlight on white text, pink (`color_palette.color1`) otherwise (see [Text selection](#text-selection)) |
-| `snippets/contrast-override.liquid` | Prints `--selection-background` next to `--color-foreground` on `.color-custom-{id}` | Same rule inside a section or block with its own text color |
-| `snippets/slideshow-controls.liquid` | `--selection-background: #000` beside the existing `--color-foreground: #fff` on controls drawn on media | Those controls are hardcoded white and don't go through the tokens above |
 | `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and renders `bounce-buy-button` after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style`. `data-fade-down` on each `.header__row` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)). The rows drop in on load (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |

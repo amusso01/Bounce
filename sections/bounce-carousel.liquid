@@ -37,9 +37,6 @@
             {%- for block in section.blocks -%}
               {%- liquid
                 assign text_color = block.settings.text_color | default: '#ffffff'
-                capture selection_background
-                  render 'util-selection-background', color: text_color
-                endcapture
               -%}
               <div
                 class="swiper-slide bounce-carousel__slide"
@@ -47,7 +44,7 @@
               >
                 <div
                   class="bounce-carousel__card"
-                  style="--bounce-carousel-text: {{ text_color }}; --selection-background: {{ selection_background | strip }};"
+                  style="--bounce-carousel-text: {{ text_color }};"
                 >
                   {%- if block.settings.image != blank -%}
                     {{

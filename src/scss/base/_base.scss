@@ -4,12 +4,52 @@ html {
 	box-sizing: border-box;
 }
 
+// Selection inverts the surface: the text colour becomes the highlight and the
+// background colour becomes the selected text (black on white, white on black).
+// Kept as two rules: grouping them drops both where one pseudo is unknown.
 ::selection {
-	background: var(--selection-background, #{$color3});
+	background: var(--selection-background, var(--color-foreground));
+	color: var(--selection-color, var(--color-background));
 }
 
 ::-moz-selection {
-	background: var(--selection-background, #{$color3});
+	background: var(--selection-background, var(--color-foreground));
+	color: var(--selection-color, var(--color-background));
+}
+
+// Elements that paint their own colours instead of the section's.
+// Buttons: base.css swaps --button-color / --button-background-color on :hover, and
+// the footer and header feed them through --color-primary-button-*.
+.button,
+.button-secondary,
+.button-custom,
+button.shopify-payment-button__button--unbranded {
+	--selection-background: var(--button-color);
+	--selection-color: var(--button-background-color);
+}
+
+// Inputs use the global Input settings on every surface.
+input,
+textarea,
+select {
+	--selection-background: var(--color-input-text);
+	--selection-color: var(--color-input-background);
+}
+
+.variant-option__button-label:has(:checked) {
+	--selection-background: var(--color-selected-variant-text);
+	--selection-color: var(--color-selected-variant-background);
+}
+
+.variant-option__button-label:has(:checked):hover {
+	--selection-background: var(--color-selected-variant-hover-text);
+	--selection-color: var(--color-selected-variant-hover-background);
+}
+
+// Horizon forces these controls white (--color-foreground: #fff) over a photo, while
+// --color-background stays the section's: the selected text would be white on white.
+slideshow-controls[controls-on-media]:has(.slideshow-controls__dots, .slideshow-controls__counter) {
+	--selection-color: #000;
 }
 body {
 }

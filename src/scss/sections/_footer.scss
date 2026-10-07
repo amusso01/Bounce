@@ -40,13 +40,6 @@
 	@include media('>=tablet') {
 		--bounce-footer-gap: #{$navGap};
 	}
-
-	// The button text is the footer background colour; the section prints the matching
-	// highlight (util-selection-background) so selected text doesn't disappear.
-	.button,
-	.button:hover {
-		--selection-background: var(--bounce-footer-button-selection);
-	}
 }
 
 // Logo: same heights as the header logo (Theme settings → Logo)
