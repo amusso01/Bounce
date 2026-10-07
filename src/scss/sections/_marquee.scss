@@ -1,5 +1,13 @@
 @use '../base/variable' as *;
 
+// In the header group: 35px between the bar and the header below it. Padding on the section
+// wrapper rather than margin: Horizon adds up the group's offsetHeight into
+// --header-group-height (calculateHeaderGroupHeight in assets/utilities.js), and offsetHeight
+// skips margins, so a margin would leave the hero 35px too tall.
+.shopify-section-group-header-group.bounce-marquee-section {
+	padding-bottom: 35px;
+}
+
 .bounce-marquee {
 	// Colours bypass the tokens, so invert them here for the selection.
 	--selection-background: #fff;
