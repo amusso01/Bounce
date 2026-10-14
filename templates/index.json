@@ -47,7 +47,7 @@
             "fade_up": true,
             "fade_up_delay": 0.2,
             "label": "Prova Bounce",
-            "link": "shopify://products/bounce",
+            "link": "shopify://pages/iscriviti",
             "open_in_new_tab": false,
             "style_class": "button",
             "custom_button_background": "{{ settings.color_palette.foreground }}",
@@ -157,7 +157,7 @@
         "width": "page",
         "video": "shopify://files/videos/99838-video-720.mp4",
         "button_label": "Acquista Bounce",
-        "button_link": "shopify://products/bounce",
+        "button_link": "shopify://pages/iscriviti",
         "padding-block-start": 50,
         "padding-block-end": 60
       }
@@ -272,7 +272,7 @@
         "width": "page",
         "image": "shopify://shop_images/pexels-aysegul-aytoren-46790226-28237976.jpg",
         "button_label": "Acquista Bounce",
-        "button_link": "shopify://products/bounce",
+        "button_link": "shopify://pages/iscriviti",
         "padding-block-start": 45,
         "padding-block-end": 45
       }
@@ -425,7 +425,7 @@
             "fade_up": true,
             "fade_up_delay": 0,
             "label": "Prova Bounce",
-            "link": "shopify://products/bounce",
+            "link": "shopify://pages/iscriviti",
             "open_in_new_tab": false,
             "style_class": "button",
             "custom_button_background": "{{ settings.color_palette.foreground }}",
