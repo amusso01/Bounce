@@ -1,0 +1,97 @@
+@use '../base/variable' as *;
+
+// Form type and fields shared by the Bounce form sections: contact form
+// (sections/_contact-form.scss) and newsletter (sections/_newsletter.scss).
+// Mixins only, so this file outputs nothing on its own.
+
+$formFieldHeight: 40px;
+$formFieldPadding: 10px;
+
+// A <p> in the H1 preset (Theme settings → Typography → H1: 56px, fluid below 1000px),
+// on the shared H1 line (60px at 56px, base/_tokens.scss)
+@mixin form-title {
+	font-family: var(--font-h1--family);
+	font-style: var(--font-h1--style);
+	font-weight: var(--font-h1--weight);
+	font-size: var(--font-h1--size);
+	line-height: var(--font-h1--line-height);
+	letter-spacing: var(--font-h1--letter-spacing);
+	text-transform: var(--font-h1--case);
+}
+
+// 24px on a 40px line
+@mixin form-subtext {
+	font-family: var(--font-body--family);
+	font-size: 1.5rem;
+	font-weight: 400;
+	line-height: calc(40 / 24);
+}
+
+// 16px on a 25px line
+@mixin form-label {
+	font-family: var(--font-body--family);
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: calc(25 / 16);
+	color: var(--color-foreground);
+}
+
+// Palette color 2 (#F0F0F0), square, no border. Typed text is Regular, the placeholder Light.
+// Inputs get a fixed height and no block padding: the browser centres a single line itself,
+// which is steadier across browsers than line-height on an input.
+@mixin form-input {
+	// base.css paints fields with this token from a stronger selector
+	// (input:not([type='checkbox'], [type='radio'])), so set the token, not just the property
+	--color-input-background: #{$color4};
+
+	display: block;
+	width: 100%;
+	height: $formFieldHeight;
+	margin: 0;
+	padding: 0 $formFieldPadding;
+	border: 0;
+	border-radius: 0;
+	background-color: var(--color-input-background);
+	color: var(--color-foreground);
+	font-family: var(--font-body--family);
+	font-size: 0.75rem;
+	font-weight: 400;
+	line-height: calc(25 / 12);
+	appearance: none;
+	-webkit-font-smoothing: antialiased;
+
+	// base.css mutes placeholders to 60%; the design has them full strength, in Light
+	&::placeholder {
+		color: var(--color-foreground);
+		font-weight: 300;
+		opacity: 1;
+	}
+}
+
+// 12px Light on a 25px line
+@mixin form-note {
+	margin: 0;
+	font-family: var(--font-body--family);
+	font-size: 0.75rem;
+	font-weight: 300;
+	line-height: calc(25 / 12);
+	color: var(--color-foreground);
+}
+
+// Sent / error message: icon and text in a row
+@mixin form-message {
+	display: flex;
+	align-items: center;
+	gap: var(--gap-xs);
+	font-family: var(--font-body--family);
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: calc(25 / 16);
+	color: var(--color-foreground);
+
+	svg {
+		flex-shrink: 0;
+		width: 20px;
+		height: 20px;
+	}
+}

@@ -1,0 +1,106 @@
+@use '../base/variable' as *;
+@use '../components/form' as *;
+
+// Bounce newsletter (sections/bounce-newsletter.liquid)
+// Type and field styles are shared with the contact form (components/_form.scss)
+
+// From the design
+$containerWidth: 545px;
+$introGap: 20px; // title → text
+$formOffset: 50px; // text → label
+$labelGap: 4px; // label → field
+$fieldToButton: 24px; // field → Notify me
+$buttonGap: 8px; // Notify me → Back to site
+$noteGap: 10px; // Back to site → note
+$messageGap: 16px; // error message → label
+$successButtonGap: 32px; // thank-you text → button
+
+.bounce-newsletter {
+	// Back to site is outlined in the text colour. Theme settings → Buttons give secondary
+	// buttons no border, so the outline is scoped to this section through the tokens
+	// base.css reads for .button-secondary
+	--style-border-width-secondary: 1px;
+	--color-secondary-button-border: var(--color-foreground);
+	--color-secondary-button-hover-border: var(--color-foreground);
+}
+
+.bounce-newsletter__container {
+	max-width: $containerWidth;
+	margin-inline: auto;
+	text-align: center;
+}
+
+.bounce-newsletter__intro {
+	display: flex;
+	flex-direction: column;
+	gap: $introGap;
+	margin-bottom: $formOffset;
+}
+
+.bounce-newsletter__title,
+.bounce-newsletter__text {
+	margin: 0;
+	color: var(--color-foreground);
+}
+
+.bounce-newsletter__title {
+	@include form-title;
+
+	// Focused by newsletter.js when the thank-you view appears, for screen readers only
+	&:focus {
+		outline: none;
+	}
+}
+
+// Two sentences on their own lines (a <br> in the translation, or paragraphs from the
+// editor), with no gap between them
+.bounce-newsletter__text {
+	@include form-subtext;
+
+	p {
+		margin: 0;
+	}
+}
+
+.bounce-newsletter__field {
+	display: flex;
+	flex-direction: column;
+	gap: $labelGap;
+	text-align: start;
+}
+
+.bounce-newsletter__label {
+	@include form-label;
+}
+
+.bounce-newsletter__input {
+	@include form-input;
+}
+
+.bounce-newsletter__actions {
+	display: flex;
+	flex-direction: column;
+	gap: $buttonGap;
+	margin-top: $fieldToButton;
+}
+
+// base.css sizes buttons to fit their label
+.bounce-newsletter__button {
+	width: 100%;
+}
+
+.bounce-newsletter__note {
+	@include form-note;
+	margin-top: $noteGap;
+}
+
+// Shopify's error, between the intro and the field
+.bounce-newsletter__message {
+	margin-bottom: $messageGap;
+	text-align: start;
+	@include form-message;
+}
+
+.bounce-newsletter__success .bounce-newsletter__intro {
+	margin-bottom: $successButtonGap;
+}

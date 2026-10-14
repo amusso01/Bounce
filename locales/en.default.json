@@ -390,6 +390,17 @@
       "message_placeholder": "Write your message here.",
       "submit": "Send",
       "required": "Required field"
+    },
+    "newsletter": {
+      "title": "Almost there.",
+      "text_html": "We’re putting the finishing touches on Bounce ahead of launch.<br>Leave us your email and be among the first to know when it’s available.",
+      "email": "E-Mail",
+      "email_placeholder": "hello@bouncesalts.com",
+      "submit": "Notify me at launch",
+      "back": "Back to site",
+      "note": "No spam. Just launch updates.",
+      "success_title": "You’re on the list.",
+      "success_text": "We’ll let you know as soon as Bounce is available."
     }
   }
 }

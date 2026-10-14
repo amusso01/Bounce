@@ -1,7 +1,9 @@
 @use '../base/variable' as *;
 @use '../base/media' as *;
+@use '../components/form' as *;
 
 // Bounce contact form (sections/bounce-contact-form.liquid)
+// Type and field styles are shared with the newsletter (components/_form.scss)
 
 // From the design
 $containerWidth: 545px;
@@ -10,8 +12,6 @@ $formOffset: 100px; // subtext → first label
 $formOffsetMobile: 80px;
 $fieldGap: 32px; // between fields, across and down
 $labelGap: 4px; // label → field
-$fieldHeight: 40px;
-$fieldPadding: 10px;
 $messageHeight: 170px; // six 25px lines + 10px top and bottom
 $actionsGap: 40px; // message → button
 $noteGap: 10px; // button → note
@@ -39,23 +39,12 @@ $noteGap: 10px; // button → note
 	color: var(--color-foreground);
 }
 
-// A <p> in the H1 preset (Theme settings → Typography → H1: 56px, fluid below 1000px),
-// on the shared H1 line (60px at 56px, base/_tokens.scss)
 .bounce-contact-form__title {
-	font-family: var(--font-h1--family);
-	font-style: var(--font-h1--style);
-	font-weight: var(--font-h1--weight);
-	font-size: var(--font-h1--size);
-	line-height: var(--font-h1--line-height);
-	letter-spacing: var(--font-h1--letter-spacing);
-	text-transform: var(--font-h1--case);
+	@include form-title;
 }
 
 .bounce-contact-form__subtext {
-	font-family: var(--font-body--family);
-	font-size: 1.5rem;
-	font-weight: 400;
-	line-height: calc(40 / 24);
+	@include form-subtext;
 }
 
 // Two columns from 750px (the message spans both); one below
@@ -79,49 +68,17 @@ $noteGap: 10px; // button → note
 }
 
 .bounce-contact-form__label {
-	font-family: var(--font-body--family);
-	font-size: 1rem;
-	font-weight: 400;
-	line-height: calc(25 / 16);
-	color: var(--color-foreground);
+	@include form-label;
 }
 
-// Palette color 2 (#F0F0F0), square, no border. Typed text is Regular, the placeholder Light.
-// Inputs get a fixed height and no block padding: the browser centres a single line itself,
-// which is steadier across browsers than line-height on an input.
 .bounce-contact-form__input {
-	// base.css paints fields with this token from a stronger selector
-	// (input:not([type='checkbox'], [type='radio'])), so set the token, not just the property
-	--color-input-background: #{$color4};
-
-	display: block;
-	width: 100%;
-	height: $fieldHeight;
-	margin: 0;
-	padding: 0 $fieldPadding;
-	border: 0;
-	border-radius: 0;
-	background-color: var(--color-input-background);
-	color: var(--color-foreground);
-	font-family: var(--font-body--family);
-	font-size: 0.75rem;
-	font-weight: 400;
-	line-height: calc(25 / 12);
-	appearance: none;
-	-webkit-font-smoothing: antialiased;
-
-	// base.css mutes placeholders to 60%; the design has them full strength, in Light
-	&::placeholder {
-		color: var(--color-foreground);
-		font-weight: 300;
-		opacity: 1;
-	}
+	@include form-input;
 }
 
 .bounce-contact-form__input--textarea {
 	height: auto;
 	min-height: $messageHeight;
-	padding-block: $fieldPadding;
+	padding-block: $formFieldPadding;
 	resize: vertical;
 }
 
@@ -138,29 +95,11 @@ $noteGap: 10px; // button → note
 }
 
 .bounce-contact-form__note {
-	margin: 0;
-	font-family: var(--font-body--family);
-	font-size: 0.75rem;
-	font-weight: 300;
-	line-height: calc(25 / 12);
-	color: var(--color-foreground);
+	@include form-note;
 }
 
 // Sent / error message at the top of the form
 .bounce-contact-form__message {
-	display: flex;
-	align-items: center;
-	gap: var(--gap-xs);
 	margin-bottom: $fieldGap;
-	font-family: var(--font-body--family);
-	font-size: 1rem;
-	font-weight: 400;
-	line-height: calc(25 / 16);
-	color: var(--color-foreground);
-
-	svg {
-		flex-shrink: 0;
-		width: 20px;
-		height: 20px;
-	}
+	@include form-message;
 }

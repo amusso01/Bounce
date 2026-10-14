@@ -50,7 +50,7 @@ Bounce is built on **Horizon 4.2.0** (`theme_info` in `config/settings_schema.js
 
 ## Already built — extend these rather than rebuild
 
-`snippets/bounce-fade-attributes.liquid`, `snippets/bounce-language-switcher.liquid` (IT | EN), `snippets/bounce-buy-button.liquid` (shared header/footer *Acquista* button), `snippets/bounce-colors.liquid`, `snippets/bounce-motion-gate.liquid`, and the sections `bounce-footer`, `bounce-carousel`, `bounce-accordion`, `bounce-contact-form`. → §7
+`snippets/bounce-fade-attributes.liquid`, `snippets/bounce-language-switcher.liquid` (IT | EN), `snippets/bounce-buy-button.liquid` (shared header/footer *Acquista* button), `snippets/bounce-colors.liquid`, `snippets/bounce-motion-gate.liquid`, and the sections `bounce-footer`, `bounce-carousel`, `bounce-accordion`, `bounce-contact-form`, `bounce-newsletter` (Shopify's customer form, thank-you view swapped in by `src/js/newsletter.js`). Form type and field styles are mixins in `src/scss/components/_form.scss`. → §7
 
 ## Build (→ §8)
 

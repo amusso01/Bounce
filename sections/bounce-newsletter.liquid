@@ -1,0 +1,312 @@
+{%- comment -%}
+  Bounce newsletter: a launch sign-up in a 545px column. Shopify's customer form creates the
+  customer (or updates an existing one) with email marketing consent and the tag from the settings.
+  After a sign-up the form gives way to a thank-you view: src/js/newsletter.js posts the form in
+  the background and swaps the view in without a reload. Without JS, or after Shopify's bot
+  challenge, the page reloads straight into it.
+  No blocks: the layout is fixed by the design. Copy left blank in the settings falls back to the
+  storefront translations (bounce.newsletter.* in locales/*.json), so EN needs no editor work.
+  Styles in src/scss/sections/_newsletter.scss.
+{%- endcomment -%}
+
+{%- liquid
+  assign form_id = 'NewsletterForm-' | append: section.id
+  assign back_url = section.settings.back_link | default: routes.root_url
+
+  assign title = section.settings.title | escape
+  if title == blank
+    assign title = 'bounce.newsletter.title' | t
+  endif
+
+  assign success_title = section.settings.success_title | escape
+  if success_title == blank
+    assign success_title = 'bounce.newsletter.success_title' | t
+  endif
+
+  # Lets the merchant style the thank-you view in the Theme Editor
+  assign preview_success = false
+  if request.design_mode and section.settings.preview_success
+    assign preview_success = true
+  endif
+-%}
+
+{%- capture success_view -%}
+  <div class="bounce-newsletter__success">
+    <div class="bounce-newsletter__intro">
+      <p
+        class="bounce-newsletter__title"
+        tabindex="-1"
+        data-bounce-newsletter-focus
+        {% render 'bounce-fade-attributes', settings: section.settings %}
+      >
+        {{- success_title -}}
+      </p>
+      <p
+        class="bounce-newsletter__text"
+        {% render 'bounce-fade-attributes', settings: section.settings, delay: 0.1 %}
+      >
+        {%- if section.settings.success_text != blank -%}
+          {{- section.settings.success_text -}}
+        {%- else -%}
+          {{- 'bounce.newsletter.success_text' | t -}}
+        {%- endif -%}
+      </p>
+    </div>
+    <a
+      href="{{ back_url }}"
+      class="button bounce-newsletter__button"
+      {% render 'bounce-fade-attributes', settings: section.settings, delay: 0.2 %}
+    >
+      {{- 'bounce.newsletter.back' | t -}}
+    </a>
+  </div>
+{%- endcapture -%}
+
+<div
+  class="bounce-newsletter spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+  data-bounce-newsletter="{{ section.id }}"
+>
+  <div class="content-block">
+    <div class="bounce-newsletter__container">
+      {%- form 'customer', id: form_id, class: 'bounce-newsletter__form' -%}
+        {%- liquid
+          # The title and intro sit inside the form: only the form object knows the state
+          assign success = preview_success
+          if form.posted_successfully?
+            assign success = true
+          endif
+        -%}
+
+        {%- unless success -%}
+          {%- if section.settings.tags != blank -%}
+            <input
+              type="hidden"
+              name="contact[tags]"
+              value="{{ section.settings.tags | escape }}"
+            >
+          {%- endif -%}
+
+          <div class="bounce-newsletter__intro">
+            <p
+              class="bounce-newsletter__title"
+              {% render 'bounce-fade-attributes', settings: section.settings %}
+            >
+              {{- title -}}
+            </p>
+            <div
+              class="bounce-newsletter__text"
+              {% render 'bounce-fade-attributes', settings: section.settings, delay: 0.1 %}
+            >
+              {%- if section.settings.text != blank -%}
+                {{- section.settings.text -}}
+              {%- else -%}
+                <p>{{ 'bounce.newsletter.text_html' | t }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+
+          {%- if form.errors -%}
+            <div
+              id="{{ form_id }}-error"
+              class="bounce-newsletter__message"
+              role="alert"
+              data-bounce-newsletter-error
+            >
+              {{- 'icon-error.svg' | inline_asset_content -}}
+              <span>
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email -}}
+              </span>
+            </div>
+          {%- endif -%}
+
+          <div
+            class="bounce-newsletter__field"
+            {% render 'bounce-fade-attributes', settings: section.settings, delay: 0.2 %}
+          >
+            <label
+              class="bounce-newsletter__label"
+              for="{{ form_id }}-email"
+            >
+              {{- 'bounce.newsletter.email' | t -}}
+            </label>
+            <input
+              type="email"
+              id="{{ form_id }}-email"
+              class="bounce-newsletter__input"
+              name="contact[email]"
+              autocomplete="email"
+              autocapitalize="off"
+              spellcheck="false"
+              required
+              value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+              placeholder="{{ 'bounce.newsletter.email_placeholder' | t }}"
+              {% if form.errors %}
+                aria-invalid="true"
+                aria-describedby="{{ form_id }}-error"
+              {% endif %}
+            >
+          </div>
+
+          <div
+            class="bounce-newsletter__actions"
+            {% render 'bounce-fade-attributes', settings: section.settings, delay: 0.3 %}
+          >
+            <button
+              type="submit"
+              class="button bounce-newsletter__button"
+            >
+              {{- 'bounce.newsletter.submit' | t -}}
+            </button>
+            <a
+              href="{{ back_url }}"
+              class="button-secondary bounce-newsletter__button"
+            >
+              {{- 'bounce.newsletter.back' | t -}}
+            </a>
+          </div>
+
+          <p
+            class="bounce-newsletter__note"
+            {% render 'bounce-fade-attributes', settings: section.settings, delay: 0.4 %}
+          >
+            {{- 'bounce.newsletter.note' | t -}}
+          </p>
+        {%- endunless -%}
+      {%- endform -%}
+
+      {%- comment -%}
+        Template content is inert: fade.js only sees it once newsletter.js inserts it, so it fades
+        in then. A hidden element would have been played (and left visible) at load instead.
+      {%- endcomment -%}
+      {%- if success -%}
+        {{ success_view }}
+      {%- else -%}
+        <template data-bounce-newsletter-success>{{ success_view }}</template>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bounce newsletter",
+  "class": "bounce-newsletter-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:settings.animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "fade_up",
+      "label": "Fade up on scroll",
+      "info": "The title, the text, the field, then the buttons and note fade in one after another. The thank-you screen fades in the same way when it appears.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "fade_up_delay",
+      "label": "Fade up delay",
+      "info": "Seconds to wait before the first element fades in.",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0,
+      "visible_if": "{{ section.settings.fade_up }}"
+    },
+    {
+      "type": "header",
+      "content": "t:names.email_signup"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:settings.heading",
+      "placeholder": "Ci siamo quasi."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "paragraph",
+      "content": "Leave the heading and text blank to use the storefront translations, so the English version follows on its own. The field, buttons and note always come from the translations: Online Store → Themes → Edit default theme content → Bounce."
+    },
+    {
+      "type": "text",
+      "id": "tags",
+      "label": "Customer tag",
+      "info": "Added to everyone who signs up, so you can find them in Customers. Separate several tags with commas.",
+      "default": "newsletter"
+    },
+    {
+      "type": "url",
+      "id": "back_link",
+      "label": "Back to site link",
+      "info": "Blank links to the home page."
+    },
+    {
+      "type": "header",
+      "content": "Thank-you screen"
+    },
+    {
+      "type": "checkbox",
+      "id": "preview_success",
+      "label": "Show in the editor",
+      "info": "Shows the thank-you screen in place of the form while you edit. Visitors always see the form first.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "success_title",
+      "label": "t:settings.heading",
+      "placeholder": "Sei nella lista."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "success_text",
+      "label": "Text"
+    },
+    {
+      "type": "paragraph",
+      "content": "Blank uses the storefront translations."
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 170
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 170
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bounce newsletter"
+    }
+  ]
+}
+{% endschema %}

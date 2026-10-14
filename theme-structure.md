@@ -436,7 +436,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 
 ### Contact form
 
-`sections/bounce-contact-form.liquid`: a centred title and subtext, then Shopify's contact form, all in a 545px column. It replaces Horizon's *Main page* and *Contact form* sections in `templates/page.contact.json`; Horizon's files are untouched, just unused there. Like the footer it has **no blocks**, so the form can't drift from the design. No JS; styles in `src/scss/sections/_contact-form.scss`, with the design values as variables at the top.
+`sections/bounce-contact-form.liquid`: a centred title and subtext, then Shopify's contact form, all in a 545px column. It replaces Horizon's *Main page* and *Contact form* sections in `templates/page.contact.json`; Horizon's files are untouched, just unused there. Like the footer it has **no blocks**, so the form can't drift from the design. No JS; styles in `src/scss/sections/_contact-form.scss`, with the design values as variables at the top. The type, field, note and message styles are mixins in `src/scss/components/_form.scss`, shared with the [Newsletter](#newsletter).
 
 | Section setting | Default |
 |---|---|
@@ -451,6 +451,39 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 - **Fields:** 40px tall, 10px side padding, square, no border, palette *color 2* (`$color4`, #F0F0F0). The message box is 170px (six lines plus 10px padding). base.css paints inputs from `input:not([type='checkbox'], [type='radio'])`, which outranks a single class, so the grey goes in through `--color-input-background` on the field.
 - **Spacing:** 20px title → subtext, 100px subtext → form (80px below 750px), 32px between fields across and down, 4px label → field, 40px message → button, 10px button → note.
 - **Button:** the standard `.button` (see [Button component](#button-component)), stretched to the column width.
+
+### Newsletter
+
+`sections/bounce-newsletter.liquid`: the pre-launch sign-up. In the contact form's 545px column it has a centred title and intro, an E-Mail field, *Avvisami al lancio*, an outlined *Torna al sito*, and a note. After a sign-up, the form gives way to a thank-you view on the same page: *Sei nella lista.*, a line of text and a black *Torna al sito*. It is the only section in `templates/page.iscriviti.json` (Horizon's *Main page* is removed there), so any page on the *iscriviti* template shows it. **No blocks**, like the contact form. JS is in `src/js/newsletter.js`, styles in `src/scss/sections/_newsletter.scss`.
+
+| Section setting | Default |
+|---|---|
+| *Animation*: *Fade up on scroll* + *Fade up delay* (0–1s). The title, text, field, buttons and note cascade 0.1s apart. When the thank-you view appears, its title, text and button do the same. The error message never fades | **On**, 0s |
+| *Heading* (text) + *Text* (rich text) | Blank: the storefront translations `bounce.newsletter.title` / `text_html` |
+| *Customer tag*: added to every sign-up | `newsletter` |
+| *Back to site link* | Blank: the home page |
+| *Thank-you screen*: *Show in the editor*, *Heading*, *Text* | Off; blank text falls back to `success_title` / `success_text` |
+| *Padding* top / bottom, 0–200px in 2px steps | 170px / 170px |
+
+**How it subscribes.** It uses Shopify's own newsletter form, `{% form 'customer' %}`, the same one as Horizon's *Email signup* block. The form posts `contact[email]` and `contact[tags]` to `/contact`. Shopify creates the customer, or updates an existing one, with email marketing consent set to subscribed and the tag added. No app is involved. Sign-ups show in Customers, and the tag filters them.
+
+**Copy.** The label, placeholder, both buttons and the note always come from `bounce.newsletter.*` (`locales/it.json`, `locales/en.default.json`). Heading and text settings left blank fall back to the same translations, so the EN version needs no editor work. That's the same fallback `bounce-buy-button` uses. Text typed into a setting is not translated by the locale files.
+
+**The thank-you swap** (`newsletter.js`). One delegated `submit` listener on `document`, so sections the Theme Editor re-renders need no mounting or cleanup.
+
+- It posts the form with `fetch`, urlencoded like the browser's own submit. Shopify redirects back to the page, re-rendered with the form's state, and the script reads our section out of that HTML:
+  - **The thank-you view is there:** success. The `<form>` is replaced with the contents of `<template data-bounce-newsletter-success>`, and focus moves to its title so screen readers announce it.
+  - **Shopify's error message is there:** it is copied above the field, with `aria-invalid` / `aria-describedby` on the input. The typed email stays, and the form doesn't fade in again.
+  - **Anything else** (network error, a non-200 response, Shopify's captcha at `/challenge`, the section missing): `form.submit()`, the browser's own submit. The reloaded page renders the thank-you view or the error server-side from `form.posted_successfully?` / `form.errors`. That is also what happens without JS.
+- It leaves the submit alone if something else has already called `preventDefault()` on it, e.g. Shopify's bot protection.
+- **Why a `<template>`:** template content is inert, so `fade.js` only sees the thank-you view once it is inserted, and `arrive` fades it in. A `hidden` element would be played at load instead, because its all-zero rect counts as above the viewport, and it would never fade on reveal.
+
+**Styles.**
+
+- Spacing from the XD: 20px title → text, 50px text → label, 4px label → field, 24px field → button, 8px between the buttons, 10px to the note, 32px thank-you text → button. These are variables at the top of `_newsletter.scss`.
+- Type, fields and note are the contact form's, through `components/_form.scss`.
+- The intro's two sentences break with a `<br>` in the translation (or two paragraphs from the editor), with no gap between them.
+- Both buttons fill the column. *Torna al sito* is `.button-secondary` with a 1px outline in the text colour. Theme settings → Buttons give secondary buttons no border, so `.bounce-newsletter` sets `--style-border-width-secondary` and `--color-secondary-button-border` / `--color-secondary-button-hover-border`. If every secondary button should look like this, set it in Theme settings → Buttons → Secondary instead and remove those three lines.
 
 ### Smooth scroll (Lenis)
 
@@ -505,6 +538,7 @@ Consecutive items with `-duration` `.2`, `.4`, `.6`… start together and land o
 - our **Bounce carousel** section, which fades the whole carousel;
 - our **Bounce accordion** section, which fades each question and then the subtext and button row, each on its own;
 - our **Bounce contact form** section, which fades the title, the subtext, each field, then the button and note, each on its own. Switched on by default;
+- our **Bounce newsletter** section, which fades the title, text, field, buttons and note 0.1s apart, and the thank-you view the same way when it appears. Switched on by default;
 - our **Bounce footer** section, which fades each element on its own, cascading from the tagline to *All rights reserved*, over the background. Also switched on by default.
 
 They all use the same two settings:
@@ -752,7 +786,7 @@ Every Horizon file we've changed, and why:
 | `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and renders `bounce-buy-button` after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style`. `data-fade-down` on each `.header__row` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)). The rows drop in on load (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |
-| `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`), `bounce.footer.rights_reserved` and `bounce.contact_form.*` | Default button label per language; the footer's *All rights reserved* (see [Footer](#footer)); the contact form's labels, placeholders, button and note (see [Contact form](#contact-form)) |
+| `locales/it.json`, `locales/en.default.json` | Added `bounce.buy_button` (`Acquista` / `Buy now`), `bounce.footer.rights_reserved`, `bounce.contact_form.*` and `bounce.newsletter.*` | Default button label per language; the footer's *All rights reserved* (see [Footer](#footer)); the contact form's labels, placeholders, button and note (see [Contact form](#contact-form)); the newsletter's copy (see [Newsletter](#newsletter)) |
 | `blocks/text.liquid`, `blocks/button.liquid` | Schema: an *Animation* group (`fade_up`, `fade_up_delay`) at the top of the settings, then a *Text* / *Button* header over the original fields | Fade-up option in the editor (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/text.liquid`, `snippets/button.liquid` | Render `bounce-fade-attributes` on the text element and on the button's `<a>` (the button only when it has a link) | Same |
 | `sections/section.liquid` | *Padding* top / bottom: max 100 → **200px**, step 1 → **2** | The design needs taller spacing in Custom section (and its Rich text preset, the same file). Shopify caps a range at 101 steps, so 0–200 needs a 2px step; every saved value was already even |

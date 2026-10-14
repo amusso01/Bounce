@@ -378,6 +378,17 @@
       "message_placeholder": "Scrivi qui il tuo messaggio.",
       "submit": "Invia",
       "required": "Campo obbligatorio"
+    },
+    "newsletter": {
+      "title": "Ci siamo quasi.",
+      "text_html": "Stiamo dando gli ultimi ritocchi a Bounce prima del lancio.<br>Lasciaci la tua email e sarai tra i primi a sapere quando sarà disponibile.",
+      "email": "E-Mail",
+      "email_placeholder": "hello@bouncesalts.com",
+      "submit": "Avvisami al lancio",
+      "back": "Torna al sito",
+      "note": "Niente spam. Solo aggiornamenti sul lancio.",
+      "success_title": "Sei nella lista.",
+      "success_text": "Ti avviseremo appena Bounce sarà disponibile."
     }
   }
 }
