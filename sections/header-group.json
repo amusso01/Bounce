@@ -116,7 +116,7 @@
         "show_account": false,
         "customer_account_menu": "customer-account-main-menu",
         "button_label": "",
-        "button_link": "shopify://products/bounce",
+        "button_link": "shopify://pages/iscriviti",
         "show_search": false,
         "search_position": "right",
         "search_row": "top",
