@@ -52,6 +52,10 @@ $footerGap: 72px;
 	font-weight: 400;
 	line-height: 1.15;
 	color: var(--color-foreground);
+
+	@include media('<x-wide') {
+		font-size: 1.4rem;
+	}
 }
 
 // Chevron: down when closed, up when open
@@ -89,8 +93,8 @@ $footerGap: 72px;
 	padding: 0 $rowPaddingInline $rowPaddingBlock;
 	font-family: var(--font-body--family);
 	font-size: 1rem;
-	font-weight: 300;
-	line-height: calc(24 / 16);
+	font-weight: 400;
+	line-height: 1.6;
 	color: var(--color-foreground);
 
 	@include media('>=mobile') {
