@@ -1,4 +1,5 @@
 @use '../base/variable' as *;
+@use '../base/media' as *;
 
 // In the header group: 35px between the bar and the header below it. Padding on the section
 // wrapper rather than margin: Horizon adds up the group's offsetHeight into
@@ -17,6 +18,10 @@
 	overflow: hidden;
 	padding-block: 27px;
 	width: 100%;
+
+	@include media('<x-wide') {
+		padding-block: 18px;
+	}
 }
 
 .bounce-marquee__viewport {
@@ -47,6 +52,10 @@
 	font-weight: 400;
 	line-height: 26px;
 	text-transform: uppercase;
+
+	@include media('<x-wide') {
+		font-size: 18px;
+	}
 }
 
 .bounce-marquee__separator {

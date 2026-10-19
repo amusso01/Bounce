@@ -159,7 +159,7 @@ $breakpoints: (
 	'tablet': 990px,
 	'desktop': 1200px,
 	'wide': 1400px,
-	// 'x-wide' is ours, not Horizon's: H1/H2 step down below it (_tokens.scss)
+	// 'x-wide' is ours, not Horizon's: H1/H2 (_tokens.scss) and the marquee step down below it
 	'x-wide': 1520px,
 );
 ```
