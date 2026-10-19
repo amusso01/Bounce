@@ -1,0 +1,16 @@
+{% doc %}
+  Prints theme settings Horizon doesn't expose as-is on :root.
+  --bounce-h1-size / --bounce-h2-size: the Typography H1/H2 sizes, without the fluid clamp()
+  Horizon wraps sizes from 48px in. Consumed by $h1Size / $h2Size in src/scss/base/_variable.scss,
+  which _tokens.scss steps down below 1520px.
+
+  @example
+  {%- render 'bounce-variables' -%}
+{% enddoc %}
+
+{% style %}
+  :root {
+    --bounce-h1-size: {{ settings.type_size_h1 | divided_by: 16.0 }}rem;
+    --bounce-h2-size: {{ settings.type_size_h2 | divided_by: 16.0 }}rem;
+  }
+{% endstyle %}

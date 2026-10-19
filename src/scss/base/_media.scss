@@ -5,6 +5,8 @@ $breakpoints: (
 	'tablet': 990px,
 	'desktop': 1200px,
 	'wide': 1400px,
+	// 'x-wide' is ours, not Horizon's: H1/H2 step down below it (_tokens.scss)
+	'x-wide': 1520px,
 ) !default;
 
 @forward '~include-media/dist/include-media' with (
@@ -19,3 +21,4 @@ $onlyMobile: 750px;
 $onlyTablet: 990px;
 $onlyDesktop: 1200px;
 $onlyWide: 1400px;
+$onlyXWide: 1520px;

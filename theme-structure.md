@@ -47,6 +47,7 @@ layout/theme.liquid
  │   5. snippets/theme-styles-variables → inline <style> :root { fonts, spacing, radii, … }
  │   6. snippets/color-palette          → inline <style> :root { colors, buttons, inputs, … }
  │      snippets/bounce-colors          ← OURS: --bounce-color-1..4 from the palette
+ │      snippets/bounce-variables       ← OURS: settings Horizon doesn't print as-is (raw H1/H2 size)
  │   7. {{ content_for_header }}        → Shopify + apps + the bundled {% stylesheet %} CSS
  │   8. assets/bounce.css + bounce.js   ← OURS, last on purpose
  ├─ <body>
@@ -82,7 +83,7 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 | Group | Examples | Driven by setting? |
 |---|---|---|
 | Font families | `--font-body--family`, `--font-heading--family`, `--font-subheading--family`, `--font-accent--family` (+ `--style`, `--weight`) | **Overridden by us**: all four are Simplon Mono with fixed weights (see [Custom font](#custom-font-simplon-mono)) |
-| Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px). **H1 and H2 `--line-height` are overridden by us** in `src/scss/base/_tokens.scss`: 60/56 and 60/40, a 60px line at the desktop sizes, so their *Line height* settings do nothing. **H2 `--size` is made fluid there too**: Horizon only scales sizes from 48px, so H1 goes 56 → 44px below a 1000px viewport but H2 stayed 40px. Ours follows H1's curve, 40 → ≈31.4px (44/56), and still takes its desktop size from the setting |
+| Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px). **H1 and H2 `--line-height` are overridden by us** in `src/scss/base/_tokens.scss`: 60/56 and 60/40, a 60px line at the desktop sizes, so their *Line height* settings do nothing. **H1 and H2 `--size` step down there too**, still from their *Size* settings: the setting from 1520px (`x-wide`); H1 −20% and H2 −15% from 990 to 1519px; both −25% of the setting below 990px. With 56 / 40px that's 56 → 44.8 → 42px and 40 → 34 → 30px. This replaces Horizon's fluid H1 (56 → 44px below 1000px). The steps scale the raw setting, `--bounce-h1-size` / `--bounce-h2-size` from `snippets/bounce-variables.liquid`, because scaling Horizon's `clamp()` would stack the two reductions |
 | Fixed type scale | `--font-size--3xs` … `--font-size--6xl` | No |
 | Page widths | `--narrow-page-width`, `--normal-page-width`, `--wide-page-width` (Horizon: 1440 / 1920 / 2400px) | **Overridden by us** to 1024 / 1120 / 1440px (see [Content widths](#content-widths)). `page_width` setting picks one → `body.page-width-*` |
 | Spacing | `--padding-3xs…6xl`, `--margin-3xs…6xl`, `--gap-3xs…3xl` | No |
@@ -158,6 +159,8 @@ $breakpoints: (
 	'tablet': 990px,
 	'desktop': 1200px,
 	'wide': 1400px,
+	// 'x-wide' is ours, not Horizon's: H1/H2 step down below it (_tokens.scss)
+	'x-wide': 1520px,
 );
 ```
 
@@ -199,7 +202,7 @@ In Dawn you printed Liquid values into `:root` in `theme.liquid`, then mapped th
 | You need… | Do this |
 |---|---|
 | A value that's **already a theme setting** (fonts, sizes, button colors, radii…) | It's already a CSS variable. Map it in `src/scss/base/_variable.scss`, e.g. `$fontHeading: var(--font-heading--family);` |
-| A **new merchant-editable value** | Add a setting to `config/settings_schema.json`, print it in `snippets/bounce-variables.liquid`, render that snippet right after `color-palette` in both layouts, then map it in `_variable.scss` |
+| A **new merchant-editable value** | Add a setting to `config/settings_schema.json`, print it in `snippets/bounce-variables.liquid` (already rendered in both layouts, after `bounce-colors`), then map it in `_variable.scss` |
 | A **fixed brand value** that merchants never change | A plain SCSS variable, or a `:root { --bounce-… }` custom property in `bounce.css` |
 
 `_variable.scss` already maps the Horizon font families and page colors (`$fontSansSerif`, `$fontHeading`, `$fontSubheading`, `$fontAccent`, `$colorBackground`, `$colorForeground`).
@@ -217,18 +220,14 @@ Example: a merchant-editable accent color.
 ```
 
 ```liquid
-{%- comment -%} snippets/bounce-variables.liquid {%- endcomment -%}
+{%- comment -%} snippets/bounce-variables.liquid: add to its :root block {%- endcomment -%}
 {% style %}
   :root {
+    …
     --bounce-accent: {{ settings.bounce_accent }};
     --bounce-accent-rgb: {{ settings.bounce_accent.rgb }};
   }
 {% endstyle %}
-```
-
-```liquid
-{%- comment -%} layout/theme.liquid + layout/password.liquid, right after render 'color-palette' {%- endcomment -%}
-{%- render 'bounce-variables' -%}
 ```
 
 ```scss
@@ -252,17 +251,28 @@ Use `{% style %}` (Liquid allowed, live-updates in the editor), not `{% styleshe
 
 ### Change a design token globally
 
-Global token overrides go in `src/scss/base/_tokens.scss`. It already locks the H1 and H2 line heights and makes H2 fluid:
+Global token overrides go in `src/scss/base/_tokens.scss`. It already locks the H1 and H2 line heights and steps their sizes down from the settings (see [Design tokens](#3-design-tokens-horizons-root-variables)):
 
 ```scss
 // src/scss/base/_tokens.scss
 :root {
-	--font-h1--line-height: calc(60 / 56); // 60px at the 56px desktop H1, scales with the fluid size
+	--font-h1--line-height: calc(60 / 56); // 60px at the 56px desktop H1, scales with the size
 	--font-h2--line-height: calc(60 / 40); // 60px at 40px
-	--font-h2--size: clamp(calc(var(--font-size--h2) * 44 / 56), 4vw, var(--font-size--h2)); // H1's curve
 	--style-border-radius-md: 0;          // e.g. more tokens here
+
+	@include media('<x-wide') {           // 990–1519px
+		--font-h1--size: calc(#{$h1Size} * 0.8);
+		--font-h2--size: calc(#{$h2Size} * 0.85);
+	}
+
+	@include media('<tablet') {           // below 990px
+		--font-h1--size: calc(#{$h1Size} * 0.75);
+		--font-h2--size: calc(#{$h2Size} * 0.75);
+	}
 }
 ```
+
+A Sass variable inside a custom property value needs `#{}`, or it is printed literally.
 
 ⚠️ Overriding a **setting-driven** token (for example `--font-h1--size`) makes that editor setting do nothing. Do it only when you mean to lock the design. Otherwise change the setting.
 
@@ -447,7 +457,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 
 - **Fields:** Nome\*, E-Mail\*, Numero di telefono, Nazione, Messaggio\*. Two columns from 750px (the message spans both), one below. Required fields carry `required`; the asterisk is `aria-hidden`. They post as `contact[name]`, `[email]`, `[phone]`, `[country]` and `[body]`, which is how they are labelled in the notification email.
 - **Text:** labels, placeholders, the button and the `* Campo obbligatorio` note come from the storefront translations `bounce.contact_form.*` (`locales/it.json`, `locales/en.default.json`), so the EN version needs no editor work. Change them in Online Store → Themes → Edit default theme content. The sent message reuses Horizon's `blocks.contact_form.post_success`.
-- **Type:** title uses the H1 tokens (56px, fluid below 1000px, so 44px on phones), including the shared 60/56 line height. Subtext 24/40, labels 16/25, all weight 400. Field text 12/25: Regular when typed, Light for the placeholder, both full-strength text colour (base.css mutes placeholders to 60%).
+- **Type:** title uses the H1 tokens (56px; 44.8px from 990 to 1519px, 42px below), including the shared 60/56 line height. Subtext 24/40, labels 16/25, all weight 400. Field text 12/25: Regular when typed, Light for the placeholder, both full-strength text colour (base.css mutes placeholders to 60%).
 - **Fields:** 40px tall, 10px side padding, square, no border, palette *color 2* (`$color4`, #F0F0F0). The message box is 170px (six lines plus 10px padding). base.css paints inputs from `input:not([type='checkbox'], [type='radio'])`, which outranks a single class, so the grey goes in through `--color-input-background` on the field.
 - **Spacing:** 20px title → subtext, 100px subtext → form (80px below 750px), 32px between fields across and down, 4px label → field, 40px message → button, 10px button → note.
 - **Button:** the standard `.button` (see [Button component](#button-component)), stretched to the column width.
@@ -783,6 +793,7 @@ Every Horizon file we've changed, and why:
 | `layout/password.liquid` | Same as above | Same, for the password page |
 | `layout/theme.liquid`, `layout/password.liquid` | Added `{%- render 'bounce-fonts' -%}` after `{%- render 'fonts' -%}` | Load Simplon Mono early in `<head>` (see [Custom font](#custom-font-simplon-mono)) |
 | `layout/theme.liquid`, `layout/password.liquid` | Added `{%- render 'bounce-motion-gate' -%}` after `bounce-fonts` | Hide fade elements before first paint, only when `fade.js` will play them (see [Fade up / fade down](#fade-up--fade-down)) |
+| `layout/theme.liquid`, `layout/password.liquid` | Added `{%- render 'bounce-variables' -%}` after `bounce-colors` | Prints the raw H1/H2 *Size* settings that `_tokens.scss` steps down below 1520px (see [Design tokens](#3-design-tokens-horizons-root-variables)) |
 | `sections/header.liquid` | `localization_markup` renders `bounce-language-switcher` instead of the country/language dropdown. The `actions` capture passes `show_account` / `show_cart` and renders `bounce-buy-button` after `header-actions`. Schema: added `show_account`, `button_label`, `button_link`, `show_cart` (the cart bubble settings only show with the cart on); removed `show_country` and `country_selector_style`. `data-fade-down` on each `.header__row` | IT \| EN switcher, Acquista button and icon toggles (see [Header](#header)). The rows drop in on load (see [Fade up / fade down](#fade-up--fade-down)) |
 | `snippets/header-actions.liquid` | Optional `show_account` / `show_cart` params; `false` skips the account block or the cart trigger. `<header-actions>` and its live region always render | Toggles for the account and cart icons |
 | `snippets/header-drawer.liquid` | The utility-links localization block (flag, currency, submenu) is replaced by `bounce-language-switcher` | Same switcher in the mobile drawer; the removed country settings are no longer read |

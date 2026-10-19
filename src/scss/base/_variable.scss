@@ -15,6 +15,11 @@ $color2: var(--bounce-color-2); // foreground #000
 $color3: var(--bounce-color-3); // color1 (pink)
 $color4: var(--bounce-color-4); // color2 (light grey)
 
+// Type: H1/H2 sizes from Theme settings → Typography, raw (no fluid clamp), printed on
+// :root by snippets/bounce-variables.liquid. Stepped down below 1520px in _tokens.scss.
+$h1Size: var(--bounce-h1-size);
+$h2Size: var(--bounce-h2-size);
+
 // Layout: content widths (gutters sit outside, see Horizon's --page-margin).
 // Applied to Horizon's page width tokens in _layout.scss.
 $contentMax: 1120px;

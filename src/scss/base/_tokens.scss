@@ -1,16 +1,29 @@
+@use './variable' as *;
+@use './media' as *;
+
 // Heading line heights, locked to the design: 60px lines at the desktop sizes in
-// Theme settings → Typography (H1 56px, H2 40px). Unitless, so they follow the fluid
-// sizes down to phones. Horizon prints these on :root from the H1/H2 Line height
-// settings (snippets/theme-styles-variables.liquid); bounce.css loads after it, so these
-// win and those two settings do nothing.
+// Theme settings → Typography (H1 56px, H2 40px). Unitless, so they follow the smaller
+// sizes below. Horizon prints these on :root from the H1/H2 Line height settings
+// (snippets/theme-styles-variables.liquid); bounce.css loads after it, so these win and
+// those two settings do nothing.
 //
-// H2 size: Horizon only makes sizes from 48px fluid, as clamp(next smaller size + 4px,
-// size × 0.1vw, size). So H1 56px slides from 56px at a 1000px viewport to 44px at 786px,
-// while H2 40px stays 40px everywhere. This gives H2 the same curve: 44/56 of its size at
-// the bottom (≈31.4px), 4vw (0.1vw per px of 40px) in between. The H2 Size setting still
-// sets the desktop size.
+// H1/H2 sizes step down from their Size settings ($h1Size / $h2Size):
+//   from 1520px: the setting, Horizon's own tokens untouched (H1 56px, H2 40px)
+//   990–1519px:  H1 −20%, H2 −15% (44.8px, 34px)
+//   below 990px: both −25% of the setting (42px, 30px)
+// They replace Horizon's fluid clamp() (H1 56px slid to 44px between 1000 and 786px).
+// $h1Size is the raw setting: scaling Horizon's clamp would stack the two reductions.
 :root {
 	--font-h1--line-height: calc(60 / 56);
 	--font-h2--line-height: calc(60 / 40);
-	--font-h2--size: clamp(calc(var(--font-size--h2) * 44 / 56), 4vw, var(--font-size--h2));
+
+	@include media('<x-wide') {
+		--font-h1--size: calc(#{$h1Size} * 0.8);
+		--font-h2--size: calc(#{$h2Size} * 0.85);
+	}
+
+	@include media('<tablet') {
+		--font-h1--size: calc(#{$h1Size} * 0.75);
+		--font-h2--size: calc(#{$h2Size} * 0.75);
+	}
 }
