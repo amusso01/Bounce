@@ -22,7 +22,7 @@
         "button_label": "",
         "button_link": "shopify://pages/iscriviti",
         "inverse_logo": true,
-        "company_name": "Bounce SRLS",
+        "company_name": "Bounce Salts SRLS",
         "background_color": "{{ settings.color_palette.foreground }}",
         "text_color": "{{ settings.color_palette.background }}",
         "padding-block-start": 120,
