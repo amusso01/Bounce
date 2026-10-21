@@ -156,7 +156,7 @@
         "fade_up_delay": 0,
         "width": "page",
         "video": "shopify://files/videos/99838-video-720.mp4",
-        "button_label": "Acquista Bounce",
+        "button_label": "Prova Bounce",
         "button_link": "shopify://pages/iscriviti",
         "padding-block-start": 50,
         "padding-block-end": 60
