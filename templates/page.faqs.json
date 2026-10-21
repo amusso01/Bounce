@@ -265,8 +265,8 @@
         "question_NAAnFK": {
           "type": "question",
           "settings": {
-            "title": "Perché è insapore?",
-            "answer": "<p>È una scelta intenzionale.</p><p>Per evitare di aggiungere sostanze che con l’idratazione c’entrano poco [zuccheri, dolcificanti, aromi artificiali, coloranti], abbiamo scelto una formula neutra, pensata per l’uso frequente. Volevamo creare un prodotto essenziale, pulito per chi vuole idratarsi con regolarità senza dover aggiungere niente di indesiderato alla propria dieta.</p>"
+            "title": "Posso berlo a stomaco vuoto?",
+            "answer": "<p>Generalmente sì.</p><p>È una miscela di sali minerali che puoi assumere anche al mattino o prima dell’allenamento. La tollerabilità, però, può variare da persona a persona.</p>"
           }
         },
         "question_JFCP8y": {
