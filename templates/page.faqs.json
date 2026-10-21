@@ -153,8 +153,8 @@
         "question_emBdNG": {
           "type": "question",
           "settings": {
-            "title": "Serve anche se non faccio sport?",
-            "answer": ""
+            "title": "È vegano?",
+            "answer": "<p>Sì.</p><p>Bounce contiene sali minerali e ingredienti di origine non animale. Nessun ingrediente di origine animale, nessuna sorpresa.</p>"
           }
         },
         "question_MawRQH": {
