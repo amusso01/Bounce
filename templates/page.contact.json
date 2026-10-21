@@ -6,15 +6,16 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "contact_form": {
       "type": "bounce-contact-form",
       "settings": {
         "fade_up": true,
         "fade_up_delay": 0,
-        "title": "Scrivici.",
-        "subtext": "Domande? Questo è il posto giusto.",
+        "title": "Domande?",
+        "subtext": "Questo è il posto giusto.",
         "padding-block-start": 170,
         "padding-block-end": 170
       }
