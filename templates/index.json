@@ -237,13 +237,6 @@
             "subtitle": "Gestisce l’assorbimento dei liquidi."
           }
         },
-        "ingredient_hhm6iM": {
-          "type": "ingredient",
-          "settings": {
-            "title": "Cloruro",
-            "subtitle": "Mantiene l’equilibrio dei fluidi."
-          }
-        },
         "ingredient_WVPrWk": {
           "type": "ingredient",
           "settings": {
@@ -257,13 +250,20 @@
             "title": "Magnesio",
             "subtitle": "Riduce stanchezza e affaticamento."
           }
+        },
+        "ingredient_hhm6iM": {
+          "type": "ingredient",
+          "settings": {
+            "title": "Cloruro",
+            "subtitle": "Mantiene l’equilibrio dei fluidi."
+          }
         }
       },
       "block_order": [
         "ingredient_gzGBaR",
-        "ingredient_hhm6iM",
         "ingredient_WVPrWk",
-        "ingredient_XTUtM6"
+        "ingredient_XTUtM6",
+        "ingredient_hhm6iM"
       ],
       "name": "Bounce ingredients",
       "settings": {
@@ -271,7 +271,7 @@
         "fade_up_delay": 0,
         "width": "page",
         "image": "shopify://shop_images/pexels-aysegul-aytoren-46790226-28237976.jpg",
-        "button_label": "Acquista Bounce",
+        "button_label": "Prova Bounce",
         "button_link": "shopify://pages/iscriviti",
         "padding-block-start": 45,
         "padding-block-end": 45
