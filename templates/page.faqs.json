@@ -258,8 +258,8 @@
         "question_GFE34z": {
           "type": "question",
           "settings": {
-            "title": "Cosa contiene Bounce?",
-            "answer": "<p>Dentro ogni bustina di Bounce trovi solo cinque sali minerali essenziali: sodio, potassio, magnesio, calcio e cloruro. Niente zuccheri, niente edulcoranti, niente aromi artificiali, niente ingredienti dal nome inquietante.</p><p>Solo quello che serve davvero per l’idratazione quotidiana.</p>"
+            "title": "Bounce si assorbe davvero meglio dell’acqua?",
+            "answer": "<p>Non necessariamente. L'acqua viene già assorbita efficacemente dall'organismo.</p><p>Gli elettroliti, soprattutto il sodio, possono aiutare a reintegrare i minerali persi con il sudore e a favorire la ritenzione dei liquidi in determinate condizioni.</p>"
           }
         },
         "question_NAAnFK": {
