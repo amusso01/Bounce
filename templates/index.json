@@ -399,7 +399,7 @@
           "settings": {
             "image": "shopify://shop_images/005_Portrait_2x_925d554f-e7c5-40d9-85e5-11a7c2fb4ccf.jpg",
             "title": "Quando dormi poco.",
-            "text": "<p>La giornata parte già in salita? Idratarti aiuta.</p>",
+            "text": "<p>La giornata parte in salita? Idratarti aiuta.</p>",
             "overlay_color": "",
             "text_color": "#ffffff"
           }
