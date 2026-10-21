@@ -160,8 +160,8 @@
         "question_MawRQH": {
           "type": "question",
           "settings": {
-            "title": "Quante bustine posso prendere al giorno?",
-            "answer": ""
+            "title": "È senza glutine?",
+            "answer": "<p>Sì. Non contiene glutine né ingredienti che lo apportano.</p>"
           }
         }
       },
