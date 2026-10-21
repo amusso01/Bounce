@@ -518,7 +518,7 @@
           "type": "question",
           "settings": {
             "title": "Quante bustine posso prendere al giorno?",
-            "answer": ""
+            "answer": "<p>Dipende da quanto ne hai bisogno. Di solito una basta. Puoi prenderne un paio se la giornata è stata particolarmente dura o se hai perso molti liquidi (allenamento intenso, caldo eccessivo, lungo viaggio, ecc.).</p>"
           }
         }
       },
