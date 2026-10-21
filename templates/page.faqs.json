@@ -401,28 +401,12 @@
             "title": "È adatto a chi fa sport intenso?",
             "answer": "<p>Sì, in funzione delle esigenze individuali.<br/><br/>La formula apporta elettroliti che contribuiscono a reintegrare quelli persi con il sudore durante e dopo l’attività fisica.</p><p>Bounce non contiene né zuccheri né stimolanti. Per gli sforzi prolungati, però, potrebbe essere necessario assumere anche carboidrati e altri nutrienti.</p>"
           }
-        },
-        "question_PWrk6j": {
-          "type": "question",
-          "settings": {
-            "title": "Quanti stick posso prendere al giorno?",
-            "answer": "<p>Dipende da quanto sudi e da quanto ti muovi. Per molte persone uno al giorno è sufficiente. Nei giorni più intensi (allenamento lungo, caldo, viaggi) puoi usarne anche due.</p>"
-          }
-        },
-        "question_RJYVyU": {
-          "type": "question",
-          "settings": {
-            "title": "Posso assumerlo insieme ad altri integratori?",
-            "answer": "<p>Certo! Bounce ha un gusto neutro, quindi puoi aggiungerlo alla tua routine senza preoccuparti di combinare sapori diversi. Solo elettroliti, senza aromi o dolcificanti a interferire.</p><p>Tuttavia, se assumi altri integratori ricchi di minerali o farmaci specifici, chiedi prima al tuo medico. Non ci offendiamo.</p>"
-          }
         }
       },
       "block_order": [
         "question_AHti6V",
         "question_D9F8ij",
-        "question_B6fxd6",
-        "question_PWrk6j",
-        "question_RJYVyU"
+        "question_B6fxd6"
       ],
       "custom_css": [
         ".bounce-accordion__trigger {padding-left: 0px !important;}"
