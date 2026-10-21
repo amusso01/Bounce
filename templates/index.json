@@ -345,6 +345,15 @@
     "bounce_carousel_Ag9RGr": {
       "type": "bounce-carousel",
       "blocks": {
+        "slide_Wp4irj": {
+          "type": "slide",
+          "settings": {
+            "title": "Nei weekend attivi.",
+            "text": "<p>Che sia in città o per sentieri, il corpo lavora.</p>",
+            "overlay_color": "",
+            "text_color": "#ffffff"
+          }
+        },
         "slide_Jfbrtg": {
           "type": "slide",
           "settings": {
@@ -379,8 +388,8 @@
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/002_Portrait_2x_e2a4acdd-ea31-46b9-b3ec-3da31b52a908.jpg",
-            "title": "",
-            "text": "",
+            "title": "Mentre ti alleni.",
+            "text": "<p>Per<br/>continuare senza spezzare il ritmo.</p>",
             "overlay_color": "",
             "text_color": "#ffffff"
           }
@@ -389,14 +398,15 @@
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/005_Portrait_2x_925d554f-e7c5-40d9-85e5-11a7c2fb4ccf.jpg",
-            "title": "",
-            "text": "",
+            "title": "Dopo aver sudato.",
+            "text": "<p>Per<br/>recuperare quello che hai perso.</p>",
             "overlay_color": "",
             "text_color": "#ffffff"
           }
         }
       },
       "block_order": [
+        "slide_Wp4irj",
         "slide_Jfbrtg",
         "slide_FV4LDf",
         "slide_bp3Wh8",
