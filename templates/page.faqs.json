@@ -312,6 +312,132 @@
         "padding-block-start": 20,
         "padding-block-end": 100
       }
+    },
+    "section_qABVyH": {
+      "type": "section",
+      "blocks": {
+        "text_MXyBtG": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "fade_up": false,
+            "fade_up_delay": 0,
+            "text": "<h2>Per chi è e quando usarlo.</h2>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_MXyBtG"
+      ],
+      "name": "t:names.rich_text_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 25,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 112,
+        "padding-block-end": 20
+      }
+    },
+    "bounce_accordion_naeC7G": {
+      "type": "bounce-accordion",
+      "blocks": {
+        "question_AHti6V": {
+          "type": "question",
+          "settings": {
+            "title": "Per chi è pensato Bounce?",
+            "answer": "<p>Bounce è per chi si muove, per chi suda e per chi legge con attenzione le etichette dei prodotti che consuma.</p>"
+          }
+        },
+        "question_D9F8ij": {
+          "type": "question",
+          "settings": {
+            "title": "Serve anche se non faccio sport?",
+            "answer": "<p>Può essere utile anche fuori dall’allenamento.</p><p>Si perdono liquidi anche nella vita quotidiana, soprattutto quando fa caldo, si suda o si trascorrono molte ore in movimento. Bounce è pensato per accompagnare la vita attiva di tutti i giorni, anche se non tutti hanno bisogno di integrare elettroliti quotidianamente.</p>"
+          }
+        },
+        "question_B6fxd6": {
+          "type": "question",
+          "settings": {
+            "title": "Posso usarlo tutti i giorni?",
+            "answer": "<p>Sì, se è adatto alle tue esigenze.</p><p>Bounce è formulato per l’uso regolare da parte di persone attive. Se sudi e perdi liquidi frequentemente, reintegrare gli elettroliti può avere senso.</p>"
+          }
+        },
+        "question_PWrk6j": {
+          "type": "question",
+          "settings": {
+            "title": "Quanti stick posso prendere al giorno?",
+            "answer": "<p>Dipende da quanto sudi e da quanto ti muovi. Per molte persone uno al giorno è sufficiente. Nei giorni più intensi (allenamento lungo, caldo, viaggi) puoi usarne anche due.</p>"
+          }
+        },
+        "question_RJYVyU": {
+          "type": "question",
+          "settings": {
+            "title": "Posso assumerlo insieme ad altri integratori?",
+            "answer": "<p>Certo! Bounce ha un gusto neutro, quindi puoi aggiungerlo alla tua routine senza preoccuparti di combinare sapori diversi. Solo elettroliti, senza aromi o dolcificanti a interferire.</p><p>Tuttavia, se assumi altri integratori ricchi di minerali o farmaci specifici, chiedi prima al tuo medico. Non ci offendiamo.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_AHti6V",
+        "question_D9F8ij",
+        "question_B6fxd6",
+        "question_PWrk6j",
+        "question_RJYVyU"
+      ],
+      "custom_css": [
+        ".bounce-accordion__trigger {padding-left: 0px !important;}"
+      ],
+      "name": "Bounce accordion",
+      "settings": {
+        "fade_up": false,
+        "fade_up_delay": 0,
+        "width": "page",
+        "subtext": "",
+        "button_label": "Vedi tutte le FAQ",
+        "button_link": "",
+        "padding-block-start": 20,
+        "padding-block-end": 100
+      }
     }
   },
   "order": [
@@ -319,6 +445,8 @@
     "section_BXGVdq",
     "bounce_accordion_tcDmQM",
     "section_CkET8N",
-    "bounce_accordion_tKbHPp"
+    "bounce_accordion_tKbHPp",
+    "section_qABVyH",
+    "bounce_accordion_naeC7G"
   ]
 }
