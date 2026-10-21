@@ -279,8 +279,8 @@
         "question_LrxMTN": {
           "type": "question",
           "settings": {
-            "title": "Serve anche se non faccio sport?",
-            "answer": ""
+            "title": "Quanti stick posso prendere al giorno?",
+            "answer": "<p>Dipende da quanto sudi e da quanto ti muovi. Per molte persone uno al giorno è sufficiente. Nei giorni più intensi (allenamento lungo, caldo, viaggi) puoi usarne anche due.</p>"
           }
         },
         "question_QWf7Ey": {
