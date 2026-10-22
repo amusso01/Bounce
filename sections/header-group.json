@@ -50,12 +50,6 @@
             "text": "Senza additivi"
           }
         },
-        "item_preservatives": {
-          "type": "item",
-          "settings": {
-            "text": "Senza conservanti"
-          }
-        },
         "item_allergens": {
           "type": "item",
           "settings": {
@@ -70,7 +64,6 @@
         "item_gluten",
         "item_flavours",
         "item_additives",
-        "item_preservatives",
         "item_allergens"
       ],
       "custom_css": [],
