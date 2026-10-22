@@ -161,7 +161,7 @@
           "type": "question",
           "settings": {
             "title": "È senza glutine?",
-            "answer": "<p>Sì. Non contiene glutine né ingredienti che lo apportano.</p>"
+            "answer": "<p>Sì.&nbsp;</p><p>Non contiene glutine né ingredienti che lo apportano.</p>"
           }
         }
       },
