@@ -14,8 +14,8 @@
       "settings": {
         "fade_up": true,
         "fade_up_delay": 0,
-        "title": "Ci siamo quasi.",
-        "text": "<p>Bounce sta arrivando. Lasciaci la tua email per sapere quando sarà disponibile.</p>",
+        "title": "Bounce sta arrivando. ",
+        "text": "<p>Lasciaci la tua email per sapere quando sarà disponibile.</p>",
         "tags": "newsletter",
         "back_link": "",
         "preview_success": true,
