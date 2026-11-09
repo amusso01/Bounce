@@ -378,6 +378,7 @@
         "slide_Wp4irj": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/Camminata_03_resized.png",
             "title": "Nei weekend attivi.",
             "text": "<p>Che sia in città o per sentieri, il corpo lavora.</p>",
             "overlay_color": "",
@@ -397,7 +398,7 @@
         "slide_FV4LDf": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/005_Portrait_2x_925d554f-e7c5-40d9-85e5-11a7c2fb4ccf.jpg",
+            "image": "shopify://shop_images/Prova_grain_B_resized.png",
             "title": "Quando dormi poco.",
             "text": "<p>La giornata parte in salita? Idratarti aiuta.</p>",
             "overlay_color": "",
