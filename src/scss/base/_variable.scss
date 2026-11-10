@@ -20,11 +20,18 @@ $color4: var(--bounce-color-4); // color2 (light grey)
 $h1Size: var(--bounce-h1-size);
 $h2Size: var(--bounce-h2-size);
 
-// Layout: content widths (gutters sit outside, see Horizon's --page-margin).
+// Layout: content widths (gutters sit outside, see $pageGutter).
 // Applied to Horizon's page width tokens in _layout.scss.
 $contentMax: 1120px;
 $contentMaxNarrow: 1024px;
 $contentMaxWide: 1440px;
+
+// Side gutter from 750px (Horizon's --page-margin, overridden in _layout.scss). 8% of the
+// screen: 60px at 750, 96px at 1200, and it meets the free white space around the 1120px
+// column at 1333px, so it never jumps. Phones keep Horizon's 16px. vw, not %: the token
+// is used in grid tracks and padding on different elements, and % would resolve against
+// a different box in each.
+$pageGutter: 8vw;
 
 // Navigation items (header and footer): menu links, IT | EN and the button.
 // 16px type on a 22px line (unitless so it keeps the ratio), items 72px apart;

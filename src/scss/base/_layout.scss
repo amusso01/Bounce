@@ -1,4 +1,5 @@
 @use './variable' as *;
+@use './media' as *;
 
 // Point Horizon's page width tokens at our measures. Theme settings → Page width
 // (narrow / normal / wide) and every Horizon section now use these.
@@ -8,6 +9,22 @@
 	--narrow-page-width: #{$contentMaxNarrow};
 	--normal-page-width: #{$contentMax};
 	--wide-page-width: #{$contentMaxWide};
+}
+
+// Side gutter: Horizon's --page-margin is 16px, then a flat 40px from 750px, so tablets
+// and laptops got 40px while large screens get the wide white space around the 1120px
+// column. From 750px it's $pageGutter (8% of the screen) instead, which grows into that
+// white space without a jump. The header, the footer, every Horizon section and our
+// .content-block all read this token. Same selectors as base.css (equal specificity,
+// bounce.css loads last), so a section that sets its own .page-width-* class gets it
+// too; max() keeps Horizon's safe-area insets for notched screens in landscape.
+.page-width-wide,
+.page-width-normal,
+.page-width-narrow,
+.page-width-content {
+	@include media('>=mobile') {
+		--page-margin: max(#{$pageGutter}, var(--safe-area-inset-left, 0px), var(--safe-area-inset-right, 0px));
+	}
 }
 
 // Centred container for our own markup.
@@ -27,7 +44,7 @@
 	max-width: var(--wide-page-width);
 }
 
-// Side gutters only: Horizon's --page-margin (16px, 40px from 750px, clears the notch).
+// Side gutters only: --page-margin (16px, 8vw from 750px, clears the notch; see above).
 .content-block {
 	padding-inline: var(--page-margin);
 }

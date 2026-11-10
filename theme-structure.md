@@ -86,6 +86,7 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 | Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px). **H1 and H2 `--line-height` are overridden by us** in `src/scss/base/_tokens.scss`: 60/56 and 60/40, a 60px line at the desktop sizes, so their *Line height* settings do nothing. **H1 and H2 `--size` step down there too**, still from their *Size* settings: the setting from 1520px (`x-wide`); H1 −20% and H2 −15% from 990 to 1519px; both −30% of the setting below 990px. With 56 / 40px that's 56 → 44.8 → 39.2px and 40 → 34 → 28px. This replaces Horizon's fluid H1 (56 → 44px below 1000px). The steps scale the raw setting, `--bounce-h1-size` / `--bounce-h2-size` from `snippets/bounce-variables.liquid`, because scaling Horizon's `clamp()` would stack the two reductions |
 | Fixed type scale | `--font-size--3xs` … `--font-size--6xl` | No |
 | Page widths | `--narrow-page-width`, `--normal-page-width`, `--wide-page-width` (Horizon: 1440 / 1920 / 2400px) | **Overridden by us** to 1024 / 1120 / 1440px (see [Content widths](#content-widths)). `page_width` setting picks one → `body.page-width-*` |
+| Page gutter | `--page-margin`, set in `base.css` on `.page-width-*` (Horizon: 16px, 40px from 750px) | No. **Overridden by us** from 750px to 8% of the screen (see [Content widths](#content-widths)) |
 | Spacing | `--padding-3xs…6xl`, `--margin-3xs…6xl`, `--gap-3xs…3xl` | No |
 | Radii / borders | `--style-border-radius-buttons-primary`, `--style-border-radius-inputs`, `--style-border-width-primary`, … | Yes: Buttons / Inputs |
 | Buttons | `--button-padding-block`, `--button-padding-inline`, `--button-font-family-primary`, `--button-text-case-primary` | Partly |
@@ -295,7 +296,14 @@ The XD design caps content at **1120px**, with a narrow and a wide variant. Thes
 | Narrow, 1024px | `$contentMaxNarrow` | `--narrow-page-width` | `.content-max--narrow` |
 | Wide, 1440px | `$contentMaxWide` | `--wide-page-width` | `.content-max--wide` |
 
-Gutters: `.content-block` adds Horizon's `--page-margin` on the sides only (16px, 40px from 750px up, wider on notched phones). It has no top or bottom padding.
+**Gutters.** Every side gutter on the site is Horizon's `--page-margin`: the section grid's outer columns (every Horizon section, the header rows, `bounce-footer`) and `.content-block` (our sections). Horizon makes it 16px, then a flat 40px from 750px, so tablets and laptops got 40px while large screens get hundreds of pixels of white space around the 1120px column. `src/scss/base/_layout.scss` overrides it from 750px with `$pageGutter` (`_variable.scss`), **8% of the screen width**, on the same `.page-width-*` selectors as `base.css`:
+
+| Screen | 375 | 750 | 990 | 1024 | 1200 | 1333 | 1440 | 1920 |
+|---|---|---|---|---|---|---|---|---|
+| Gutter | 16px | 60px | 79px | 82px | 96px | 107px | 160px | 400px |
+| Content | 343px | 630px | 832px | 860px | 1008px | 1120px | 1120px | 1120px |
+
+At 1333px the column reaches 1120px and the free margin takes over, so the gutter grows with no jump anywhere above 750px. Phones keep Horizon's 16px. `max()` keeps the safe-area insets, so notched phones in landscape still clear the notch. `.content-block` adds the gutter on the sides only, with no top or bottom padding. To change the curve, change `$pageGutter`; everything follows.
 
 **How it plugs into Horizon.** `src/scss/base/_layout.scss` overrides the three `--*-page-width` tokens. Theme settings → Page width (keep it on **Normal**) and every Horizon section, including the header and footer, therefore use our measures. Sections are a 3-column grid (`margin | content | margin`, `base.css:303-340`), so backgrounds stay full-bleed while content stops at 1120px.
 
