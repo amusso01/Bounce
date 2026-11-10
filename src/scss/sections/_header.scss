@@ -78,6 +78,12 @@ header-actions:not(:has(.header-actions__action)) {
 	padding-block: var(--padding-sm);
 }
 
+// Drawer top-level links: 1.5rem instead of Horizon's fixed 1.75rem (--menu-font-2xl--size).
+// Horizon sets the token inline on .menu-drawer__navigation, so it's redeclared on the items.
+.menu-drawer__menu-item--mainlist {
+	--menu-top-level-font-size: 1.5rem;
+}
+
 // Acquista button (rendered in the header's actions slot, after the icons). Size and
 // type come from the button component (src/scss/components/_btn.scss).
 .bounce-header-button {

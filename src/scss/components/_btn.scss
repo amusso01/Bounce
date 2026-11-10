@@ -1,7 +1,8 @@
 @use '../base/variable' as *;
 
 // Button component. Design spec for every text button:
-//   16px Simplon Mono Regular (400), 22px line height, 11px top/bottom, 24px left/right padding.
+//   0.9rem (14.4px) Simplon Mono Regular (400), 22/16 line height (19.8px), 11px top/bottom,
+//   24px left/right padding.
 //
 // Horizon buttons are .button (primary), .button-secondary, .button-custom and the unbranded
 // "Buy it now" button (the "Buttons" rule in assets/base.css).
@@ -29,7 +30,7 @@
 .button-secondary,
 .button-custom,
 button.shopify-payment-button__button--unbranded {
-	--font-paragraph--size: 1rem;
+	--font-paragraph--size: 0.9rem;
 	--font-paragraph--weight: 400;
 	--font-paragraph--line-height: calc(22 / 16);
 }

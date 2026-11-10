@@ -52,32 +52,21 @@ $arrowInset: 24px;
 	text-align: start;
 }
 
-// Design sizes from 1200px up; scaled down below
 .bounce-carousel__title {
 	margin: 0;
 	font-family: var(--font-body--family);
 	font-weight: 400;
-	font-size: 1.5rem;
-	line-height: calc(36 / 24);
+	font-size: 1rem;
+	line-height: 1.1;
 	letter-spacing: normal;
 	text-transform: none;
 	color: inherit;
-
-	@include media('>=desktop') {
-		font-size: 2rem;
-		line-height: calc(48 / 32);
-	}
 }
 
 .bounce-carousel__text {
 	font-weight: 300;
 	font-size: 1.125rem;
 	line-height: calc(24 / 18);
-
-	@include media('>=desktop') {
-		font-size: 1.5rem;
-		line-height: calc(32 / 24);
-	}
 
 	p {
 		margin: 0;

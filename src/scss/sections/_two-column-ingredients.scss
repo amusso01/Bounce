@@ -70,7 +70,7 @@ $buttonGap: 40px; // the floor between the list and the button
 .bounce-two-column-ingredients__title {
 	margin: 0 0 $titleGap;
 	font-family: var(--font-body--family);
-	font-size: 1.5rem;
+	font-size: 1.15rem;
 	font-weight: 400;
 	line-height: calc(24 / 24);
 	color: var(--color-foreground);
@@ -79,7 +79,7 @@ $buttonGap: 40px; // the floor between the list and the button
 .bounce-two-column-ingredients__subtitle {
 	margin: 0;
 	font-family: var(--font-body--family);
-	font-size: 1rem;
+	font-size: 0.9rem;
 	font-weight: 300;
 	line-height: calc(24 / 16);
 	color: var(--color-foreground);

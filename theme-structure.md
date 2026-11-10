@@ -83,7 +83,7 @@ All of these come from Theme Editor settings or Horizon's hard-coded scale. Use 
 | Group | Examples | Driven by setting? |
 |---|---|---|
 | Font families | `--font-body--family`, `--font-heading--family`, `--font-subheading--family`, `--font-accent--family` (+ `--style`, `--weight`) | **Overridden by us**: all four are Simplon Mono with fixed weights (see [Custom font](#custom-font-simplon-mono)) |
-| Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px). **H1 and H2 `--line-height` are overridden by us** in `src/scss/base/_tokens.scss`: 60/56 and 60/40, a 60px line at the desktop sizes, so their *Line height* settings do nothing. **H1 and H2 `--size` step down there too**, still from their *Size* settings: the setting from 1520px (`x-wide`); H1 −20% and H2 −15% from 990 to 1519px; both −25% of the setting below 990px. With 56 / 40px that's 56 → 44.8 → 42px and 40 → 34 → 30px. This replaces Horizon's fluid H1 (56 → 44px below 1000px). The steps scale the raw setting, `--bounce-h1-size` / `--bounce-h2-size` from `snippets/bounce-variables.liquid`, because scaling Horizon's `clamp()` would stack the two reductions |
+| Type presets | `--font-paragraph--size`, `--font-h1--size` … `--font-h6--size`, plus `--family`, `--weight`, `--line-height`, `--letter-spacing`, `--case` for each | Yes: `type_size_h1`, `type_font_h1`, … (fluid `clamp()` above 48px). **H1 and H2 `--line-height` are overridden by us** in `src/scss/base/_tokens.scss`: 60/56 and 60/40, a 60px line at the desktop sizes, so their *Line height* settings do nothing. **H1 and H2 `--size` step down there too**, still from their *Size* settings: the setting from 1520px (`x-wide`); H1 −20% and H2 −15% from 990 to 1519px; both −30% of the setting below 990px. With 56 / 40px that's 56 → 44.8 → 39.2px and 40 → 34 → 28px. This replaces Horizon's fluid H1 (56 → 44px below 1000px). The steps scale the raw setting, `--bounce-h1-size` / `--bounce-h2-size` from `snippets/bounce-variables.liquid`, because scaling Horizon's `clamp()` would stack the two reductions |
 | Fixed type scale | `--font-size--3xs` … `--font-size--6xl` | No |
 | Page widths | `--narrow-page-width`, `--normal-page-width`, `--wide-page-width` (Horizon: 1440 / 1920 / 2400px) | **Overridden by us** to 1024 / 1120 / 1440px (see [Content widths](#content-widths)). `page_width` setting picks one → `body.page-width-*` |
 | Spacing | `--padding-3xs…6xl`, `--margin-3xs…6xl`, `--gap-3xs…3xl` | No |
@@ -266,8 +266,8 @@ Global token overrides go in `src/scss/base/_tokens.scss`. It already locks the 
 	}
 
 	@include media('<tablet') {           // below 990px
-		--font-h1--size: calc(#{$h1Size} * 0.75);
-		--font-h2--size: calc(#{$h2Size} * 0.75);
+		--font-h1--size: calc(#{$h1Size} * 0.7);
+		--font-h2--size: calc(#{$h2Size} * 0.7);
 	}
 }
 ```
@@ -343,7 +343,7 @@ Horizon buttons are `.button` (primary), `.button-secondary` and `.button-custom
 | Property | Value | Where it comes from |
 |---|---|---|
 | Font | Simplon Mono | Theme settings → Buttons → Font (body), locked by `_fonts.scss` |
-| Size / weight / line height | 16px / 400 / 22px | `_btn.scss`: `--font-paragraph--size/--weight/--line-height` set on the button itself |
+| Size / weight / line height | 0.9rem (14.4px) / 400 / 22/16 (19.8px) | `_btn.scss`: `--font-paragraph--size/--weight/--line-height` set on the button itself |
 | Padding | 11px top/bottom, 24px left/right | `_btn.scss`: `--button-padding-block` / `--button-padding-inline` on `:root` |
 | Colors, radius, border width, text case | Black / white, 12px, 0, none | Theme settings → Buttons |
 | Hover (`.button` and the unbranded *Buy it now*) | Inverts: the text color becomes the fill, and the fill becomes the text plus a 1px border. Black → white with a black border; white (footer, transparent header) → black with a white border | `_btn.scss`, built from the at-rest `--color-primary-button-*` tokens |
@@ -361,7 +361,7 @@ The design has the logo on the left, then the menu, an `IT | EN` language switch
 | `IT \| EN` switcher | `snippets/bounce-language-switcher.liquid`, rendered by `sections/header.liquid` (desktop) and `snippets/header-drawer.liquid` (mobile drawer). One submit button per published language in a `{% form 'localization' %}`: Shopify reloads the current page in that language, with no JS. The current language has `aria-current="true"`; the other is dimmed |
 | Button | Header → **Button**: *Label* and *Link*, rendered by `snippets/bounce-buy-button.liquid` (shared with the footer). A blank label falls back to the storefront translation `bounce.buy_button` (`Acquista` in `locales/it.json`, `Buy now` in `locales/en.default.json`). Hidden until a link is set, and hidden below 750px and when the menu collapses into the drawer. Size and type come from the [Button component](#button-component) |
 | Account / cart icons | Header → *Customer account* → **Account icon**, and Header → *Cart* → **Cart icon**. Both are off. When on, they sit between the switcher and the button |
-| Styles and spacing | `src/scss/sections/_header.scss`. Menu links are always full strength and underline on hover. `--bounce-header-gap` spaces the menu links, switcher and button: `$navGap` (72px) from 990px up, `$navGapCompact` (32px) below. Those and the 16px / 22px nav type (`$navFontSize`, `$navLineHeight`) live in `_variable.scss`, shared with the footer |
+| Styles and spacing | `src/scss/sections/_header.scss`. Menu links are always full strength and underline on hover. `--bounce-header-gap` spaces the menu links, switcher and button: `$navGap` (72px) from 990px up, `$navGapCompact` (32px) below. Those and the 16px / 22px nav type (`$navFontSize`, `$navLineHeight`) live in `_variable.scss`, shared with the footer. In the mobile drawer, the top-level links are 1.5rem instead of Horizon's fixed 1.75rem: `--menu-top-level-font-size` is redeclared on `.menu-drawer__menu-item--mainlist`, because Horizon sets it inline on `.menu-drawer__navigation` |
 
 The switcher only shows when at least two languages are published (Settings → Languages): Horizon's guard, kept on purpose. Horizon's *Country/region* and *Flag* settings are removed; the unused dropdown CSS stays in `sections/header.liquid` to keep the diff small.
 
@@ -395,7 +395,7 @@ It has **no blocks on purpose**. A section schema without `blocks` shows no "Add
 
 Styles are in `src/scss/sections/_footer.scss`:
 
-- Every line of text is 16px / 400 / 22px (the header's `$navFontSize` / `$navLineHeight`) and set in capitals with `text-transform: uppercase`. The settings and translations stay in sentence case. The button gets its capitals from `--button-text-case-primary: uppercase` on `.bounce-footer`, the token `base.css` reads for `.button`, so the header's button keeps the label's own case.
+- Every line of text except the button is 16px / 400 / 22px (the header's `$navFontSize` / `$navLineHeight`); the button keeps the [Button component](#button-component) size. All of it is set in capitals with `text-transform: uppercase`. The settings and translations stay in sentence case. The button gets its capitals from `--button-text-case-primary: uppercase` on `.bounce-footer`, the token `base.css` reads for `.button`, so the header's button keeps the label's own case.
 - XD spacing: 75px from the top row to the logo, 65px from the logo to the bottom row (`$footerLogoGapTop` / `$footerLogoGapBottom`); both 40px below 750px. Nav items are 72px apart, the same as the header.
 - Links underline on hover.
 - The button swaps the footer's colours: text colour as background, background colour as text, so white on the black footer. It sets the `--color-primary-button-*` tokens that `base.css` reads, so it stays visible if the footer colours change. On hover it inverts back: black with white text and a 1px white border (see [Button component](#button-component)). The selection highlight inside it follows those tokens too (see [Text selection](#text-selection)).
@@ -420,7 +420,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 
 - **Cards per view:** 1.2 on phones (a peek of the next card), 2 from 750px, 3 from 990px. These are Swiper `breakpoints` on Horizon's widths.
 - **Card:** 353:490 ratio (490px tall at page width), 16px corners, 30px / 24px padding (local variables at the top of `_carousel.scss`).
-- **Type:** title 32/48 at weight 400, text 24/32 at weight 300, from 1200px (`media('>=desktop')`). Below that, 24/36 and 18/24.
+- **Type:** title 1rem (16px) / 1.1 at weight 400; text 18/24 at weight 300; both at every width.
 - **Ends:** `rewind`. Next on the last card goes back to the first.
 - **Arrows:** 40px white circles 24px inside the edges, hidden below 750px (swipe) and when every card already fits.
 - **Autoplay:** pauses on hover, and never runs for viewers who ask for reduced motion.
@@ -438,7 +438,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 | *Label* + *Link* | The button shows only when both are set |
 | *Padding* top / bottom | 45px / 45px |
 
-- **Type:** questions (and the subtext) 24px / 400 / 1.15 (27.6px), 22.4px (1.4rem) below 1520px; answers 16px / 400 / 1.6 (25.6px); all in the page text colour.
+- **Type:** questions (and the subtext) 1.15rem (18.4px) / 400 / 1.15; answers 0.95rem (15.2px) / 400 / 1.6; all at every width, in the page text colour.
 - **Rows:** 24px / 20px padding, with a 1px dashed line under every question (the browser's standard dash). An open question turns palette *color 2* (`$color4`, #F0F0F0), and its line becomes a solid seam in the page colour, so two open answers stay separate.
 - **Behaviour:** several answers can be open at once; all start closed; the chevron flips when open. Animation is 300ms, or none for viewers who ask for reduced motion.
 - **AccordionJS CSS:** not imported. It's mostly demo styling (Arial, borders, a "+" icon), so the few rules its JS needs (panel `overflow`, `height`, `visibility`) live in `_accordion.scss`. Panels start collapsed in CSS, so answers don't flash open before the deferred script runs.
@@ -457,7 +457,7 @@ Each **Slide** has an image, a title, rich text, an *Overlay color* (blank means
 
 - **Fields:** Nome\*, E-Mail\*, Numero di telefono, Nazione, Messaggio\*. Two columns from 750px (the message spans both), one below. Required fields carry `required`; the asterisk is `aria-hidden`. They post as `contact[name]`, `[email]`, `[phone]`, `[country]` and `[body]`, which is how they are labelled in the notification email.
 - **Text:** labels, placeholders, the button and the `* Campo obbligatorio` note come from the storefront translations `bounce.contact_form.*` (`locales/it.json`, `locales/en.default.json`), so the EN version needs no editor work. Change them in Online Store → Themes → Edit default theme content. The sent message reuses Horizon's `blocks.contact_form.post_success`.
-- **Type:** title uses the H1 tokens (56px; 44.8px from 990 to 1519px, 42px below), including the shared 60/56 line height. Subtext 24/40, labels 16/25, all weight 400. Field text 12/25: Regular when typed, Light for the placeholder, both full-strength text colour (base.css mutes placeholders to 60%).
+- **Type:** title uses the H1 tokens (56px; 44.8px from 990 to 1519px, 39.2px below), including the shared 60/56 line height. Subtext 24/40, labels 16/25, all weight 400. Field text 12/25: Regular when typed, Light for the placeholder, both full-strength text colour (base.css mutes placeholders to 60%).
 - **Fields:** 40px tall, 10px side padding, square, no border, palette *color 2* (`$color4`, #F0F0F0). The message box is 170px (six lines plus 10px padding). base.css paints inputs from `input:not([type='checkbox'], [type='radio'])`, which outranks a single class, so the grey goes in through `--color-input-background` on the field.
 - **Spacing:** 20px title → subtext, 100px subtext → form (80px below 750px), 32px between fields across and down, 4px label → field, 40px message → button, 10px button → note.
 - **Button:** the standard `.button` (see [Button component](#button-component)), stretched to the column width.

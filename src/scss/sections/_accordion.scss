@@ -48,14 +48,10 @@ $footerGap: 72px;
 .bounce-accordion__question,
 .bounce-accordion__subtext {
 	font-family: var(--font-body--family);
-	font-size: 1.5rem;
+	font-size: 1.15rem;
 	font-weight: 400;
 	line-height: 1.15;
 	color: var(--color-foreground);
-
-	@include media('<x-wide') {
-		font-size: 1.4rem;
-	}
 }
 
 // Chevron: down when closed, up when open
@@ -92,7 +88,7 @@ $footerGap: 72px;
 .bounce-accordion__answer {
 	padding: 0 $rowPaddingInline $rowPaddingBlock;
 	font-family: var(--font-body--family);
-	font-size: 1rem;
+	font-size: 0.95rem;
 	font-weight: 400;
 	line-height: 1.6;
 	color: var(--color-foreground);

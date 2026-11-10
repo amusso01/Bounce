@@ -10,7 +10,7 @@
 // H1/H2 sizes step down from their Size settings ($h1Size / $h2Size):
 //   from 1520px: the setting, Horizon's own tokens untouched (H1 56px, H2 40px)
 //   990–1519px:  H1 −20%, H2 −15% (44.8px, 34px)
-//   below 990px: both −25% of the setting (42px, 30px)
+//   below 990px: both −30% of the setting (39.2px, 28px)
 // They replace Horizon's fluid clamp() (H1 56px slid to 44px between 1000 and 786px).
 // $h1Size is the raw setting: scaling Horizon's clamp would stack the two reductions.
 :root {
@@ -23,7 +23,7 @@
 	}
 
 	@include media('<tablet') {
-		--font-h1--size: calc(#{$h1Size} * 0.75);
-		--font-h2--size: calc(#{$h2Size} * 0.75);
+		--font-h1--size: calc(#{$h1Size} * 0.7);
+		--font-h2--size: calc(#{$h2Size} * 0.7);
 	}
 }
