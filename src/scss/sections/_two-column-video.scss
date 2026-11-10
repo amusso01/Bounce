@@ -22,7 +22,7 @@ $iconGap: 48px;
 
 // Stacked below tablet; side by side from there, 11:18. Below 990px that split leaves the
 // list ~240px wide and every label wraps, so phones and small tablets stack. The full gap
-// only from desktop (1008px column at 1200px; it reaches 1120px at 1333px, see
+// only from desktop (960px column at 1200px; it reaches 1120px at 1400px, see
 // $pageGutter).
 .bounce-two-column-video__grid {
 	display: grid;

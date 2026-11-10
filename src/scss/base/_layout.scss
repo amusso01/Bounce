@@ -13,7 +13,7 @@
 
 // Side gutter: Horizon's --page-margin is 16px, then a flat 40px from 750px, so tablets
 // and laptops got 40px while large screens get the wide white space around the 1120px
-// column. From 750px it's $pageGutter (8% of the screen) instead, which grows into that
+// column. From 750px it's $pageGutter (10% of the screen) instead, which grows into that
 // white space without a jump. The header, the footer, every Horizon section and our
 // .content-block all read this token. Same selectors as base.css (equal specificity,
 // bounce.css loads last), so a section that sets its own .page-width-* class gets it
@@ -44,7 +44,7 @@
 	max-width: var(--wide-page-width);
 }
 
-// Side gutters only: --page-margin (16px, 8vw from 750px, clears the notch; see above).
+// Side gutters only: --page-margin (16px, $pageGutter from 750px, clears the notch; see above).
 .content-block {
 	padding-inline: var(--page-margin);
 }
