@@ -368,7 +368,7 @@
     "contact_form": {
       "name": "Nombre",
       "name_placeholder": "Tu nombre",
-      "email": "Correo electrónico:",
+      "email": "Correo electrónico",
       "email_placeholder": "nombre@ejemplo.com",
       "phone": "Teléfono",
       "phone_placeholder": "+34 600 000 000",
@@ -382,7 +382,7 @@
     "newsletter": {
       "title": "Ya casi estamos.",
       "text_html": "Estamos dando los últimos retoques a Bounce antes de lanzarlo.<br>Déjanos tu email y serás de los primeros en enterarte del lanzamiento.",
-      "email": "Correo electrónico",
+      "email": "Correo electrónico:",
       "email_placeholder": "hello@bouncesalts.com",
       "submit": "Avísame cuando esté disponible",
       "back": "Volver a la web",
