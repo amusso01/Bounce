@@ -3,6 +3,10 @@
   (IT | EN), separated by a pipe. Each button submits the localization form,
   so Shopify reloads the current page in that language. No JS needed.
 
+  return_to is set explicitly (path plus query, minus section_id) so language
+  changes from the mobile drawer still land on a full page after header hydration
+  replaces that form via the Section Rendering API.
+
   Styles live in src/scss/sections/_header.scss.
 
   @param {string} form_id - The section or block ID, keeps the form ID unique
@@ -14,9 +18,31 @@
 {%- liquid
   assign form_dom_id = 'BounceLanguageSwitcher-' | append: form_id
   assign form_label = 'content.language' | t
+  assign return_to = request.path
+  if request.query_string != blank
+    assign return_query = ''
+    assign query_parts = request.query_string | split: '&'
+    for query_part in query_parts
+      assign param_name = query_part | split: '=' | first
+      if param_name != 'section_id'
+        if return_query != ''
+          assign return_query = return_query | append: '&'
+        endif
+        assign return_query = return_query | append: query_part
+      endif
+    endfor
+    if return_query != ''
+      assign return_to = return_to | append: '?' | append: return_query
+    endif
+  endif
 -%}
 
-{%- form 'localization', id: form_dom_id, class: 'bounce-language-switcher', aria-label: form_label -%}
+{%- form 'localization',
+  id: form_dom_id,
+  class: 'bounce-language-switcher',
+  aria-label: form_label,
+  return_to: return_to
+-%}
   {%- for language in localization.available_languages -%}
     {%- unless forloop.first -%}
       <span class="bounce-language-switcher__separator" aria-hidden="true">|</span>
