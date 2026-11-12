@@ -14,7 +14,7 @@
     "bounce_marquee_header": {
       "type": "bounce-marquee",
       "blocks": {
-        "item_nLwPX7": {
+        "item_CJ3JaN": {
           "type": "item",
           "settings": {
             "text": "Senza zuccheri"
@@ -26,22 +26,40 @@
             "text": "Senza dolcificanti"
           }
         },
-        "item_sugar": {
-          "type": "item",
-          "settings": {
-            "text": "Senza coloranti"
-          }
-        },
         "item_gluten": {
           "type": "item",
           "settings": {
             "text": "Senza glutine"
           }
         },
+        "item_gbWjcm": {
+          "type": "item",
+          "settings": {
+            "text": "Senza calorie"
+          }
+        },
+        "item_nLwPX7": {
+          "type": "item",
+          "settings": {
+            "text": "Senza carboidrati"
+          }
+        },
         "item_flavours": {
           "type": "item",
           "settings": {
             "text": "Senza aromi artificiali"
+          }
+        },
+        "item_8z8az9": {
+          "type": "item",
+          "settings": {
+            "text": "Senza derivati animali"
+          }
+        },
+        "item_sugar": {
+          "type": "item",
+          "settings": {
+            "text": "Senza coloranti"
           }
         },
         "item_allergens": {
@@ -52,11 +70,14 @@
         }
       },
       "block_order": [
-        "item_nLwPX7",
+        "item_CJ3JaN",
         "item_sweeteners",
-        "item_sugar",
         "item_gluten",
+        "item_gbWjcm",
+        "item_nLwPX7",
         "item_flavours",
+        "item_8z8az9",
+        "item_sugar",
         "item_allergens"
       ],
       "custom_css": [],
