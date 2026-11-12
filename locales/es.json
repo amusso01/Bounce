@@ -368,7 +368,7 @@
     "contact_form": {
       "name": "Nombre",
       "name_placeholder": "Tu nombre",
-      "email": "Correo electrónico",
+      "email": "Correo electrónico:",
       "email_placeholder": "nombre@ejemplo.com",
       "phone": "Teléfono",
       "phone_placeholder": "+34 600 000 000",
