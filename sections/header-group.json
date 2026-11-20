@@ -55,6 +55,13 @@
           "settings": {
             "text": "Senza coloranti"
           }
+        },
+        "item_phydJq": {
+          "type": "item",
+          "disabled": true,
+          "settings": {
+            "text": "Senza allergeni"
+          }
         }
       },
       "block_order": [
@@ -64,7 +71,8 @@
         "item_nLwPX7",
         "item_flavours",
         "item_8z8az9",
-        "item_sugar"
+        "item_sugar",
+        "item_phydJq"
       ],
       "custom_css": [],
       "name": "t:names.marquee",
