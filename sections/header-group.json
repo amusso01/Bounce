@@ -26,6 +26,13 @@
             "text": "Senza dolcificanti"
           }
         },
+        "item_RcMYtX": {
+          "type": "item",
+          "disabled": true,
+          "settings": {
+            "text": "Senza glutine"
+          }
+        },
         "item_gbWjcm": {
           "type": "item",
           "settings": {
@@ -34,6 +41,7 @@
         },
         "item_nLwPX7": {
           "type": "item",
+          "disabled": true,
           "settings": {
             "text": "Senza carboidrati"
           }
@@ -67,6 +75,7 @@
       "block_order": [
         "item_CJ3JaN",
         "item_sweeteners",
+        "item_RcMYtX",
         "item_gbWjcm",
         "item_nLwPX7",
         "item_flavours",
