@@ -47,7 +47,7 @@
             "fade_up": true,
             "fade_up_delay": 0.2,
             "label": "Prova Bounce",
-            "link": "shopify://pages/iscriviti",
+            "link": "shopify://pages/lista-attesa",
             "open_in_new_tab": false,
             "style_class": "button",
             "custom_button_background": "{{ settings.color_palette.foreground }}",
@@ -157,7 +157,7 @@
         "width": "page",
         "video": "shopify://files/videos/Video Rocco x sito.mp4",
         "button_label": "Prova Bounce",
-        "button_link": "shopify://pages/iscriviti",
+        "button_link": "shopify://pages/lista-attesa",
         "padding-block-start": 50,
         "padding-block-end": 60
       }
@@ -272,7 +272,7 @@
         "width": "page",
         "image": "shopify://shop_images/Stick_01.png",
         "button_label": "Prova Bounce",
-        "button_link": "shopify://pages/iscriviti",
+        "button_link": "shopify://pages/lista-attesa",
         "padding-block-start": 45,
         "padding-block-end": 45
       }
@@ -436,7 +436,7 @@
             "fade_up": true,
             "fade_up_delay": 0,
             "label": "Prova Bounce",
-            "link": "shopify://pages/iscriviti",
+            "link": "shopify://pages/lista-attesa",
             "open_in_new_tab": false,
             "style_class": "button",
             "custom_button_background": "{{ settings.color_palette.foreground }}",
